@@ -44,4 +44,4 @@ Special thanks to VodoXleb, xcvb (bcvx), RavenAscendant for their help.
 1. Rework the target coordinates acquisition so that the marker is displayed regardless of location.
 2. Adding new variants of compasses and markers.
 3. Editing the compass position via MSM.
-4. (No promises). Displaying geocaches or something similar.
+4. (No promises). Displaying stashes or something similar.
