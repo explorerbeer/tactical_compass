@@ -1,0 +1,165 @@
+-- Adapted From: A.N.T.H.O.L.O.G.Y. --
+-- Credits: Strogglet15, Tronex, RavenAscendant --
+-- Edited by: explorerbee --
+-- Date: 21.09.2024 --
+
+local flat_compass = nil
+
+local compass_state = true
+
+class "UIFlatCompass" (CUIScriptWnd)
+
+local compass = {
+    file = "ui\\ui_tactic_compass\\HypeR_compass",
+    x = "0",
+    y = "0"
+}
+
+--[[--------------------------------------------------
+	Compass & Marker handlers
+--------------------------------------------------]]--
+
+function activate_compass()
+    if flat_compass == nil then
+        flat_compass = UIFlatCompass()
+        get_hud():AddDialogToRender(flat_compass)
+    end
+end
+
+function deactivate_compass()
+    if flat_compass ~= nil then
+        get_hud():RemoveDialogToRender(flat_compass)
+        flat_compass = nil
+    end
+end
+
+function update_compass()
+    if flat_compass ~= nil then
+		flat_compass:Refresh()
+    end
+end
+
+--[[--------------------------------------------------
+    Class init & draw
+--------------------------------------------------]]--
+
+function UIFlatCompass:__init()
+    super()
+    self._tmr = time_global()
+    self:InitControls()
+end
+
+function UIFlatCompass:__finalize()
+end
+
+function UIFlatCompass:InitControls()
+    self.xml = CScriptXmlInit()
+    self.xml:ParseFile("tactic_compass.xml")
+
+    self.compass_dialog = self.xml:InitStatic("frame", self)
+    self.line_compass_dialog = self.xml:InitStatic("line_compass", self.compass_dialog)
+
+    self.line_compass_texture = self.xml:InitStatic("line_compass_texture", self.compass_dialog)
+    self.line_compass_radian = self.xml:InitTextWnd("line_compass_radian", self.line_compass_dialog)
+end
+
+function UIFlatCompass:Refresh()
+    if (not main_hud_shown()) then
+        return
+    end
+
+    local actor = db.actor
+    local actor_dir = actor:direction()
+
+    local dir_x = actor_dir.x
+    local dir_z = actor_dir.z
+
+    local radians = math.atan2(dir_x, dir_z)
+
+    local angle = math.deg(radians)
+
+    if angle < 0 then
+        angle = angle + 360
+    end
+
+    self.line_compass_radian:SetText(math.floor(angle + 0.5))
+
+    local compass_f = tostring(compass.file)
+    local compass_x = tostring(compass.x + angle * 10)
+    local compass_y = tostring(compass.y)
+
+    local compass_width = 2400
+    local compass_height = 100
+
+    local x2 = compass_x + compass_width
+    local y2 = compass_y + compass_height
+
+    self.line_compass_dialog:InitTexture(compass_f)
+    self.line_compass_dialog:SetTextureRect(Frect():set(compass_x, compass_y, x2, y2))
+    self.line_compass_dialog:SetStretchTexture(true)
+end
+
+function UIFlatCompass:Update()
+    self:Refresh()
+    CUIScriptWnd.Update(self)
+end
+
+--[[--------------------------------------------------
+    Callbacks
+--------------------------------------------------]]--
+
+function on_option_change()
+    compass_state = compass_mcm.get_config("t_c_show")
+    local ui_state = ui_options.get('video/hud/show_hud')
+
+    if compass_state then
+        if (not flat_compass) then
+            activate_compass()
+        end
+    else
+        if flat_compass then
+            deactivate_compass()
+        end
+ 
+    end
+
+    if (not ui_state) and flat_compass then
+        deactivate_compass()
+    end
+end
+
+function on_console_execute(name)
+    if name == "hud_draw" and flat_compass then
+        flat_compass:Refresh()
+    end
+end
+
+function actor_on_net_destroy()
+    deactivate_compass()
+end
+
+function update_compass_hud()
+    update_compass()
+end
+
+function actor_on_first_update()
+    activate_compass()
+end
+
+--[[--------------------------------------------------
+    Register callbacks
+--------------------------------------------------]]--
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_update", marker_task_actor_on_update)
+
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_console_execute", on_console_execute)
+
+    RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
+
+    RegisterScriptCallback("GUI_on_show", update_compass_hud)
+    RegisterScriptCallback("GUI_on_hide", update_compass_hud)
+
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+end

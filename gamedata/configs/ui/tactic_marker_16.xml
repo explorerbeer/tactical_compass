@@ -1,0 +1,9 @@
+<w>
+	<marker_frame x="215" y="16" width="600" height="10" stretch="1" align="c" a="90" >
+	</marker_frame>
+
+	<marker x="0" y="0" width="15" height="15" stretch="1" heading="1" rounded="0" align="c" a="90">
+	    <!-- <texture>ui\ui_tactic_compass\marker</texture> -->
+		<texture>ui_inGame2_PDA_icon_Primary_mission</texture>
+	</marker>
+</w>

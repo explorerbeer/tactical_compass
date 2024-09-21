@@ -1,0 +1,20 @@
+local defaults = {
+    ["t_c_show"] = true
+}
+
+function get_config(key)
+    if ui_mcm then return ui_mcm.get("tactic_compass/" .. key) else return defaults[key] end
+end
+
+function on_mcm_load()
+    op = {
+        id = "tactic_compass",
+        sh = true,
+        gr = {
+            { id = "title", type = "slide", text = "ui_mcm_compass_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
+            { id = "t_c_show", type = "check", val = 1, def = true }
+        }
+    }
+    
+    return op
+end

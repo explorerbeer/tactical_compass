@@ -1,0 +1,255 @@
+-- Developments were utilized: GhenTuong --
+-- Edited by: explorerbee --
+-- Date: 21.09.2024 --
+
+local compass_marker = nil
+
+local marker_task_id = nil
+local marker_task_current_target_id = nil
+
+local compass_state = true
+
+class "UICompassMarker" (CUIScriptWnd)
+
+--[[--------------------------------------------------
+	Marker handler
+--------------------------------------------------]]--
+
+function activate_marker()
+	if compass_marker == nil then
+		compass_marker = UICompassMarker()
+		get_hud():AddDialogToRender(compass_marker)
+	end
+end
+
+function deactivate_marker()
+	if compass_marker ~= nil then
+		get_hud():RemoveDialogToRender(compass_marker)
+		compass_marker = nil
+	end
+end
+
+function update_marker()
+    if compass_marker ~= nil then
+		compass_marker:Refresh()
+    end
+end
+
+--[[--------------------------------------------------
+	Task search
+--------------------------------------------------]]--
+
+function marker_task_actor_on_update()
+	local task_info = task_manager.get_task_manager().task_info
+
+	if (task_info) then
+		if (marker_task_id) then
+			local task = task_info[marker_task_id]
+
+			if (task and db.actor:is_active_task(task.t)) then
+				if (marker_task_id ~= tostring(task_id)) then
+					marker_task_id = tostring(task_id)
+				end
+				
+				if (marker_task_current_target_id ~= tonumber(task.current_target)) then
+					marker_task_current_target_id = tonumber(task.current_target)
+				end
+				return
+			else
+				marker_task_id = nil
+				marker_task_current_target_id = nil
+			end
+		end
+		
+		if (marker_task_id == nil) then
+			for task_id, task in pairs(task_info) do
+				if (task and task.t and db.actor:is_active_task(task.t)) then
+					if (marker_task_id ~= tostring(task_id)) then
+						marker_task_id = tostring(task_id)
+					end
+					
+					if (marker_task_current_target_id ~= tonumber(task.current_target)) then
+						marker_task_current_target_id = tonumber(task.current_target)
+					end
+					return
+				end
+			end
+		end
+	end
+end
+
+--[[--------------------------------------------------
+    Class init & draw
+--------------------------------------------------]]--
+
+function UICompassMarker:__init()
+    super()
+    self._tmr = time_global()
+    self:InitControls()
+end
+
+function UICompassMarker:__finalize()
+end
+
+function UICompassMarker:InitControls()
+    self:SetAutoDelete(true)
+    self.xml = CScriptXmlInit()
+    self.xml:ParseFile("tactic_marker.xml")
+
+    self.marker_dialog = self.xml:InitStatic("marker_frame", self)
+    self.marker = self.xml:InitStatic("marker", self.marker_dialog)
+end
+
+function UICompassMarker:GetWorldCoordinates(id)
+	local pos = nil
+	local obj = db.storage[id] and db.storage[id].object or level.object_by_id(id)
+	
+	if (obj and (IsStalker(obj) or IsMonster(obj))) then
+		pos = obj and utils_obj.safe_bone_pos(obj, "bip01_head")
+
+        return pos
+	elseif (obj and (type(obj.position) == "function")) then
+		local tmp = obj:position()
+		pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
+
+        return pos
+	end
+	
+	if (pos == nil) then
+		local se = alife_object(id)
+		if not (se and se.online) then
+			return nil
+			
+		elseif (se:clsid() == clsid.smart_terrain) then
+			local tmp = se and se.position
+			pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
+			
+            return pos
+		elseif (se:clsid() == clsid.online_offline_group_s) then
+			local i = se:commander_id()
+			local npc = i and db.storage[i] and db.storage[i].object or level.object_by_id(i)
+			pos = npc and utils_obj.safe_bone_pos(npc, "bip01_head")
+
+            return pos
+		end
+	end
+
+	return nil
+end
+
+function UICompassMarker:GetScreenCoordinates(id)
+    local pos = id and self:GetWorldCoordinates(id)
+
+    local vec = pos and game.world2ui(vector():set(pos.x, pos.y + 0.5, pos.z), false)
+	-- if (vec and (vec.x ~= -9999) and (vec.y ~= 0)) then
+	-- 	return vec
+	-- end
+
+    return vec
+end
+
+function UICompassMarker:Refresh()
+	if (not main_hud_shown()) then
+		return
+	end
+
+    local actor = db.actor
+    local dir = vector()
+
+	local actor_dir = actor:direction()
+    local actor_pos = actor:position()
+
+    local target_screen_pos = marker_task_current_target_id and self:GetScreenCoordinates(marker_task_current_target_id)
+    local target_world_pos = marker_task_current_target_id and self:GetWorldCoordinates(marker_task_current_target_id)
+
+    if (not target_screen_pos) then
+        self.marker_dialog:Show(false)
+        return
+    end
+
+    local center_compass = 500
+
+    local target_dir = target_world_pos:sub(actor_pos):normalize()
+    local dot_product = target_dir:dotproduct(actor_dir)
+
+    local cross = VEC_ZERO
+    cross:crossproduct(target_dir, actor_dir)
+
+    local side_factor = (cross.y < 0) and -1 or 1
+    local offset = side_factor * (1 - dot_product) * 220
+
+    local target_screen_pos_x = center_compass + offset
+
+    target_screen_pos_x = clamp(target_screen_pos_x, center_compass - 220, center_compass + 230)
+    target_screen_pos_x = target_screen_pos_x - center_compass 
+
+
+    local marker_x = tostring(target_screen_pos_x + center_compass)
+    local marker_y = "10"
+    
+    self.marker_dialog:Show(true)
+    self.marker_dialog:SetStretchTexture(false)
+    self.marker_dialog:SetWndPos(vector2():set(tonumber((marker_x)), tonumber(marker_y)))
+end
+
+function UICompassMarker:Update()
+    CUIScriptWnd.Update(self)
+    self:Refresh()
+end
+
+--[[--------------------------------------------------
+    Callbacks
+--------------------------------------------------]]--
+
+function on_option_change()
+    compass_state = compass_mcm.get_config("t_c_show")
+    local ui_state = ui_options.get('video/hud/show_hud')
+
+    if compass_state then
+        if (not compass_marker) then
+            activate_marker()
+        end
+    else
+        if compass_marker then
+            deactivate_marker()
+        end
+    end
+
+    if (not ui_state) and compass_marker then
+        deactivate_marker()
+    end
+end
+
+function on_console_execute(name)
+    if name == "hud_draw" and compass_marker then
+        compass_marker:Refresh()
+    end
+end
+
+function actor_on_net_destroy()
+    deactivate_marker()
+end
+
+function update_marker_hud()
+    update_marker()
+end
+
+function actor_on_first_update()
+    activate_marker()
+end
+
+--[[--------------------------------------------------
+    Register callbacks
+--------------------------------------------------]]--
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+    RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_console_execute", on_console_execute)
+    
+    RegisterScriptCallback("GUI_on_show", update_marker_hud)
+    RegisterScriptCallback("GUI_on_hide", update_marker_hud)
+
+    RegisterScriptCallback("actor_on_update", marker_task_actor_on_update)
+end
