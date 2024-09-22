@@ -45,6 +45,5 @@ Special thanks to VodoXleb, xcvb (bcvx), RavenAscendant for their help.
 2. Adding new variants of compasses and markers.
 3. Editing the compass position via MSM.
 4. (No promises). Displaying stashes or something similar.
-5. Correct the directional calculation. 
-6. (No promises). Setting compass dimensions.
-7. Change the size of the marker relative to the distance.
+5. (No promises). Setting compass dimensions.
+6. Change the size of the marker relative to the distance.
