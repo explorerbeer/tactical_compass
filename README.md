@@ -37,6 +37,9 @@ All additional information is in the mod scripts.
 
 Special thanks to VodoXleb, xcvb (bcvx), RavenAscendant for their help.
 
+**A HUGE THANK YOU to HypeR and Melinite for implementing the compass, and to HypeR and the A.N.T.H.O.L.O.G.Y. team for allowing me to use their designs post facto.**
+_(P.S. I sincerely apologize for not initially asking permission to use a compass)_
+
 ---
 
 ## ROADMAP
