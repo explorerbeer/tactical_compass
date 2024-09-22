@@ -167,7 +167,10 @@ function UICompassMarker:Refresh()
         return
     end
 
-    local center_compass = 500
+    local center_compass = 505
+
+    local distance_to_target = target_world_pos:distance_to(actor_pos)
+    local target_screen_pos_x  = center_compass
 
     local target_dir = target_world_pos:sub(actor_pos):normalize()
     local dot_product = target_dir:dotproduct(actor_dir)
@@ -175,16 +178,20 @@ function UICompassMarker:Refresh()
     local cross = VEC_ZERO
     cross:crossproduct(target_dir, actor_dir)
 
-    local side_factor = (cross.y < 0) and -1 or 1
+    local side_factor = (cross.y < 0) and 1 or -1
     local offset = side_factor * (1 - dot_product) * 220
 
-    local target_screen_pos_x = center_compass + offset
+    target_screen_pos_x = center_compass + offset
 
-    target_screen_pos_x = clamp(target_screen_pos_x, center_compass - 220, center_compass + 230)
-    target_screen_pos_x = target_screen_pos_x - center_compass 
+    local prev_marker_x = self.prev_marker_x or center_compass
+    local lerp_speed = 0.1
 
+    local target_screen_pos_x = utils_compass.lerp(prev_marker_x, target_screen_pos_x, lerp_speed)
+    
+    target_screen_pos_x = clamp(target_screen_pos_x, center_compass - 225, center_compass + 225)
+    self.prev_marker_x = target_screen_pos_x
 
-    local marker_x = tostring(target_screen_pos_x + center_compass)
+    local marker_x = tostring(target_screen_pos_x)
     local marker_y = "10"
     
     self.marker_dialog:Show(true)
