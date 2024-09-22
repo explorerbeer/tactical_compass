@@ -6,6 +6,7 @@ local compass_marker = nil
 
 local marker_task_id = nil
 local marker_task_current_target_id = nil
+local is_storyline = nil
 
 local compass_state = true
 
@@ -40,15 +41,18 @@ end
 --------------------------------------------------]]--
 
 function marker_task_actor_on_update()
-	local task_info = task_manager.get_task_manager().task_info
+    local tm = task_manager
+	local task_info = tm.get_task_manager().task_info
 
 	if (task_info) then
 		if (marker_task_id) then
 			local task = task_info[marker_task_id]
-
+            
 			if (task and db.actor:is_active_task(task.t)) then
 				if (marker_task_id ~= tostring(task_id)) then
 					marker_task_id = tostring(task_id)
+
+                    is_storyline = tm.task_ini:r_string_ex(marker_task_id, "storyline")
 				end
 				
 				if (marker_task_current_target_id ~= tonumber(task.current_target)) then
@@ -64,8 +68,11 @@ function marker_task_actor_on_update()
 		if (marker_task_id == nil) then
 			for task_id, task in pairs(task_info) do
 				if (task and task.t and db.actor:is_active_task(task.t)) then
+                    
 					if (marker_task_id ~= tostring(task_id)) then
 						marker_task_id = tostring(task_id)
+
+                        is_storyline = tm.task_ini:r_string_ex(marker_task_id, "storyline")
 					end
 					
 					if (marker_task_current_target_id ~= tonumber(task.current_target)) then
@@ -96,8 +103,8 @@ function UICompassMarker:InitControls()
     self.xml = CScriptXmlInit()
     self.xml:ParseFile("tactic_marker.xml")
 
-    self.marker_dialog = self.xml:InitStatic("marker_frame", self)
-    self.marker = self.xml:InitStatic("marker", self.marker_dialog)
+    self.marker_primary = self.xml:InitStatic("marker_primary", self)
+    self.marker_secondary = self.xml:InitStatic("marker_secondary", self)
 end
 
 function UICompassMarker:GetWorldCoordinates(id)
@@ -163,8 +170,16 @@ function UICompassMarker:Refresh()
     local target_world_pos = marker_task_current_target_id and self:GetWorldCoordinates(marker_task_current_target_id)
 
     if (not target_screen_pos) then
-        self.marker_dialog:Show(false)
+        self.marker_primary:Show(false)
+        self.marker_secondary:Show(false)
+
         return
+    else
+        if is_storyline == "true" then
+            self.marker_secondary:Show(false)
+        else
+            self.marker_primary:Show(false)
+        end
     end
 
     local center_compass = 505
@@ -188,15 +203,21 @@ function UICompassMarker:Refresh()
 
     local target_screen_pos_x = utils_compass.lerp(prev_marker_x, target_screen_pos_x, lerp_speed)
     
-    target_screen_pos_x = clamp(target_screen_pos_x, center_compass - 225, center_compass + 225)
+    target_screen_pos_x = clamp(target_screen_pos_x, center_compass - 223, center_compass + 227)
     self.prev_marker_x = target_screen_pos_x
 
     local marker_x = tostring(target_screen_pos_x)
     local marker_y = "10"
     
-    self.marker_dialog:Show(true)
-    self.marker_dialog:SetStretchTexture(false)
-    self.marker_dialog:SetWndPos(vector2():set(tonumber((marker_x)), tonumber(marker_y)))
+    if is_storyline then
+        if is_storyline == "true" then
+            self.marker_primary:Show(true)
+            self.marker_primary:SetWndPos(vector2():set(tonumber(marker_x), tonumber(marker_y)))
+        else
+            self.marker_secondary:Show(true)
+            self.marker_secondary:SetWndPos(vector2():set(tonumber(marker_x), tonumber(marker_y)))
+        end
+    end
 end
 
 function UICompassMarker:Update()
