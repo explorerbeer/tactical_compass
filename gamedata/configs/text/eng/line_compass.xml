@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+    <string id="ui_mcm_menu_tactic_compass">
+        <text>Tactical Compass</text>
+    </string>
+    <string id="ui_mcm_compass_title">
+        <text>Tactical Compass</text>
+    </string>
+    <string id="ui_mcm_tactic_compass_t_c_show">
+        <text>Turn on the included compass</text>
+    </string>
+</string_table>
