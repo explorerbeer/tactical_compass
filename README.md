@@ -44,9 +44,4 @@ _(P.S. I sincerely apologize for not initially asking permission to use a compas
 
 ## ROADMAP
 
-1. Rework the target coordinates acquisition so that the marker is displayed regardless of location.
-2. Adding new variants of compasses and markers.
-3. Editing the compass position via MSM.
-4. (No promises). Displaying stashes or something similar.
-5. (No promises). Setting compass dimensions.
-6. Change the size of the marker relative to the distance.
+[Project](https://github.com/users/explorerbeer/projects/1/views/1)
