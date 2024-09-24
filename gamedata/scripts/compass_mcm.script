@@ -1,5 +1,11 @@
 local defaults = {
-    ["t_c_show"] = true
+    ["t_c_show"] = true,
+    ["compass_sc_pos"] = 0
+}
+
+local table_compass_sc_pos = {
+    { 0, "ui_mcm_compass_state_up" },
+    { 1, "ui_mcm_compass_state_down" }
 }
 
 function get_config(key)
@@ -12,7 +18,9 @@ function on_mcm_load()
         sh = true,
         gr = {
             { id = "title", type = "slide", text = "ui_mcm_compass_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
-            { id = "t_c_show", type = "check", val = 1, def = true }
+            { id = "t_c_show", type = "check", val = 1, def = true },
+            { id = "divider", type = "line" },
+            { id = "compass_sc_pos", type = "list", val = 2, def = 0, content = table_compass_sc_pos, no_str = true }
         }
     }
     

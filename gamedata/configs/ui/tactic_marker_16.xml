@@ -6,4 +6,12 @@
 	<marker_secondary x="0" y="0" width="15" height="15" stretch="1" align="c" a="90">
 		<texture>ui_inGame2_PDA_icon_Secondary_mission</texture>
 	</marker_secondary>
+
+	<marker_stashes x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
+		<texture>ui_inGame2_PDA_icon_secret</texture>
+	</marker_stashes>
+
+	<marker_enemies x="0" y="0" width="10" height="10">
+		<texture>ui_icons_PDA_subtask_failed</texture>
+	</marker_enemies>
 </w>

@@ -2,10 +2,11 @@
 -- Edited by: explorerbee --
 -- Date: 21.09.2024 --
 
-local compass_marker = nil
+local compass_marker_task = nil
 
 local marker_task_id = nil
 local marker_task_current_target_id = nil
+
 local is_storyline = nil
 
 local compass_state = true
@@ -13,80 +14,32 @@ local compass_state = true
 class "UICompassMarker" (CUIScriptWnd)
 
 --[[--------------------------------------------------
-	Marker handler
+	(Marker) Handlers
 --------------------------------------------------]]--
 
-function activate_marker()
-	if compass_marker == nil then
-		compass_marker = UICompassMarker()
-		get_hud():AddDialogToRender(compass_marker)
+function activate_markers()
+	if compass_marker_task == nil then
+		compass_marker_task = UICompassMarker()
+		get_hud():AddDialogToRender(compass_marker_task)
+	end
+
+end
+
+function deactivate_markers()
+	if compass_marker_task ~= nil then
+		get_hud():RemoveDialogToRender(compass_marker_task)
+		compass_marker_task = nil
 	end
 end
 
-function deactivate_marker()
-	if compass_marker ~= nil then
-		get_hud():RemoveDialogToRender(compass_marker)
-		compass_marker = nil
-	end
-end
-
-function update_marker()
-    if compass_marker ~= nil then
-		compass_marker:Refresh()
+function update_markers()
+    if compass_marker_task ~= nil then
+		compass_marker_task:Refresh()
     end
 end
 
 --[[--------------------------------------------------
-	Task search
---------------------------------------------------]]--
-
-function marker_task_actor_on_update()
-    local tm = task_manager
-	local task_info = tm.get_task_manager().task_info
-
-	if (task_info) then
-		if (marker_task_id) then
-			local task = task_info[marker_task_id]
-            
-			if (task and db.actor:is_active_task(task.t)) then
-				if (marker_task_id ~= tostring(task_id)) then
-					marker_task_id = tostring(task_id)
-
-                    is_storyline = tm.task_ini:r_string_ex(marker_task_id, "storyline")
-				end
-				
-				if (marker_task_current_target_id ~= tonumber(task.current_target)) then
-					marker_task_current_target_id = tonumber(task.current_target)
-				end
-				return
-			else
-				marker_task_id = nil
-				marker_task_current_target_id = nil
-			end
-		end
-		
-		if (marker_task_id == nil) then
-			for task_id, task in pairs(task_info) do
-				if (task and task.t and db.actor:is_active_task(task.t)) then
-                    
-					if (marker_task_id ~= tostring(task_id)) then
-						marker_task_id = tostring(task_id)
-
-                        is_storyline = tm.task_ini:r_string_ex(marker_task_id, "storyline")
-					end
-					
-					if (marker_task_current_target_id ~= tonumber(task.current_target)) then
-						marker_task_current_target_id = tonumber(task.current_target)
-					end
-					return
-				end
-			end
-		end
-	end
-end
-
---[[--------------------------------------------------
-    Class init & draw
+    (Marker) Class init & draw
 --------------------------------------------------]]--
 
 function UICompassMarker:__init()
@@ -107,55 +60,9 @@ function UICompassMarker:InitControls()
     self.marker_secondary = self.xml:InitStatic("marker_secondary", self)
 end
 
-function UICompassMarker:GetWorldCoordinates(id)
-	local pos = nil
-	local obj = db.storage[id] and db.storage[id].object or level.object_by_id(id)
-	
-	if (obj and (IsStalker(obj) or IsMonster(obj))) then
-		pos = obj and utils_obj.safe_bone_pos(obj, "bip01_head")
-
-        return pos
-	elseif (obj and (type(obj.position) == "function")) then
-		local tmp = obj:position()
-		pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
-
-        return pos
-	end
-	
-	if (pos == nil) then
-		local se = alife_object(id)
-		if not (se and se.online) then
-			return nil
-			
-		elseif (se:clsid() == clsid.smart_terrain) then
-			local tmp = se and se.position
-			pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
-			
-            return pos
-		elseif (se:clsid() == clsid.online_offline_group_s) then
-			local i = se:commander_id()
-			local npc = i and db.storage[i] and db.storage[i].object or level.object_by_id(i)
-			pos = npc and utils_obj.safe_bone_pos(npc, "bip01_head")
-
-            return pos
-		end
-	end
-
-	return nil
-end
-
-function UICompassMarker:GetScreenCoordinates(id)
-    local pos = id and self:GetWorldCoordinates(id)
-
-    local vec = pos and game.world2ui(vector():set(pos.x, pos.y + 0.5, pos.z), false)
-	-- if (vec and (vec.x ~= -9999) and (vec.y ~= 0)) then
-	-- 	return vec
-	-- end
-
-    return vec
-end
-
 function UICompassMarker:Refresh()
+    local compass_pos_state = compass_mcm.get_config("compass_sc_pos")
+
 	if (not main_hud_shown()) then
 		return
 	end
@@ -207,7 +114,14 @@ function UICompassMarker:Refresh()
     self.prev_marker_x = target_screen_pos_x
 
     local marker_x = tostring(target_screen_pos_x)
-    local marker_y = "10"
+
+    local marker_y = nil
+    
+    if compass_pos_state == 1 then
+        marker_y = "696"
+    else
+        marker_y = "10"
+    end
     
     if is_storyline then
         if is_storyline == "true" then
@@ -226,6 +140,103 @@ function UICompassMarker:Update()
 end
 
 --[[--------------------------------------------------
+	Marker (utils)
+--------------------------------------------------]]--
+
+function marker_task_actor_on_update()
+    local tm = task_manager
+	local task_info = tm.get_task_manager().task_info
+
+	if (task_info) then
+		if (marker_task_id) then
+			local task = task_info[marker_task_id]
+            
+			if (task and db.actor:is_active_task(task.t)) then
+				if (marker_task_id ~= tostring(task_id)) then
+					marker_task_id = tostring(task_id)
+				end
+				
+				if (marker_task_current_target_id ~= tonumber(task.current_target)) then
+					marker_task_current_target_id = tonumber(task.current_target)
+				end
+				return
+			else
+				marker_task_id = nil
+				marker_task_current_target_id = nil
+			end
+		end
+		
+		if (marker_task_id == nil) then
+			for task_id, task in pairs(task_info) do
+				if (task and task.t and db.actor:is_active_task(task.t)) then
+                    
+					if (marker_task_id ~= tostring(task_id)) then
+						marker_task_id = tostring(task_id)
+
+                        is_storyline = tm.task_ini:r_string_ex(marker_task_id, "storyline")
+					end
+					
+					if (marker_task_current_target_id ~= tonumber(task.current_target)) then
+						marker_task_current_target_id = tonumber(task.current_target)
+					end
+					return
+				end
+			end
+		end
+	end
+end
+
+function UICompassMarker:GetWorldCoordinates(id)
+	local pos = nil
+	local obj = db.storage[id] and db.storage[id].object or level.object_by_id(id)
+	
+	if (obj and (IsStalker(obj) or IsMonster(obj))) then
+		pos = obj and utils_obj.safe_bone_pos(obj, "bip01_head")
+
+        return pos
+	elseif (obj and (type(obj.position) == "function")) then
+		local tmp = obj:position()
+		pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
+
+        return pos
+	end
+	
+	if (pos == nil) then
+		local se = alife_object(id)
+		if not (se and se.online) then
+			return nil
+			
+		elseif (se:clsid() == clsid.smart_terrain) then
+			local tmp = se and se.position
+			pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
+			
+            return pos
+		elseif (se:clsid() == clsid.online_offline_group_s) then
+			local i = se:commander_id()
+			local npc = i and db.storage[i] and db.storage[i].object or level.object_by_id(i)
+			pos = npc and utils_obj.safe_bone_pos(npc, "bip01_head")
+
+            return pos
+		end
+	end
+
+	return nil
+end
+
+function UICompassMarker:GetScreenCoordinates(id)
+    local pos = id and self:GetWorldCoordinates(id)
+
+    local vec = pos and game.world2ui(vector():set(pos.x, pos.y + 0.5, pos.z), false)
+	-- if (vec and (vec.x ~= -9999) and (vec.y ~= 0)) then
+	-- 	return vec
+	-- end
+
+    return vec
+end
+
+
+
+--[[--------------------------------------------------
     Callbacks
 --------------------------------------------------]]--
 
@@ -234,36 +245,36 @@ function on_option_change()
     local ui_state = ui_options.get('video/hud/show_hud')
 
     if compass_state then
-        if (not compass_marker) then
-            activate_marker()
+        if (not compass_marker_task) then
+            activate_markers()
         end
     else
-        if compass_marker then
-            deactivate_marker()
+        if compass_marker_task then
+            deactivate_markers()
         end
     end
 
-    if (not ui_state) and compass_marker then
-        deactivate_marker()
+    if (not ui_state) and compass_marker_task then
+        deactivate_markers()
     end
 end
 
 function on_console_execute(name)
-    if name == "hud_draw" and compass_marker then
-        compass_marker:Refresh()
+    if name == "hud_draw" and compass_marker_task then
+        compass_marker_task:Refresh()
     end
 end
 
 function actor_on_net_destroy()
-    deactivate_marker()
+    deactivate_markers()
 end
 
 function update_marker_hud()
-    update_marker()
+    update_markers()
 end
 
 function actor_on_first_update()
-    activate_marker()
+    activate_markers()
 end
 
 --[[--------------------------------------------------
@@ -280,4 +291,20 @@ function on_game_start()
     RegisterScriptCallback("GUI_on_hide", update_marker_hud)
 
     RegisterScriptCallback("actor_on_update", marker_task_actor_on_update)
+    RegisterScriptCallback("actor_on_update", marker_stashes_actor_on_update)
+end
+
+--[[--------------------------------------------------
+    Dynahud support
+--------------------------------------------------]]--
+
+dynahud = zzzz_dynahud.show_minimap
+
+zzzz_dynahud.show_minimap = function(show)
+    if show then
+        deactivate_markers()
+    else
+        activate_markers()
+    end
+dynahud(show)
 end

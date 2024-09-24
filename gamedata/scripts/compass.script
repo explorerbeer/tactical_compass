@@ -65,6 +65,8 @@ function UIFlatCompass:InitControls()
 end
 
 function UIFlatCompass:Refresh()
+    local compass_pos_state = compass_mcm.get_config("compass_sc_pos")
+
     if (not main_hud_shown()) then
         return
     end
@@ -95,6 +97,13 @@ function UIFlatCompass:Refresh()
     local x2 = compass_x + compass_width
     local y2 = compass_y + compass_height
 
+    
+    if compass_pos_state == 1 then
+        self.compass_dialog:SetWndPos(vector2():set(215, 712))
+    else
+        self.compass_dialog:SetWndPos(vector2():set(215, 26))
+    end
+    
     self.line_compass_dialog:InitTexture(compass_f)
     self.line_compass_dialog:SetTextureRect(Frect():set(compass_x, compass_y, x2, y2))
     self.line_compass_dialog:SetStretchTexture(true)
@@ -120,8 +129,7 @@ function on_option_change()
     else
         if flat_compass then
             deactivate_compass()
-        end
- 
+        end 
     end
 
     if (not ui_state) and flat_compass then
@@ -152,8 +160,6 @@ end
 --------------------------------------------------]]--
 
 function on_game_start()
-    RegisterScriptCallback("actor_on_update", marker_task_actor_on_update)
-
     RegisterScriptCallback("on_option_change", on_option_change)
     RegisterScriptCallback("on_console_execute", on_console_execute)
 
@@ -163,4 +169,19 @@ function on_game_start()
     RegisterScriptCallback("GUI_on_hide", update_compass_hud)
 
     RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+end
+
+--[[--------------------------------------------------
+    Dynahud support
+--------------------------------------------------]]--
+
+dynahud = zzzz_dynahud.show_minimap
+
+zzzz_dynahud.show_minimap = function(show)
+    if show then
+        deactivate_compass()
+    else
+        activate_compass()
+    end
+dynahud(show)
 end
