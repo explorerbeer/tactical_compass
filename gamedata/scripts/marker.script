@@ -57,7 +57,10 @@ function UICompassMarker:InitControls()
     self.xml:ParseFile("tactic_marker.xml")
 
     self.marker_primary = self.xml:InitStatic("marker_primary", self)
+    self.marker_text_pr = self.xml:InitTextWnd("marker_primary:text_item_m_pr", self.marker_primary)
+
     self.marker_secondary = self.xml:InitStatic("marker_secondary", self)
+    self.marker_text_sec = self.xml:InitTextWnd("marker_secondary:text_item_m_sec", self.marker_secondary)
 end
 
 function UICompassMarker:Refresh()
@@ -126,9 +129,12 @@ function UICompassMarker:Refresh()
     if is_storyline then
         if is_storyline == "true" then
             self.marker_primary:Show(true)
+            --self.marker_primary:SetColor(GetARGB(alpha,255,255,255))
+            self.marker_text_pr:SetText(math.floor(distance_to_target))
             self.marker_primary:SetWndPos(vector2():set(tonumber(marker_x), tonumber(marker_y)))
         else
             self.marker_secondary:Show(true)
+            self.marker_text_sec:SetText(math.floor(distance_to_target))
             self.marker_secondary:SetWndPos(vector2():set(tonumber(marker_x), tonumber(marker_y)))
         end
     end
