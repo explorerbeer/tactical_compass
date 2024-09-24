@@ -30,7 +30,7 @@ Mandatory addons required for the mod to work:
 ---
 
 ## CREDITS
-The implementation of the compass behavior was taken from the [A.N.T.T.H.O.L.O.L.O.G.Y. modpack](https://ap-pro.ru/forums/topic/4266-anomaly-anthology-12/).
+The implementation of the compass behavior was taken from the [A.N.T.H.O.L.O.L.O.G.Y. modpack](https://ap-pro.ru/forums/topic/4266-anomaly-anthology-12/).
 The code for getting target coordinates was adapted and taken [from the Ubisoft Friendly HUD](https://www.moddb.com/mods/stalker-anomaly/addons/hud-ubisoft-friendly) mod.
 For my part, I implemented the calculation of the marker position relative to the target, refactored the code and also added an MCM option to disable the compass.
 All additional information is in the mod scripts.
