@@ -1,69 +1,72 @@
 <w>
 	<!-- Quests -->
+	<markers x="0" y="0" width="0" height="0" stretch="1">
+		<marker_primary x="0" y="0" width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_pr x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_pr>
+			
+			<texture>ui_inGame2_PDA_icon_Primary_mission</texture>
+		</marker_primary>
+	
+		<marker_secondary x="0" y="0" width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_sec x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_sec>
+			
+			<texture>ui_inGame2_PDA_icon_Secondary_mission</texture>
+		</marker_secondary>
+	
+		<!-- Stashes -->
+	
+		<marker_stashes x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_secret</texture>
+		</marker_stashes>
+	
+		<!-- Enemies -->
+		 
+		<marker_enemies x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_icons_PDA_subtask_failed</texture>
+		</marker_enemies>
 
-	<marker_primary x="0" y="0" width="15" height="15" stretch="1" align="c" a="90" >
-		<text_item_m_pr x="0" y="-15" width="15" height="15" >
-			<text font="arial_14" align="c" vert_align="c" complex_mode="1" width="10" />
-		</text_item_m_pr>
-		
-		<texture>ui_inGame2_PDA_icon_Primary_mission</texture>
-	</marker_primary>
-
-	<marker_secondary x="0" y="0" width="15" height="15" stretch="1" align="c" a="90">
-		<text_item_m_sec x="0" y="-15" width="15" height="15" >
-			<text font="arial_14" align="c" vert_align="c" complex_mode="1" width="10" />
-		</text_item_m_sec>
-		
-		<texture>ui_inGame2_PDA_icon_Secondary_mission</texture>
-	</marker_secondary>
-
-	<!-- Stashes -->
-
-	<marker_stashes x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_secret</texture>
-	</marker_stashes>
-
-	<!-- Enemies -->
-	 
-	<marker_enemies x="0" y="0" width="10" height="10">
-		<texture>ui_icons_PDA_subtask_failed</texture>
-	</marker_enemies>
-
-	<marker_sleep x="0" y="10" width="10" height="10">
-		<texture>ui_inGame2_PDA_icon_Place_to_rest</texture>
-	</marker_sleep>
-
-	<!-- Unique NPCs -->
-
-	<marker_special x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_Special</texture>
-	</marker_special>
-
-	<marker_trader x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_Trader</texture>
-	</marker_trader>
-
-	<marker_mechanic x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_machanik</texture>
-	</marker_mechanic>
-
-	<marker_scout x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_guide</texture>
-	</marker_scout>
-
-	<marker_barman x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_Barman</texture>
-	</marker_barman>
-
-	<marker_quest_npc x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_VIP</texture>
-	</marker_quest_npc>
-
-	<marker_medic x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_Medic</texture>
-	</marker_medic>
-
-	<marker_companion x="0" y="0" width="10" height="10" stretch="1" align="c" a="90">
-		<texture>ui_inGame2_PDA_icon_Stalker_companion</texture>
-	</marker_companion>
+		<!-- Sleep Zones -->
+	
+		<marker_sleep x="0" y="0" width="12" height="12" heading="1" stretch="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Place_to_rest</texture>
+		</marker_sleep>
+	
+		<!-- Unique NPCs -->
+	
+		<marker_special x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Special</texture>
+		</marker_special>
+	
+		<marker_trader x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Trader</texture>
+		</marker_trader>
+	
+		<marker_mechanic x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_machanik</texture>
+		</marker_mechanic>
+	
+		<marker_scout x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_guide</texture>
+		</marker_scout>
+	
+		<marker_barman x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Barman</texture>
+		</marker_barman>
+	
+		<marker_quest_npc x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_VIP</texture>
+		</marker_quest_npc>
+	
+		<marker_medic x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Medic</texture>
+		</marker_medic>
+	
+		<marker_companion x="0" y="0" width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_companion</texture>
+		</marker_companion>
+	</markers>
 </w>

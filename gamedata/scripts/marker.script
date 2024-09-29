@@ -6,11 +6,12 @@
 	Constants
 --------------------------------------------------]]--
 
-MIN_DISTANCE_TO_NPC = 1
+MIN_DISTANCE = 1
 MAX_DISTANCE_TO_NPC = 50
-
-MIN_DISTANCE_TO_QUEST = 1
 MAX_DISTANCE_TO_QUEST = 300
+MAX_DISTANCE_TO_OTHERS = 50
+
+COMPASS_CENTER = 505
 
 --[[--------------------------------------------------
 	Variables
@@ -35,6 +36,7 @@ class "UICompassMarker" (CUIScriptWnd)
 --------------------------------------------------]]--
 
 local unique_npcs = {}
+local other_markers = {}
 
 --[[--------------------------------------------------
 	Generic tables
@@ -51,7 +53,7 @@ local unique_npcs_spots = {
     ui_pda2_companion_location = true
 }
 
-local sleep_zones_tbl = {
+local sleep_zones = {
     "mar_a3_sr_sleep_id",
     "agr_sr_sleep_wagon_id",
     "agr_sr_sleep_tunnel_id",
@@ -78,6 +80,14 @@ local sleep_zones_tbl = {
     "pol_secret_sleep_id"
 }
 
+local treasure_types = {
+    "treasure_spot",
+    "treasure_spot_all",
+    "treasure",
+    "treasure_unique",
+    "treasure_searched",
+    "treasure_player"
+}
 
 --[[--------------------------------------------------
 	(Marker) Handlers
@@ -100,7 +110,7 @@ end
 
 function update_markers()
     if compass_marker_task ~= nil then
-		compass_marker_task:Refresh()
+		compass_marker_task:RefreshMarkers()
     end
 end
 
@@ -126,40 +136,48 @@ function UICompassMarker:InitControls()
     self.xml = CScriptXmlInit()
     self.xml:ParseFile("tactic_marker.xml")
 
-    --Quests
-    self.marker_primary = self.xml:InitStatic("marker_primary", self)
-    self.marker_text_pr = distance_state and self.xml:InitTextWnd("marker_primary:text_item_m_pr", self.marker_primary) or nil
+    self.markers_list = self.xml:InitStatic("markers", self)
 
-    self.marker_secondary = self.xml:InitStatic("marker_secondary", self)
-    self.marker_text_sec = distance_state and self.xml:InitTextWnd("marker_secondary:text_item_m_sec", self.marker_secondary) or nil
+    --Quests
+    self.marker_primary = self.xml:InitStatic("markers:marker_primary", self.markers_list)
+    self.marker_text_pr = distance_state and self.xml:InitTextWnd("markers:marker_primary:text_item_m_pr", self.marker_primary) or nil
+
+    self.marker_secondary = self.xml:InitStatic("markers:marker_secondary", self.markers_list)
+    self.marker_text_sec = distance_state and self.xml:InitTextWnd("markers:marker_secondary:text_item_m_sec", self.marker_secondary) or nil
 
     --Unique NPCs
     self.spots = {}
+
+    --Other Markers
+    self.others = {}
 end
 
-function UICompassMarker:Refresh()
+function UICompassMarker:RefreshMarkers()
     local compass_pos_state = compass_mcm.get_config("compass_sc_pos")
 
-	if (not main_hud_shown()) then
-		return
-	end
+    if not main_hud_shown() then
+        return
+    end
 
     local actor = db.actor
-    local dir = vector()
-
-	local actor_dir = actor:direction()
     local actor_pos = actor:position()
+    local actor_dir = actor:direction()
 
+    -- Обновление квестовых маркеров
     local target_screen_pos = marker_task_current_target_id and self:GetScreenCoordinates(marker_task_current_target_id)
     local target_world_pos = marker_task_current_target_id and self:GetWorldCoordinates(marker_task_current_target_id)
-
     local distance_to_target = self:CalculateDistanceToTarget(target_world_pos, actor_pos)
 
-    if (not target_screen_pos) then
+    -- Если не удалось рассчитать расстояние до цели, скрываем маркеры и выходим
+    if not distance_to_target then
         self.marker_primary:Show(false)
         self.marker_secondary:Show(false)
+    end
 
-        return
+    -- Если нет координат метки на экране, скрываем маркеры и выходим
+    if not target_screen_pos then
+        self.marker_primary:Show(false)
+        self.marker_secondary:Show(false)
     else
         if is_storyline == "true" then
             self.marker_secondary:Show(false)
@@ -168,169 +186,148 @@ function UICompassMarker:Refresh()
         end
     end
 
-    local marker_x = self:CalculatePosition(target_world_pos, target_screen_pos, actor_pos, actor_dir)
-    local marker_y = (compass_pos_state == 1) and 696 or 15
-
-    -- Выбор маркера и текста в зависимости от storyline
     local marker = (is_storyline == "true") and self.marker_primary or self.marker_secondary
     local marker_text = (is_storyline == "true") and self.marker_text_pr or self.marker_text_sec
 
-    local marker_alpha = self:CalculateAlpha(distance_to_target, MIN_DISTANCE_TO_QUEST, MAX_DISTANCE_TO_QUEST)
+    local marker_x = target_world_pos and self:CalculatePosition(target_world_pos, actor_pos, actor_dir, MAX_DISTANCE_TO_QUEST, self.prev_marker_x)
+    local marker_y = (compass_pos_state == 1) and 701 or 10
 
-    if marker_x and marker_x > 282 and marker_x < 732 then
+    local marker_alpha = distance_to_target and self:CalculateAlpha(distance_to_target, MIN_DISTANCE, MAX_DISTANCE_TO_QUEST) or 0
+
+    if marker_x and marker_x > 290 and marker_x < 740 then
         marker:Show(true)
+        marker:SetWndPos(vector2():set(marker_x, marker_y))
         marker:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
-        
+
         if marker_text then
+            marker_text:Show(true)
             marker_text:SetText(math.floor(distance_to_target))
             marker_text:SetTextColor(GetARGB(marker_alpha, 255, 255, 255))
         end
-        
-        -- Установка позиции маркера
-        marker:SetWndPos(vector2():set(marker_x, marker_y))
     else
         marker:Show(false)
+        if marker_text then marker_text:Show(false) end
     end
-end
 
-function UICompassMarker:UpdateNpcMarkers()
-    local compass_pos_state = compass_mcm.get_config("compass_sc_pos")
+    self.prev_marker_x = marker_x
+    self.prev_npc_spots = self.prev_npc_spots or {}
 
     for npc_id, spot_data in pairs(unique_npcs) do
-        local npc_spot = spot_data.spot
-        
-        local spot_type = npc_spot.match(npc_spot, "ui_pda2_(.+)_location")
-        
+        local spot_type = spot_data.spot:match("ui_pda2_(.+)_location")
         if spot_type then
-            -- Инициализируем метку только если её нет
-            local marker_npc = self.spots[npc_id] or self.xml:InitStatic("marker_" .. spot_type, self)
-            self.spots[npc_id] = marker_npc
+            local marker_npc
 
-            local marker_x = npc_id and self:CalculateNpcPosition(npc_id)
-            local marker_y = (compass_pos_state == 1) and 696 or 15
+            -- Проверяем, изменился ли тип маркера для NPC
+            if self.prev_npc_spots[npc_id] ~= spot_type then
+                if self.spots[npc_id] then
+                    self.spots[npc_id]:Show(false)
+                end
 
-            -- Получаем мировые координаты NPC
-            local npc_world_pos = self:GetWorldCoordinates(npc_id)
-            local actor_pos = db.actor:position()
+                -- Если изменился, создаем новый маркер
+                marker_npc = self.xml:InitStatic("markers:marker_" .. spot_type, self.markers_list)
+                self.spots[npc_id] = marker_npc
 
-            -- Рассчитываем расстояние до NPC
-            local distance_to_npc = self:CalculateDistanceToTarget(npc_world_pos, actor_pos)
-            local marker_alpha = self:CalculateAlpha(distance_to_npc, MIN_DISTANCE_TO_NPC, MAX_DISTANCE_TO_NPC)
+                -- Обновляем тип маркера для данного NPC
+                self.prev_npc_spots[npc_id] = spot_type
+            else
+                -- Если не изменился, используем существующий маркер
+                marker_npc = self.spots[npc_id]
+            end
 
-            if marker_x and marker_x > 282 and marker_x < 732 then
-                marker_npc:Show(true)
-                marker_npc:SetWndPos(vector2():set(marker_x, marker_y))
-                marker_npc:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+            local npc_world_pos = npc_id and self:GetWorldCoordinates(npc_id)
+
+            if npc_world_pos then
+                distance_to_target = self:CalculateDistanceToTarget(npc_world_pos, actor_pos)
+                marker_x = self:CalculatePosition(npc_world_pos, actor_pos, actor_dir, MAX_DISTANCE_TO_NPC, self.prev_npc_positions and self.prev_npc_positions[npc_id])
+
+                marker_alpha = distance_to_target and self:CalculateAlpha(distance_to_target, MIN_DISTANCE, MAX_DISTANCE_TO_NPC)
+
+                if marker_x and marker_x > 290 and marker_x < 740 then
+                    marker_npc:Show(true)
+                    marker_npc:SetWndPos(vector2():set(marker_x, marker_y))
+                    marker_npc:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+                else
+                    marker_npc:Show(false)
+                end
+
+                self.prev_npc_positions = self.prev_npc_positions or {}
+                self.prev_npc_positions[npc_id] = marker_x
             else
                 marker_npc:Show(false)
             end
         end
     end
+
+    for id, type in pairs(other_markers) do
+        local marker_type = other_markers[id] and other_markers[id].type
+        local other_markers = self.others[id] or self.xml:InitStatic("markers:marker_" .. marker_type, self.markers_list)
+        self.others[id] = other_markers
+
+        local obj_world_pos = id and self:GetWorldCoordinates(id)
+
+        if obj_world_pos then
+            distance_to_target = self:CalculateDistanceToTarget(obj_world_pos, actor_pos)
+            marker_x = self:CalculatePosition(obj_world_pos, actor_pos, actor_dir, MAX_DISTANCE_TO_OTHERS, self.prev_obj_positions and self.prev_obj_positions[id])
+
+            marker_alpha = distance_to_target and self:CalculateAlpha(distance_to_target, MIN_DISTANCE, MAX_DISTANCE_TO_OTHERS)
+
+            if marker_x and marker_x > 290 and marker_x < 740 then
+                other_markers:Show(true)
+                other_markers:SetWndPos(vector2():set(marker_x, marker_y))
+                other_markers:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+            else
+                other_markers:Show(false)
+            end
+
+            self.prev_obj_positions = self.prev_obj_positions or {}
+            self.prev_obj_positions[id] = marker_x
+        else
+            other_markers:Show(false)
+        end
+    end
 end
 
-function UICompassMarker:CalculatePosition(world_pos, screen_pos, actor_pos, actor_dir)
-    local compass_center = 505
-    local marker_pos = compass_center
+function UICompassMarker:CalculatePosition(world_pos, actor_pos, actor_dir, max_distance, prev_marker_x)
+    local marker_pos = COMPASS_CENTER
     
-     -- Рассчитываем расстояние до NPC
-     local distance_to_npc = world_pos:distance_to(actor_pos)
-     if distance_to_npc > MAX_DISTANCE_TO_QUEST then
-         return nil -- Если NPC слишком далеко, не отображаем метку
-     end
+    -- Рассчитываем расстояние до цели
+    local distance_to_target = world_pos:distance_to(actor_pos)
+    if distance_to_target > max_distance then
+        return nil -- Если цель слишком далеко, не отображаем метку
+    end
 
     local target_dir = world_pos:sub(actor_pos):normalize()
-    
     local dot_product = target_dir:dotproduct(actor_dir)
 
     if dot_product < -0.99 then  -- Угол близок к 180 градусов
-        return tonumber(clamp(compass_center - 223, compass_center + 227))
+        return tonumber(clamp(COMPASS_CENTER - 215, COMPASS_CENTER + 235))
     end
 
     local cross = VEC_ZERO
     cross:crossproduct(target_dir, actor_dir)
-
     local side_factor = (cross.y < 0) and 1 or -1
     local offset = side_factor * (1 - dot_product) * 220
 
-    marker_pos = compass_center + offset
-    
-    local prev_marker_x = self.prev_marker_x or compass_center
+    marker_pos = COMPASS_CENTER + offset
 
     local lerp_factor = 0.1
-
-    if math.abs(marker_pos - prev_marker_x) > 100 then
+    if prev_marker_x and math.abs(marker_pos - prev_marker_x) > 100 then
         lerp_factor = 0.5  -- Увеличиваем скорость при большом расхождении
     end
 
-    marker_pos = utils_compass.lerp(prev_marker_x, marker_pos, lerp_factor)
-    marker_pos = clamp(marker_pos, compass_center - 223, compass_center + 227)
-
-    self.prev_marker_x = marker_pos
+    marker_pos = utils_compass.lerp(prev_marker_x or COMPASS_CENTER, marker_pos, lerp_factor)
+    marker_pos = clamp(marker_pos, COMPASS_CENTER - 215, COMPASS_CENTER + 235)
 
     return tonumber(marker_pos)
 end
 
-function UICompassMarker:CalculateNpcPosition(npc_id)
-    local center_compass = 505
+function UICompassMarker:CalculateSleepZonePosition()
 
-    local actor = db.actor
-    local actor_pos = actor:position()
-
-    -- Получаем мировые координаты NPC
-    local npc_world_pos = self:GetWorldCoordinates(npc_id)
-    if not npc_world_pos then
-        return nil
-    end
-
-    -- Рассчитываем расстояние до NPC
-    local distance_to_npc = npc_world_pos:distance_to(actor_pos)
-    if distance_to_npc > MAX_DISTANCE_TO_NPC then
-        return nil -- Если NPC слишком далеко, не отображаем метку
-    end
-
-    -- Рассчитываем вектор направления NPC относительно игрока
-    local direction_to_npc = npc_world_pos:sub(actor_pos):normalize()
-
-    -- Вычисляем скалярное произведение (dot product) для определения угла
-    local dot_product = direction_to_npc:dotproduct(actor:direction())
-
-    if dot_product < -0.99 then  -- Угол близок к 180 градусов
-        return tonumber(clamp(center_compass - 223, center_compass + 227))
-    end
-
-    -- Рассчитываем смещение на компасе
-    local cross = VEC_ZERO
-    cross:crossproduct(direction_to_npc, actor:direction())
-    local side_factor = (cross.y < 0) and 1 or -1
-    local offset = side_factor * (1 - dot_product) * 220
-
-    -- Определяем центральное положение на компасе
-    local marker_x = center_compass + offset
-
-    self.prev_npc_positions = self.prev_npc_positions or {}
-    local prev_npc_pos = self.prev_npc_positions[npc_id] or center_compass
-
-    local lerp_factor = 0.1
-    if math.abs(marker_x - prev_npc_pos) > 100 then
-        lerp_factor = 0.5  -- Увеличиваем скорость при большом расхождении
-    end
-    
-    -- Рассчитываем новую позицию с помощью линейной интерполяции
-    marker_x = utils_compass.lerp(prev_npc_pos, marker_x, lerp_factor)
-    -- Ограничиваем положение метки
-    marker_x = clamp(marker_x, center_compass - 223, center_compass + 227)
-
-    -- Сохраняем текущее значение для следующего вызова
-    self.prev_npc_positions[npc_id] = marker_x
-
-    -- Возвращаем рассчитанные координаты
-    return tonumber(marker_x)
 end
 
 function UICompassMarker:Update()
     CUIScriptWnd.Update(self)
-    self:Refresh()
-    self:UpdateNpcMarkers()
+    self:RefreshMarkers()
 end
 
 --[[--------------------------------------------------
@@ -381,21 +378,52 @@ function marker_task_actor_on_update()
 	end
 end
 
+--Get stashes, sleep zones, (in future campfires, water_pumps, corpses) etc.
 function get_unique_npcs()
     for i = 1, #db.OnlineStalkers do
         local id = db.OnlineStalkers[i]
         local npc = id and id ~= 0 and level.object_by_id(id)
+        
         if npc and IsStalker(npc) then
             for k, v in pairs(unique_npcs_spots) do
                 if level.map_has_object_spot(id, k) ~= 0 then
-                    if unique_npcs[id] then
-                        unique_npcs[id] = nil
+                    -- Если npc уже существует, обновляем его информацию
+                    if not unique_npcs[id] then
+                        unique_npcs[id] = {spot = k}
+                    else
+                        -- Если npc существует, обновляем только spot, если он изменился
+                        if unique_npcs[id].spot ~= k then     
+                            unique_npcs[id].spot = k
 
-                        break
+                            printf("spot updated for: %s", id)
+                        end
                     end
-
-                    unique_npcs[id] = {spot = k}
+                    break -- Выходим из внутреннего цикла, если нашли подходящий spot
                 end
+            end
+        end
+    end
+end
+
+--Get stashes, sleep zones, (in future campfires, water_pumps, corpses) etc.
+function get_other_markers()
+    for i = 1, #sleep_zones do
+        local sz_id = get_story_object_id(sleep_zones[i])
+
+        if sz_id and level.map_has_object_spot(sz_id, "ui_pda2_actor_sleep_location") ~= 0 then
+            if not other_markers[sz_id] then
+                other_markers[sz_id] = {type = "sleep"} -- Добавляем новый элемент, если его нет
+            end
+        end
+    end
+
+    for id, v in pairs(treasure_manager.caches) do
+        for _, spot in ipairs(treasure_types) do
+            if level.map_has_object_spot(id, spot) ~= 0 then
+                if not other_markers[id] then
+                    other_markers[id] = {type = "stashes"}
+                end
+                break -- Прерываем цикл, если хотя бы одно условие выполнено
             end
         end
     end
@@ -512,22 +540,7 @@ function on_game_start()
     RegisterScriptCallback("GUI_on_hide", update_marker_hud)
 
     RegisterScriptCallback("actor_on_update", marker_task_actor_on_update)
-    RegisterScriptCallback("actor_on_update", marker_stashes_actor_on_update)
 
     RegisterScriptCallback("actor_on_update", get_unique_npcs)
+    RegisterScriptCallback("actor_on_update", get_other_markers)
 end
-
---[[--------------------------------------------------
-    Dynahud support
---------------------------------------------------]]--
-
--- dynahud = zzzz_dynahud.show_minimap
-
--- zzzz_dynahud.show_minimap = function(show)
---     if show then
---         deactivate_markers()
---     else
---         activate_markers()
---     end
--- dynahud(show)
--- end
