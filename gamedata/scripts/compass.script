@@ -101,7 +101,7 @@ function UIFlatCompass:Refresh()
     if compass_pos_state == 1 then
         self.compass_dialog:SetWndPos(vector2():set(215, 712))
     else
-        self.compass_dialog:SetWndPos(vector2():set(215, 26))
+        self.compass_dialog:SetWndPos(vector2():set(215, 31))
     end
     
     self.line_compass_dialog:InitTexture(compass_f)
