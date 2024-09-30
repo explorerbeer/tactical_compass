@@ -83,7 +83,6 @@ local sleep_zones = {
 local treasure_types = {
     "treasure_spot",
     "treasure_spot_all",
-    "treasure",
     "treasure_unique",
     "treasure_searched",
     "treasure_player"
@@ -220,7 +219,7 @@ function UICompassMarker:RefreshMarkers()
             -- Проверяем, изменился ли тип маркера для NPC
             if self.prev_npc_spots[npc_id] ~= spot_type then
                 if self.spots[npc_id] then
-                    self.spots[npc_id]:Show(false)
+                    self.spots[npc_id] = nil
                 end
 
                 -- Если изменился, создаем новый маркер
@@ -258,10 +257,17 @@ function UICompassMarker:RefreshMarkers()
         end
     end
 
+    for id, other_marker in pairs(self.others) do
+        if not other_markers[id] then
+            self.others[id] = nil -- Удаляем маркер из self.others, если он больше не нужен
+        end
+    end
+
     for id, type in pairs(other_markers) do
         local marker_type = other_markers[id] and other_markers[id].type
-        local other_markers = self.others[id] or self.xml:InitStatic("markers:marker_" .. marker_type, self.markers_list)
-        self.others[id] = other_markers
+
+        local other_marker = self.others[id] or self.xml:InitStatic("markers:marker_" .. marker_type, self.markers_list)
+        self.others[id] = other_marker
 
         local obj_world_pos = id and self:GetWorldCoordinates(id)
 
@@ -272,17 +278,17 @@ function UICompassMarker:RefreshMarkers()
             marker_alpha = distance_to_target and self:CalculateAlpha(distance_to_target, MIN_DISTANCE, MAX_DISTANCE_TO_OTHERS)
 
             if marker_x and marker_x > 290 and marker_x < 740 then
-                other_markers:Show(true)
-                other_markers:SetWndPos(vector2():set(marker_x, marker_y))
-                other_markers:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+                other_marker:Show(true)
+                other_marker:SetWndPos(vector2():set(marker_x, marker_y))
+                other_marker:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
             else
-                other_markers:Show(false)
+                other_marker:Show(false)
             end
 
             self.prev_obj_positions = self.prev_obj_positions or {}
             self.prev_obj_positions[id] = marker_x
         else
-            other_markers:Show(false)
+            other_marker:Show(false)
         end
     end
 end
@@ -394,8 +400,6 @@ function get_unique_npcs()
                         -- Если npc существует, обновляем только spot, если он изменился
                         if unique_npcs[id].spot ~= k then     
                             unique_npcs[id].spot = k
-
-                            printf("spot updated for: %s", id)
                         end
                     end
                     break -- Выходим из внутреннего цикла, если нашли подходящий spot
@@ -427,6 +431,19 @@ function get_other_markers()
             end
         end
     end
+
+    local m_data = alife_storage_manager.get_state()
+
+    if m_data.player_created_stashes then
+        for id, _ in pairs(m_data.player_created_stashes) do
+            if level.map_has_object_spot(id, "treasure") then
+                if not other_markers[id] then
+                    other_markers[id] = {type = "stashes"}
+                end
+            end
+        end
+    end
+    
 end
 
 function UICompassMarker:GetWorldCoordinates(id)
