@@ -1,0 +1,30 @@
+local defaults = {
+    ["t_c_show"] = true,
+    ["d_t_show"] = true,
+    ["compass_sc_pos"] = 0
+}
+
+local table_compass_sc_pos = {
+    { 0, "ui_mcm_compass_state_up" },
+    { 1, "ui_mcm_compass_state_down" }
+}
+
+function get_config(key)
+    if ui_mcm then return ui_mcm.get("tactic_compass/" .. key) else return defaults[key] end
+end
+
+function on_mcm_load()
+    op = {
+        id = "tactic_compass",
+        sh = true,
+        gr = {
+            { id = "title", type = "slide", text = "ui_mcm_compass_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
+            { id = "t_c_show", type = "check", val = 1, def = true },
+            { id = "d_t_show", type = "check", val = 1, def = true },
+            { id = "divider", type = "line" },
+            { id = "compass_sc_pos", type = "list", val = 2, def = 0, content = table_compass_sc_pos, no_str = true }
+        }
+    }
+    
+    return op
+end
