@@ -8,6 +8,9 @@ local flat_compass = nil
 
 local compass_state = true
 
+local compass_w = 600
+local compass_h = 20
+
 class "UIFlatCompass" (CUIScriptWnd)
 
 local compass = {
@@ -65,14 +68,13 @@ function UIFlatCompass:InitControls()
 end
 
 function UIFlatCompass:Refresh()
-    local compass_pos_state = compass_mcm.get_config("compass_sc_pos")
+    local compass_pos_state = compass_mcm.get_config("tc_main/compass_sc_pos")
 
     if (not main_hud_shown()) then
         return
     end
 
-    local actor = db.actor
-    local actor_dir = actor:direction()
+    local actor_dir = device().cam_dir
 
     local dir_x = actor_dir.x
     local dir_z = actor_dir.z
@@ -99,9 +101,9 @@ function UIFlatCompass:Refresh()
 
     
     if compass_pos_state == 1 then
-        self.compass_dialog:SetWndPos(vector2():set(215, 712))
+        self.compass_dialog:SetWndPos(vector2():set(512 - compass_w / 2, 712))
     else
-        self.compass_dialog:SetWndPos(vector2():set(215, 31))
+        self.compass_dialog:SetWndPos(vector2():set(512 - compass_w / 2, 31))
     end
     
     self.line_compass_dialog:InitTexture(compass_f)
@@ -119,7 +121,7 @@ end
 --------------------------------------------------]]--
 
 function on_option_change()
-    compass_state = compass_mcm.get_config("t_c_show")
+    compass_state = compass_mcm.get_config("tc_main/t_c_show")
     local ui_state = ui_options.get('video/hud/show_hud')
 
     if compass_state then
@@ -152,7 +154,11 @@ function update_compass_hud()
 end
 
 function actor_on_first_update()
-    activate_compass()
+    compass_state = compass_mcm.get_config("tc_main/t_c_show")
+
+    if compass_state then
+        activate_compass()
+    end
 end
 
 --[[--------------------------------------------------

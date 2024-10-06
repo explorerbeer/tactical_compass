@@ -1,0 +1,683 @@
+-- Developments were utilized: GhenTuong --
+-- Author: explorerbee --
+-- Optimization help: xcvb, RavenAscendant, morrazzzz
+-- Date: 21.09.2024 --
+
+--[[--------------------------------------------------
+	Constants
+--------------------------------------------------]]--
+
+MIN_DISTANCE = 0
+MAX_DISTANCE_TO_QUEST = compass_mcm.get_config("tc_markers/show_quest_dist")
+MAX_DISTANCE_TO_NPC = compass_mcm.get_config("tc_markers/show_unique_dist")
+MAX_DISTANCE_TO_SLEEP = compass_mcm.get_config("tc_markers/show_sleep_dist")
+MAX_DISTANCE_TO_STASH = compass_mcm.get_config("tc_markers/show_stashes_dist")
+MAX_DISTANCE_TO_TRANSITION = compass_mcm.get_config("tc_markers/show_transitions_dist")
+MAX_DISTANCE_TO_SQUADS = compass_mcm.get_config("tc_markers/show_squads_dist")
+MAX_DISTANCE_TO_DEAD = compass_mcm.get_config("tc_markers/show_corpses_dist")
+MAX_DISTANCE_TO_CAMPFIRES = compass_mcm.get_config("tc_markers/show_campf_dist")
+MAX_DISTANCE_TO_PUMP = compass_mcm.get_config("tc_markers/show_pump_dist")
+
+COMPASS_CENTER = 512
+
+--[[--------------------------------------------------
+	Variables
+--------------------------------------------------]]--
+
+local compass_marker_task = nil
+
+local marker_task_id = nil
+local marker_task_current_target_id = nil
+
+local sleep_zone_id = nil
+
+local is_storyline = nil
+
+local distance_state = true
+local show_compass_state = true
+local compass_state = true
+
+class "UICompassMarker" (CUIScriptWnd)
+
+--[[--------------------------------------------------
+	Store tables
+--------------------------------------------------]]--
+
+local markers = {}
+
+--[[--------------------------------------------------
+	Generic tables
+--------------------------------------------------]]--
+
+local marker_types = {
+    -- NPCs
+    ui_pda2_special_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_trader_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_mechanic_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_scout_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_barman_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_quest_npc_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_medic_location = compass_mcm.get_config("tc_markers/show_unique"),
+    ui_pda2_companion_location = compass_mcm.get_config("tc_markers/show_unique"),
+    --Sleep zones
+    ui_pda2_actor_sleep_location = compass_mcm.get_config("tc_markers/show_sleep"),
+    -- Stashes
+    treasure_all = compass_mcm.get_config("tc_markers/show_stashes"),
+    treasure_unique = compass_mcm.get_config("tc_markers/show_stashes"),
+    treasure_searched = compass_mcm.get_config("tc_markers/show_stashes"),
+    treasure_player = compass_mcm.get_config("tc_markers/show_stashes"),
+    treasure = compass_mcm.get_config("tc_markers/show_stashes"),
+    -- Level transitions
+    level_changer_up = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_up_right = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_right = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_right_down = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_down = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_down_left = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_left = compass_mcm.get_config("tc_markers/show_transitions"),
+    level_changer_left_up = compass_mcm.get_config("tc_markers/show_transitions"),
+    -- Campfires
+    campfire_lit = compass_mcm.get_config("tc_markers/show_campf"),
+    campfire_unlit = compass_mcm.get_config("tc_markers/show_campf"),
+    -- Corpses
+    deadbody_location = compass_mcm.get_config("tc_markers/show_corpses"),
+    --Water pumps
+    water_spot = compass_mcm.get_config("tc_markers/show_pump"),
+    --Squads
+    warfare_stalker_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_bandit_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_csky_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_army_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_freedom_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_dolg_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_ecolog_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_killer_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_monolith_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_greh_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_renegade_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    warfare_isg_spot = compass_mcm.get_config("tc_markers/show_squads"),
+    --Unknown enemy
+    red_location = compass_mcm.get_config("tc_markers/show_squads"),
+}
+
+local marker_categories = {
+    -- NPCs
+    ui_pda2_special_location = "special",
+    ui_pda2_trader_location = "trader",
+    ui_pda2_mechanic_location = "mechanic",
+    ui_pda2_scout_location = "scout",
+    ui_pda2_barman_location = "barman",
+    ui_pda2_quest_npc_location = "quest_npc",
+    ui_pda2_medic_location = "medic",
+    ui_pda2_companion_location = "companion",
+    --Sleep zones
+    ui_pda2_actor_sleep_location = "sleep",
+    -- Stashes
+    treasure_all = "stashes",
+    treasure_unique = "stashes",
+    treasure_searched = "stashes",
+    treasure_player = "stashes",
+    treasure = "stashes",
+    -- Level transitions
+    level_changer_up = "transition",
+    level_changer_up_right = "transition",
+    level_changer_right = "transition",
+    level_changer_right_down = "transition",
+    level_changer_down = "transition",
+    level_changer_down_left = "transition",
+    level_changer_left = "transition",
+    level_changer_left_up = "transition",
+    -- Campfires
+    campfire_lit = "campfire_lit",
+    campfire_unlit = "campfire_unlit",
+    -- Corpses
+    deadbody_location = "deadbody",
+    -- Water pumps
+    water_spot = "water",
+    --Squads
+    warfare_stalker_spot = "stalker",
+    warfare_bandit_spot = "bandit",
+    warfare_csky_spot = "csky",
+    warfare_army_spot = "army",
+    warfare_freedom_spot = "freedom",
+    warfare_dolg_spot = "dolg",
+    warfare_ecolog_spot = "ecolog",
+    warfare_killer_spot = "killer",
+    warfare_monolith_spot = "monolith",
+    warfare_greh_spot = "greh",
+    warfare_renegade_spot = "renegade",
+    warfare_isg_spot = "isg",
+    --Unknown enemy
+    red_location = "unknown"
+}
+
+local warfare_categories = {
+    "stalker",
+    "bandit",
+    "csky",
+    "army",
+    "freedom",
+    "dolg",
+    "ecolog",
+    "killer",
+    "monolith",
+    "greh",
+    "renegade",
+    "isg"
+}
+
+--[[--------------------------------------------------
+	(Marker) Handlers
+--------------------------------------------------]]--
+
+function activate_markers()
+	if compass_marker_task == nil then
+		compass_marker_task = UICompassMarker()
+		get_hud():AddDialogToRender(compass_marker_task)
+	end
+
+end
+
+function deactivate_markers()
+	if compass_marker_task ~= nil then
+		get_hud():RemoveDialogToRender(compass_marker_task)
+		compass_marker_task = nil
+	end
+end
+
+function update_markers()
+    if compass_marker_task ~= nil then
+		compass_marker_task:RefreshMarkers()
+    end
+end
+
+--[[--------------------------------------------------
+    (Marker) Class init & draw
+--------------------------------------------------]]--
+
+function UICompassMarker:__init()
+    super()
+    self._tmr = time_global()
+    self:InitControls()
+end
+
+function UICompassMarker:__finalize()
+end
+
+function UICompassMarker:InitControls()
+    distance_state = compass_mcm.get_config("tc_main/d_t_show")
+    show_compass_state = compass_mcm.get_config("tc_main/show_quest")
+
+    self:SetAutoDelete(true)
+
+
+    self.xml = CScriptXmlInit()
+    self.xml:ParseFile("tactic_marker.xml")
+
+    self.markers_list = self.xml:InitStatic("markers", self)
+
+    --Quests
+    self.marker_primary = show_compass_state and self.xml:InitStatic("markers:marker_primary", self.markers_list)
+    self.marker_text_pr = distance_state and self.xml:InitTextWnd("markers:marker_primary:text_item_m_pr", self.marker_primary) or nil
+
+    self.marker_secondary = show_compass_state and self.xml:InitStatic("markers:marker_secondary", self.markers_list)
+    self.marker_text_sec = distance_state and self.xml:InitTextWnd("markers:marker_secondary:text_item_m_sec", self.marker_secondary) or nil
+
+    --Markers
+    self.etc_markers = {}
+end
+
+function UICompassMarker:RefreshMarkers()
+    local compass_pos_state = compass_mcm.get_config("tc_main/compass_sc_pos")
+
+    if not main_hud_shown() then
+        return
+    end
+
+    local dir = device().cam_dir
+    local actor_dir = vector():set(dir.x, 0, dir.z):normalize()
+    local actor_pos = device().cam_pos
+
+    local target_screen_pos = marker_task_current_target_id and self:GetScreenCoordinates(marker_task_current_target_id)
+    local target_world_pos = marker_task_current_target_id and self:GetWorldCoordinates(marker_task_current_target_id)
+    local distance_to_target = self:CalculateDistanceToTarget(target_world_pos, actor_pos)
+
+    local function hide_quest_markers()
+        if self.marker_primary then
+            self.marker_primary:Show(false)
+        end
+    
+        if self.marker_secondary then
+            self.marker_secondary:Show(false)
+        end
+    end
+    
+    if not distance_to_target or not target_screen_pos then
+        hide_quest_markers()
+    else
+        target_world_pos.y = actor_pos.y
+    
+        if is_storyline == "true" then
+            hide_quest_markers()
+        end
+    end
+
+    local marker = (is_storyline == "true") and self.marker_primary or self.marker_secondary
+    local marker_text = (is_storyline == "true") and self.marker_text_pr or self.marker_text_sec
+
+    local marker_x = target_world_pos and self:CalculatePosition(target_world_pos, actor_pos, actor_dir, MAX_DISTANCE_TO_QUEST, self.prev_marker_x)
+    local marker_y = (compass_pos_state == 1) and 701 or 10
+
+    local marker_alpha = distance_to_target and self:CalculateAlpha(distance_to_target, MIN_DISTANCE, MAX_DISTANCE_TO_QUEST) or 0
+
+    if marker_x and marker_x > 290 and marker_x < 740 then
+        if marker then
+            marker:Show(true)
+            marker:SetWndPos(vector2():set(marker_x, marker_y))
+            marker:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255)) 
+        end
+        if marker_text then
+            marker_text:Show(true)
+            marker_text:SetText(math.floor(distance_to_target))
+            marker_text:SetTextColor(GetARGB(marker_alpha, 255, 255, 255))
+        end
+    else
+        if marker then marker:Show(false) end
+        if marker_text then marker_text:Show(false) end
+    end
+
+    self.prev_marker_x = marker_x
+    self.prev_markers = self.prev_markers or {}
+
+    for id, category_data in pairs(markers) do
+        local marker_type = category_data.category
+        local distance_threshold = self:DefineMarkerType(marker_type)
+        local marker
+        
+        if marker_type and marker_type ~= "empty" then
+            local marker_world_pos = id and self:GetWorldCoordinates(id)
+
+            if marker_world_pos then
+                distance_to_target = self:CalculateDistanceToTarget(marker_world_pos, actor_pos)
+
+                if distance_to_target and distance_to_target <= distance_threshold then
+                    if self.prev_markers[id] ~= marker_type then
+                        if self.etc_markers[id] then
+                            self.etc_markers[id]:Show(false)
+                        end
+                        
+                        self.etc_markers[id] = self.xml:InitStatic("markers:marker_" .. marker_type, self.markers_list)
+                        marker = self.etc_markers[id]
+    
+                        self.prev_markers[id] = marker_type
+                    else
+                        marker = self.etc_markers[id]
+                    end
+
+                    marker_x = self:CalculatePosition(marker_world_pos, actor_pos, actor_dir, distance_threshold, self.prev_obj_positions and self.prev_obj_positions[id])
+                    local marker_alpha = self:CalculateAlpha(distance_to_target, MIN_DISTANCE, distance_threshold)
+    
+                    if marker_x and marker_x > 290 and marker_x < 740 then
+                        marker:Show(true)
+                        marker:SetWndPos(vector2():set(marker_x, marker_y))
+                        marker:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+                    else
+                        marker:Show(false)
+                    end
+    
+                    self.prev_obj_positions = self.prev_obj_positions or {}
+                    self.prev_obj_positions[id] = marker_x
+                else                    
+                    if self.etc_markers[id] then
+                        self.etc_markers[id]:Show(false)
+                    end
+                end
+            else
+                if self.etc_markers[id] then
+                    self.etc_markers[id]:Show(false)
+                end
+            end        
+        else
+            if self.etc_markers[id] then
+                self.etc_markers[id]:Show(false)
+            end   
+        end
+    end
+end
+
+function UICompassMarker:CalculatePosition(world_pos, actor_pos, actor_dir, max_distance, prev_marker_x)
+    local marker_pos = COMPASS_CENTER
+
+    if world_pos then
+        world_pos.y = actor_pos.y
+    end
+    
+    -- –ассчитываем рассто€ние до цели
+    local distance_to_target = world_pos:distance_to(actor_pos)
+    if distance_to_target > max_distance then
+        return nil -- ≈сли цель слишком далеко, не отображаем метку
+    end
+
+    local target_dir = world_pos:sub(actor_pos):normalize()
+    local dot_product = target_dir:dotproduct(actor_dir)
+
+    if dot_product < -0.99 then  -- ”гол близок к 180 градусов
+        return tonumber(clamp(COMPASS_CENTER - 300, COMPASS_CENTER + 300))
+    end
+
+    local cross = VEC_ZERO
+    cross:crossproduct(target_dir, actor_dir)
+    local side_factor = (cross.y < 0) and 1 or -1
+    local offset = side_factor * (1 - dot_product) * 220
+
+    marker_pos = COMPASS_CENTER + offset
+
+    local lerp_factor = 0.1
+    if prev_marker_x and math.abs(marker_pos - prev_marker_x) > 100 then
+        lerp_factor = 0.5  -- ”величиваем скорость при большом расхождении
+    end
+
+    marker_pos = utils_compass.lerp(prev_marker_x or COMPASS_CENTER, marker_pos, lerp_factor)
+    marker_pos = clamp(marker_pos, COMPASS_CENTER - 300, COMPASS_CENTER + 300)
+
+    return tonumber(marker_pos)
+end
+
+function UICompassMarker:DefineMarkerType(marker_type)
+    if marker_type == "special"
+    or marker_type == "trader" 
+    or marker_type == "mechanic" 
+    or marker_type == "scout" 
+    or marker_type == "barman"
+    or marker_type == "quest_npc"
+    or marker_type == "medic"
+    or marker_type == "companion" then
+        return MAX_DISTANCE_TO_NPC
+    elseif marker_type == "sleep" then
+        return MAX_DISTANCE_TO_SLEEP        
+    elseif marker_type == "stashes" then
+        return MAX_DISTANCE_TO_STASH
+    elseif marker_type == "transition" then
+        return MAX_DISTANCE_TO_TRANSITION
+    elseif marker_type == "stalker"
+    or marker_type == "bandit"
+    or marker_type == "csky"
+    or marker_type == "army"
+    or marker_type == "freedom"
+    or marker_type == "dolg"
+    or marker_type == "killer"
+    or marker_type == "ecolog"
+    or marker_type == "monolith"
+    or marker_type == "renegade"
+    or marker_type == "greh"
+    or marker_type == "isg" then
+        return MAX_DISTANCE_TO_SQUADS
+    elseif marker_type == "deadbody" then
+        return MAX_DISTANCE_TO_DEAD
+    elseif marker_type == "campfire_lit"
+    or marker_type == "campfire_unlit" then
+        return MAX_DISTANCE_TO_CAMPFIRES
+    elseif marker_type == "water" then
+        return MAX_DISTANCE_TO_PUMP
+    end
+end
+
+function UICompassMarker:GetWorldCoordinates(id)
+	local pos = nil
+	local obj = db.storage[id] and db.storage[id].object or level.object_by_id(id)
+	
+	if (obj and (IsStalker(obj) or IsMonster(obj))) then
+		pos = obj and utils_obj.safe_bone_pos(obj, "bip01_head")
+
+        return pos
+	elseif (obj and (type(obj.position) == "function")) then
+		local tmp = obj:position()
+		pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
+
+        return pos
+	end
+	
+	if (pos == nil) then
+		local se = alife_object(id)
+		if not (se and se.online) then
+			return nil
+			
+		elseif (se:clsid() == clsid.smart_terrain) then
+			local tmp = se and se.position
+			pos = tmp and vector():set(tmp.x, tmp.y + 1, tmp.z)
+			
+            return pos
+		elseif (se:clsid() == clsid.online_offline_group_s) then
+			local i = se:commander_id()
+			local npc = i and db.storage[i] and db.storage[i].object or level.object_by_id(i)
+			pos = npc and utils_obj.safe_bone_pos(npc, "bip01_head")
+
+            return pos
+		end
+	end
+
+	return nil
+end
+
+function UICompassMarker:GetScreenCoordinates(id)
+    local pos = id and self:GetWorldCoordinates(id)
+
+    local vec = pos and game.world2ui(vector():set(pos.x, pos.y + 0.5, pos.z), false)
+	
+    return vec
+end
+
+function UICompassMarker:CalculateDistanceToTarget(target_world_pos, actor_pos)
+    if target_world_pos and actor_pos then
+        return math.floor(target_world_pos:distance_to(actor_pos))
+    end
+
+    return nil
+end
+
+function UICompassMarker:CalculateAlpha(distance_to_npc, min_distance, max_distance)
+    return 1 - clamp((distance_to_npc - min_distance) / (max_distance - min_distance) * 255, 0, 255) 
+end
+
+function UICompassMarker:Update()
+    CUIScriptWnd.Update(self)
+    self:RefreshMarkers()
+end
+
+--[[--------------------------------------------------
+	Marker (utils)
+--------------------------------------------------]]--
+
+function marker_task_actor_on_update()
+    local tm = task_manager
+	local task_info = tm.get_task_manager().task_info
+
+	if (task_info) then
+		if (marker_task_id) then
+			local task = task_info[marker_task_id]
+            
+			if (task and db.actor:is_active_task(task.t)) then
+				if (marker_task_id ~= tostring(task_id)) then
+					marker_task_id = tostring(task_id)
+				end
+				
+				if (marker_task_current_target_id ~= tonumber(task.current_target)) then
+					marker_task_current_target_id = tonumber(task.current_target)
+				end
+				return
+			else
+				marker_task_id = nil
+				marker_task_current_target_id = nil
+			end
+		end
+		
+		if (marker_task_id == nil) then
+			for task_id, task in pairs(task_info) do
+				if (task and task.t and db.actor:is_active_task(task.t)) then
+                    
+					if (marker_task_id ~= tostring(task_id)) then
+						marker_task_id = tostring(task_id)
+
+                        is_storyline = tm.task_ini:r_string_ex(marker_task_id, "storyline")
+					end
+					
+					if (marker_task_current_target_id ~= tonumber(task.current_target)) then
+						marker_task_current_target_id = tonumber(task.current_target)
+					end
+
+					return
+				end
+			end
+		end
+	end
+end
+
+local upd_delay = 100
+local itr_step = 500
+
+local tmr = 0
+local cnt = 1
+
+local actor = db.actor
+local pda = db.actor:item_in_slot(8)
+
+function get_markers()
+    local tg = time_global()
+    if tmr > tg then return end
+    tmr = tg + upd_delay
+
+    local pda_section = pda:section()
+
+    for i = cnt, cnt + (itr_step - 1) do
+        if i > 65534 then
+            cnt = 1
+            return
+        end
+
+        local se_obj = alife_object(i)
+        
+        if se_obj then
+            local found_marker = false
+
+            for spot, is_enabled in pairs(marker_types) do
+                if is_enabled then
+                    if level.map_has_object_spot(i, spot) ~= 0 then
+                        local category = marker_categories[spot]
+
+                        if category == "stalker" or category == "bandit" or category == "csky" or 
+                            category == "army" or category == "freedom" or category == "dolg" or 
+                            category == "ecolog" or category == "killer" or category == "monolith" or 
+                            category == "greh" or category == "renegade" or category == "isg" then
+                        
+                            if pda_section == "device_pda_1" then
+                                break
+                            end
+
+                            if pda_section == "device_pda_2" and se_obj:community() == get_actor_true_community() then
+                                if not markers[i] then
+                                    markers[i] = { type = spot, category = category }
+                                elseif markers[i].type ~= spot then
+                                    markers[i].type = spot
+                                    markers[i].category = category
+                                end
+                                
+                                found_marker = true
+                                break
+                            elseif pda_section == "device_pda_3" and se_obj:relation(actor) < game_object.enemy then
+                                if not markers[i] then
+                                    markers[i] = { type = spot, category = category }
+                                elseif markers[i].type ~= spot then
+                                    markers[i].type = spot
+                                    markers[i].category = category
+                                end
+
+                                found_marker = true
+                                break
+                            end
+                        else
+                            if not markers[i] then
+                                markers[i] = { type = spot, category = category }
+                            elseif markers[i].type ~= spot then
+                                markers[i].type = spot
+                                markers[i].category = category
+                            end
+                            found_marker = true
+                            break
+                        end                       
+                    end 
+                end
+            end
+
+            if not found_marker and markers[i] then
+                if level.map_has_object_spot(i, markers[i].type) == 0 then
+                    markers[i].type = "empty"
+                    markers[i].category = "empty"
+                end
+            end
+        end
+    end
+    
+    cnt = cnt + itr_step
+end
+
+--[[--------------------------------------------------
+    Callbacks
+--------------------------------------------------]]--
+
+function on_option_change()
+    compass_state = compass_mcm.get_config("tc_main/t_c_show")
+    local ui_state = ui_options.get('video/hud/show_hud')
+
+    if compass_state then
+        if (not compass_marker_task) then
+            activate_markers()
+        end
+    else
+        if compass_marker_task then
+            deactivate_markers()
+        end
+    end
+
+    if (not ui_state) and compass_marker_task then
+        deactivate_markers()
+    end
+end
+
+function on_console_execute(name)
+    if name == "hud_draw" and compass_marker_task then
+        compass_marker_task:Refresh()
+    end
+end
+
+function actor_on_net_destroy()
+    deactivate_markers()
+end
+
+function update_marker_hud()
+    update_markers()
+end
+
+function actor_on_first_update()
+    compass_state = compass_mcm.get_config("tc_main/t_c_show")
+
+    if compass_state then
+        activate_markers()
+    end
+end
+
+--[[--------------------------------------------------
+    Register callbacks
+--------------------------------------------------]]--
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+    RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_console_execute", on_console_execute)
+    
+    RegisterScriptCallback("GUI_on_show", update_marker_hud)
+    RegisterScriptCallback("GUI_on_hide", update_marker_hud)
+
+    RegisterScriptCallback("actor_on_update", get_markers)
+    RegisterScriptCallback("actor_on_update", marker_task_actor_on_update)
+end

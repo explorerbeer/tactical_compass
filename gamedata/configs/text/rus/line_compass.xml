@@ -1,0 +1,130 @@
+<string_table>
+
+    <!-- Основные -->
+
+    <string id="ui_mcm_menu_tactic_compass">
+        <text>Тактический компас</text>
+    </string>
+
+    <string id="ui_mcm_compass_title">
+        <text>Tactical Compass</text>
+    </string>
+
+    <string id="ui_mcm_menu_tc_main">
+        <text>Основные настройки</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_main_t_c_show">
+        <text>Включить отображение компаса</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_main_d_t_show">
+        <text>Расстояние до цели (только квесты)</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_main_compass_sc_pos">
+        <text>Положение компаса на экране</text>
+    </string>
+
+    <string id="ui_mcm_compass_state_up">
+        <text>Сверху</text>
+    </string>
+
+    <string id="ui_mcm_compass_state_down">
+        <text>Снизу</text>
+    </string>
+
+    <!-- Маркеры -->
+
+    <string id="ui_mcm_markers_title">
+        <text>Маркеры</text>
+    </string>
+
+    <string id="ui_mcm_menu_tc_markers">
+        <text>Настройка маркеров</text>
+    </string>
+    
+    <string id="ui_mcm_tc_markers_marker_m_desc">
+        <text>Настройка отображения маркеров. Вы можете включить/выключить отображение определённой категории маркеров, а также изменить дистанцию их отображения.</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_quest">
+        <text>Маркер заданий: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_quest_dist">
+        <text>Маркер заданий: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_unique">
+        <text>Маркеры уникальных NPC: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_unique_dist">
+        <text>Маркеры уникальных NPC: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_sleep">
+        <text>Маркер мест для сна: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_sleep_dist">
+        <text>Маркер мест для сна: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_stashes">
+        <text>Маркеры тайников: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_stashes_dist">
+        <text>Маркеры тайников: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_transitions">
+        <text>Маркер переходов: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_transitions_dist">
+        <text>Маркер переходов: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_squads">
+        <text>Маркеры отрядов: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_squads_dist">
+        <text>Маркеры отрядов: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_corpses">
+        <text>Маркер трупов: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_corpses_dist">
+        <text>Маркер трупов: дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_campf">
+        <text>Маркер костров (ЧИТАЙТЕ ОПИСАНИЕ): отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_campf_desc">
+        <text>В виду большого количества костров на локации, их отображение может вызвать проблемы с производительностью. Включайте только если у вас достаточно производительная система или отображайте только посещённые костры.</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_campf_dist">
+        <text>Маркер костров (ЧИТАЙТЕ ОПИСАНИЕ): дистанция отображения</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_campf_dist_desc">
+        <text>В виду большого количества костров на локации, их отображение может вызвать проблемы с производительностью. Включайте только если у вас достаточно производительная система или отображайте только посещённые костры.</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_pump">
+        <text>Маркер водоразборных колонок: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_markers_show_pump_dist">
+        <text>Маркер водоразборных колонок: дистанция отображения</text>
+    </string>
+</string_table>
