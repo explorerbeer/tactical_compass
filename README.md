@@ -13,6 +13,11 @@ The addon adds a compass like in Skyrim, PUBG, Squad, etc. Marker displays the a
 Mandatory addons required for the mod to work:
 1. [Mod Configuration Menu](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu)
 
+Optional addons:
+1. [Display Campfires on Map (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/displaycampfiresonmap)
+2. [Fillable Canteens 2.0 (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/fillable-canteens-20)
+3. [Body Dots on Map (RavenAscendant)]((https://www.moddb.com/mods/stalker-anomaly/addons/bodydotsminimap-white-dots-but-blue))
+
 ---
 
 ## INSTALLATION
@@ -20,7 +25,7 @@ Mandatory addons required for the mod to work:
 1. Download and install the requirements.
 2. Download my addon.
 3. Use the keyboard shortcut Ctrl + M **(MO2 required)** to select the archive with my addon.
-
+4. If you want to see campfires, water pumps and corpses on the mini-map - additionally install the addons listed above.
 ---
 
 ## SUPPORT & SUGGESTIONS

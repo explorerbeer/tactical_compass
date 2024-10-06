@@ -6,8 +6,6 @@
 
 local flat_compass = nil
 
-local compass_state = true
-
 local compass_w = 600
 local compass_h = 20
 
@@ -57,6 +55,8 @@ function UIFlatCompass:__finalize()
 end
 
 function UIFlatCompass:InitControls()
+    self:SetAutoDelete(true)
+
     self.xml = CScriptXmlInit()
     self.xml:ParseFile("tactic_compass.xml")
 
@@ -69,10 +69,6 @@ end
 
 function UIFlatCompass:Refresh()
     local compass_pos_state = compass_mcm.get_config("tc_main/compass_sc_pos")
-
-    if (not main_hud_shown()) then
-        return
-    end
 
     local actor_dir = device().cam_dir
 
@@ -114,6 +110,8 @@ end
 function UIFlatCompass:Update()
     self:Refresh()
     CUIScriptWnd.Update(self)
+
+    self.compass_dialog:Show(main_hud_shown())
 end
 
 --[[--------------------------------------------------
@@ -121,20 +119,11 @@ end
 --------------------------------------------------]]--
 
 function on_option_change()
-    compass_state = compass_mcm.get_config("tc_main/t_c_show")
-    local ui_state = ui_options.get('video/hud/show_hud')
+    local ui_state = ui_options.get("video/hud/show_hud")
 
-    if compass_state then
-        if (not flat_compass) then
-            activate_compass()
-        end
-    else
-        if flat_compass then
-            deactivate_compass()
-        end 
-    end
-
-    if (not ui_state) and flat_compass then
+    if ui_state and not flat_compass then
+        activate_compass()
+    elseif not ui_state and flat_compass then
         deactivate_compass()
     end
 end
@@ -154,10 +143,12 @@ function update_compass_hud()
 end
 
 function actor_on_first_update()
-    compass_state = compass_mcm.get_config("tc_main/t_c_show")
+    local ui_state = ui_options.get("video/hud/show_hud")
 
-    if compass_state then
+    if ui_state and not flat_compass then
         activate_compass()
+    elseif not ui_state and flat_compass then
+        deactivate_compass()
     end
 end
 
@@ -175,19 +166,4 @@ function on_game_start()
     RegisterScriptCallback("GUI_on_hide", update_compass_hud)
 
     RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
-end
-
---[[--------------------------------------------------
-    Dynahud support
---------------------------------------------------]]--
-
-dynahud = zzzz_dynahud.show_minimap
-
-zzzz_dynahud.show_minimap = function(show)
-    if show then
-        deactivate_compass()
-    else
-        activate_compass()
-    end
-dynahud(show)
 end

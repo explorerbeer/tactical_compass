@@ -1,5 +1,14 @@
+-- Minimap disable: RavenAscendant --
+-- Author: explorerbee --
+-- Date: 06.10.2024 --
+
+local KEY = DIK_keys.DIK_M
+
+local mode = 0
+local modifier = 0
+local mcm_keybinds = ui_mcm and ui_mcm.key_hold
+
 local defaults = {
-    ["tc_main/t_c_show"] = true,
     ["tc_main/d_t_show"] = true,
     ["tc_main/compass_sc_pos"] = 0,
     ["tc_markers/show_quest"] = true,
@@ -31,6 +40,38 @@ function get_config(key)
     if ui_mcm then return ui_mcm.get("tactic_compass/" .. key) else return defaults[key] end
 end
 
+function on_option_change(mcm)
+    if mcm then
+        KEY = ui_mcm.get("tactic_compass/tc_keybinds/hotkey") or KEY
+        mode = ui_mcm.get("tactic_compass/tc_keybinds/mode")
+        modifier = ui_mcm.get("tactic_compass/tc_keybinds/modifier")
+    end
+end
+
+function on_key_hold(key)
+    if mcm_keybinds and (key == KEY) and (mode == 2) and ui_mcm.get_mod_key(modifier) and ui_mcm.key_hold("tactic_compass", key, 5) then
+        toggle_compass()
+    end
+end
+
+function on_key_press(key)
+    if key == KEY then
+        if not mcm_keybinds then
+            toggle_compass()
+            return
+        end
+
+        if mode == 0 then
+            ui_mcm.simple_press("tactic_compass", key, toggle_compass)
+        end
+    
+        if mode == 1 and ui_mcm.get_mod_key(modifier) and ui_mcm.double_tap("tactic_compass", key) then
+            toggle_compass()
+            return
+        end
+    end    
+end
+
 function on_mcm_load()
     op = {
         id = "tactic_compass",
@@ -38,10 +79,17 @@ function on_mcm_load()
             {
                 id = "tc_main", sh = true, gr = {
                     { id = "title", type = "slide", text = "ui_mcm_compass_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
-                    { id = "t_c_show", type = "check", val = 1, def = true },
                     { id = "d_t_show", type = "check", val = 1, def = true },
                     { id = "divider", type = "line" },
                     { id = "compass_sc_pos", type = "list", val = 2, def = 0, content = table_compass_sc_pos, no_str = true }
+                }
+            },
+            {
+                id = "tc_keybinds", sh = true, gr = {
+                    { id = "title", type = "slide", text = "ui_mcm_keybinds_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
+                    { id = "hotkey", type = "key_bind", val = 2, def = KEY },
+                    { id = "modifier", type = ui_mcm.kb_mod_radio, val = 2, def = 0, hint = "mcm_kb_modifier", content = { { 0, "mcm_kb_mod_none" }, { 1, "mcm_kb_mod_shift" }, { 3, "mcm_kb_mod_alt" } } },
+                    { id = "mode", type = ui_mcm.kb_mod_radio, val = 2, def = 0, hint = "mcm_kb_mode", content = { { 0,"mcm_kb_mode_press" }, { 1,"mcm_kb_mode_dtap" }, { 2,"mcm_kb_mode_hold" } } },
                 }
             },
             {
@@ -80,4 +128,30 @@ function on_mcm_load()
     }
     
     return op
+end
+
+function on_game_start()
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_key_hold", on_key_hold)
+    RegisterScriptCallback("on_key_press", on_key_press)
+	on_option_change(mcm_keybinds)
+end
+
+function toggle_compass()
+    minimap_enabled = ui_options.get("video/hud/show_minimap")
+    ui_options.set("video/hud/show_minimap", not minimap_enabled)
+
+    local maingameui = ActorMenu.get_maingame()
+    if maingameui and maingameui.UIZoneMap then
+        maingameui.UIZoneMap.disabled = minimap_enabled
+        maingameui.UIMotionIcon:Show(maingameui.UIZoneMap.disabled == false)
+    end
+
+    if minimap_enabled then
+        marker.activate_markers()
+        compass.activate_compass()
+    else
+        marker.deactivate_markers()
+        compass.deactivate_compass()
+    end
 end

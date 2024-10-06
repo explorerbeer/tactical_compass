@@ -35,7 +35,6 @@ local is_storyline = nil
 
 local distance_state = true
 local show_compass_state = true
-local compass_state = true
 
 class "UICompassMarker" (CUIScriptWnd)
 
@@ -206,10 +205,9 @@ end
 
 function UICompassMarker:InitControls()
     distance_state = compass_mcm.get_config("tc_main/d_t_show")
-    show_compass_state = compass_mcm.get_config("tc_main/show_quest")
+    show_compass_state = compass_mcm.get_config("tc_markers/show_quest")
 
     self:SetAutoDelete(true)
-
 
     self.xml = CScriptXmlInit()
     self.xml:ParseFile("tactic_marker.xml")
@@ -229,10 +227,6 @@ end
 
 function UICompassMarker:RefreshMarkers()
     local compass_pos_state = compass_mcm.get_config("tc_main/compass_sc_pos")
-
-    if not main_hud_shown() then
-        return
-    end
 
     local dir = device().cam_dir
     local actor_dir = vector():set(dir.x, 0, dir.z):normalize()
@@ -352,10 +346,9 @@ function UICompassMarker:CalculatePosition(world_pos, actor_pos, actor_dir, max_
         world_pos.y = actor_pos.y
     end
     
-    -- –ассчитываем рассто€ние до цели
     local distance_to_target = world_pos:distance_to(actor_pos)
     if distance_to_target > max_distance then
-        return nil -- ≈сли цель слишком далеко, не отображаем метку
+        return nil
     end
 
     local target_dir = world_pos:sub(actor_pos):normalize()
@@ -482,6 +475,8 @@ end
 function UICompassMarker:Update()
     CUIScriptWnd.Update(self)
     self:RefreshMarkers()
+
+    self.markers_list:Show(main_hud_shown())
 end
 
 --[[--------------------------------------------------
@@ -538,15 +533,13 @@ local itr_step = 500
 local tmr = 0
 local cnt = 1
 
-local actor = db.actor
-local pda = db.actor:item_in_slot(8)
-
 function get_markers()
     local tg = time_global()
     if tmr > tg then return end
     tmr = tg + upd_delay
 
-    local pda_section = pda:section()
+    local actor = db.actor
+    local pda = actor:item_in_slot(8)
 
     for i = cnt, cnt + (itr_step - 1) do
         if i > 65534 then
@@ -564,16 +557,17 @@ function get_markers()
                     if level.map_has_object_spot(i, spot) ~= 0 then
                         local category = marker_categories[spot]
 
-                        if category == "stalker" or category == "bandit" or category == "csky" or 
+                        if IsStalker(nil, se_obj:clsid()) 
+                            and se_obj:alive() and se_obj:community() ~= "zombied" and se_obj:community() ~= "trader" 
+                            and (category == "stalker" or category == "bandit" or category == "csky" or 
                             category == "army" or category == "freedom" or category == "dolg" or 
                             category == "ecolog" or category == "killer" or category == "monolith" or 
-                            category == "greh" or category == "renegade" or category == "isg" then
+                            category == "greh" or category == "renegade" or category == "isg") then
                         
-                            if pda_section == "device_pda_1" then
+                            if pda:section() == "device_pda_1" then
                                 break
-                            end
 
-                            if pda_section == "device_pda_2" and se_obj:community() == get_actor_true_community() then
+                            elseif pda:section() == "device_pda_2" and se_obj:community() == get_actor_true_community() then
                                 if not markers[i] then
                                     markers[i] = { type = spot, category = category }
                                 elseif markers[i].type ~= spot then
@@ -583,7 +577,8 @@ function get_markers()
                                 
                                 found_marker = true
                                 break
-                            elseif pda_section == "device_pda_3" and se_obj:relation(actor) < game_object.enemy then
+
+                            elseif pda:section() == "device_pda_3" and se_obj:relation(actor) < game_object.enemy then
                                 if not markers[i] then
                                     markers[i] = { type = spot, category = category }
                                 elseif markers[i].type ~= spot then
@@ -601,6 +596,7 @@ function get_markers()
                                 markers[i].type = spot
                                 markers[i].category = category
                             end
+
                             found_marker = true
                             break
                         end                       
@@ -625,20 +621,11 @@ end
 --------------------------------------------------]]--
 
 function on_option_change()
-    compass_state = compass_mcm.get_config("tc_main/t_c_show")
-    local ui_state = ui_options.get('video/hud/show_hud')
+    local ui_state = ui_options.get("video/hud/show_hud")
 
-    if compass_state then
-        if (not compass_marker_task) then
-            activate_markers()
-        end
-    else
-        if compass_marker_task then
-            deactivate_markers()
-        end
-    end
-
-    if (not ui_state) and compass_marker_task then
+    if ui_state and not compass_marker_task then
+        activate_markers()
+    elseif not ui_state and compass_marker_task then
         deactivate_markers()
     end
 end
@@ -658,10 +645,12 @@ function update_marker_hud()
 end
 
 function actor_on_first_update()
-    compass_state = compass_mcm.get_config("tc_main/t_c_show")
+    local ui_state = ui_options.get("video/hud/show_hud")
 
-    if compass_state then
+    if ui_state and not compass_marker_task then
         activate_markers()
+    elseif not ui_state and compass_marker_task then
+        deactivate_markers()
     end
 end
 

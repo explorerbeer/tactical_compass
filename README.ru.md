@@ -11,7 +11,12 @@
 ## ТРЕБОВАНИЯ
 
 Необходимые для работы аддона моды:
-1. [Mod Configuration Menu](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu)
+1. [Mod Configuration Menu (RavenAscendant)](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu)
+
+Опциональные аддоны:
+1. [Display Campfires on Map (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/displaycampfiresonmap)
+2. [Fillable Canteens 2.0 (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/fillable-canteens-20)
+3. [Body Dots on Map (RavenAscendant)]((https://www.moddb.com/mods/stalker-anomaly/addons/bodydotsminimap-white-dots-but-blue))
 
 ---
 
@@ -20,6 +25,7 @@
 1. Скачать и установить необходимые для работы моды.
 2. Скачать аддон.
 3. Используя сочетание клавиш CTRL + M **(необходим МО2)** выберите архив с нашим аддоном.
+4. Если вы хотите видеть костры, водоразборные колонки и трупы на мини-карте - дополнительно установите аддоны, указанные выше.
 
 ---
 

@@ -34,6 +34,20 @@
         <text>Снизу</text>
     </string>
 
+    <!-- Привязка клавиш -->
+
+    <string id="ui_mcm_menu_tc_keybinds">
+        <text>Привязка клавиш</text>
+    </string>
+
+    <string id="ui_mcm_keybinds_title">
+        <text>Привязка клавиш</text>
+    </string>
+
+    <string id="ui_mcm_tactic_compass_tc_keybinds_hotkey">
+        <text>Клавиша</text>
+    </string>
+
     <!-- Маркеры -->
 
     <string id="ui_mcm_markers_title">
