@@ -634,7 +634,7 @@ end
 
 function on_console_execute(name)
     if name == "hud_draw" and compass_marker_task then
-        compass_marker_task:Refresh()
+        compass_marker_task:RefreshMarkers()
     end
 end
 
@@ -663,8 +663,8 @@ end
 function on_game_start()
     RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
     RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
-    RegisterScriptCallback("on_option_change", on_option_change)
     RegisterScriptCallback("on_console_execute", on_console_execute)
+    RegisterScriptCallback("on_option_change", on_option_change)
     
     RegisterScriptCallback("GUI_on_show", update_marker_hud)
     RegisterScriptCallback("GUI_on_hide", update_marker_hud)
