@@ -235,8 +235,8 @@ function UICompassMarker:RefreshMarkers()
     local target_screen_pos = marker_task_current_target_id and self:GetScreenCoordinates(marker_task_current_target_id)
     local target_world_pos = marker_task_current_target_id and self:GetWorldCoordinates(marker_task_current_target_id)
     local distance_to_target = self:CalculateDistanceToTarget(target_world_pos, actor_pos)
-
-    local function hide_quest_markers()
+    
+    if not distance_to_target or not target_screen_pos then
         if self.marker_primary then
             self.marker_primary:Show(false)
         end
@@ -244,15 +244,13 @@ function UICompassMarker:RefreshMarkers()
         if self.marker_secondary then
             self.marker_secondary:Show(false)
         end
-    end
-    
-    if not distance_to_target or not target_screen_pos then
-        hide_quest_markers()
     else
         target_world_pos.y = actor_pos.y
     
         if is_storyline == "true" then
-            hide_quest_markers()
+            if self.marker_primary then
+                self.marker_primary:Show(false)
+            end
         end
     end
 
@@ -599,7 +597,7 @@ function get_markers()
 
                             found_marker = true
                             break
-                        end                       
+                        end
                     end 
                 end
             end
