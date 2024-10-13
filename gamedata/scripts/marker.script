@@ -262,7 +262,7 @@ function UICompassMarker:RefreshMarkers()
     local marker_text = (is_storyline == "true") and self.marker_text_pr or self.marker_text_sec
 
     local marker_x = target_world_pos and self:CalculatePosition(target_world_pos, actor_pos, actor_dir, MAX_DISTANCE_TO_QUEST, self.prev_marker_x)
-    local marker_y = (compass_pos_state == 1) and 701 or 10
+    local marker_y = (compass_pos_state == 1) and 701 or 21
 
     local marker_alpha = distance_to_target and self:CalculateAlpha(distance_to_target, MIN_DISTANCE, MAX_DISTANCE_TO_QUEST) or 0
 
@@ -300,6 +300,7 @@ function UICompassMarker:RefreshMarkers()
                     if self.prev_markers[id] ~= marker_type then
                         if self.etc_markers[id] then
                             self.etc_markers[id]:Show(false)
+                            self.etc_markers[id] = nil
                         end
                         
                         self.etc_markers[id] = self.xml:InitStatic("markers:marker_" .. marker_type, self.markers_list)
@@ -326,16 +327,19 @@ function UICompassMarker:RefreshMarkers()
                 else                    
                     if self.etc_markers[id] then
                         self.etc_markers[id]:Show(false)
+                        self.etc_markers[id] = nil
                     end
                 end
             else
                 if self.etc_markers[id] then
                     self.etc_markers[id]:Show(false)
+                    self.etc_markers[id] = nil
                 end
             end        
         else
             if self.etc_markers[id] then
                 self.etc_markers[id]:Show(false)
+                self.etc_markers[id] = nil
             end   
         end
     end

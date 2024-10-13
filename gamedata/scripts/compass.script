@@ -1,5 +1,5 @@
 -- Adapted From: A.N.T.H.O.L.O.G.Y. --
--- Original author(?): Zateynik Melinite
+-- Original author(?): Zateynik Melinite, HypeR
 -- Credits: Strogglet15, Tronex, RavenAscendant --
 -- Edited by: explorerbee --
 -- Date: 21.09.2024 --
@@ -64,6 +64,7 @@ function UIFlatCompass:InitControls()
     self.line_compass_dialog = self.xml:InitStatic("line_compass", self.compass_dialog)
 
     self.line_compass_texture = self.xml:InitStatic("line_compass_texture", self.compass_dialog)
+    self.line_compass_background = self.xml:InitStatic("line_compass_background", self.compass_dialog)
     self.line_compass_radian = self.xml:InitTextWnd("line_compass_radian", self.line_compass_dialog)
 end
 
