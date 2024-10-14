@@ -7,9 +7,9 @@
 
 	<line_compass_texture x="0" y="20" width="600" height="20" stretch="1" heading="1" rounded="0" align="c" a="90">
 		<texture>ui\ui_tactic_compass\flat_compass</texture>
-	</line_compass_texture>
+	</line_compass_texture>	
 
-	<line_compass_radian x="285" y="31" width="30">
+	<line_compass_radian x="285" y="26" width="30">
 		<text font="letterica16" align="c" complex_mode="1"/>
 	</line_compass_radian>	
 </w>

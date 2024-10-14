@@ -7,7 +7,7 @@
 	Constants
 --------------------------------------------------]]--
 
-MIN_DISTANCE = 0
+MIN_DISTANCE = 3
 MAX_DISTANCE_TO_QUEST = compass_mcm.get_config("tc_markers/show_quest_dist")
 MAX_DISTANCE_TO_NPC = compass_mcm.get_config("tc_markers/show_unique_dist")
 MAX_DISTANCE_TO_SLEEP = compass_mcm.get_config("tc_markers/show_sleep_dist")
@@ -215,11 +215,23 @@ function UICompassMarker:InitControls()
     self.markers_list = self.xml:InitStatic("markers", self)
 
     --Quests
-    self.marker_primary = show_compass_state and self.xml:InitStatic("markers:marker_primary", self.markers_list)
+    self.marker_primary = show_compass_state and self.xml:InitStatic("markers:marker_primary", self.markers_list) or nil
     self.marker_text_pr = distance_state and self.xml:InitTextWnd("markers:marker_primary:text_item_m_pr", self.marker_primary) or nil
 
-    self.marker_secondary = show_compass_state and self.xml:InitStatic("markers:marker_secondary", self.markers_list)
+    self.marker_pr_above = show_compass_state and self.xml:InitStatic("markers:marker_primary_above", self.markers_list) or nil
+    self.marker_text_pr_above = distance_state and self.xml:InitTextWnd("markers:marker_primary_above:text_item_m_pr_above", self.marker_pr_above) or nil
+
+    self.marker_pr_below = show_compass_state and self.xml:InitStatic("markers:marker_primary_below", self.markers_list) or nil
+    self.marker_text_pr_below = distance_state and self.xml:InitTextWnd("markers:marker_primary_below:text_item_m_pr_below", self.marker_pr_below) or nil
+
+    self.marker_secondary = show_compass_state and self.xml:InitStatic("markers:marker_secondary", self.markers_list) or nil
     self.marker_text_sec = distance_state and self.xml:InitTextWnd("markers:marker_secondary:text_item_m_sec", self.marker_secondary) or nil
+
+    self.marker_sec_above = show_compass_state and self.xml:InitStatic("markers:marker_secondary_above", self.markers_list) or nil
+    self.marker_text_sec_above = distance_state and self.xml:InitTextWnd("markers:marker_secondary_above:text_item_m_sec_above", self.marker_sec_above) or nil
+
+    self.marker_sec_below = show_compass_state and self.xml:InitStatic("markers:marker_secondary_below", self.markers_list) or nil
+    self.marker_text_sec_below = distance_state and self.xml:InitTextWnd("markers:marker_secondary_below:text_item_m_sec_below", self.marker_sec_below) or nil
 
     --Markers
     self.etc_markers = {}
@@ -235,31 +247,121 @@ function UICompassMarker:RefreshMarkers()
     local target_screen_pos = marker_task_current_target_id and self:GetScreenCoordinates(marker_task_current_target_id)
     local target_world_pos = marker_task_current_target_id and self:GetWorldCoordinates(marker_task_current_target_id)
     local distance_to_target = self:CalculateDistanceToTarget(target_world_pos, actor_pos)
+
+    local height_diff = target_world_pos and (target_world_pos.y - actor_pos.y) or 0
     
+    -- if not distance_to_target or not target_screen_pos then
+    --     if self.marker_primary then
+    --         self.marker_primary:Show(false)
+    --     end
+
+    --     if self.marker_pr_above then
+    --         self.marker_pr_above:Show(false)
+    --     end
+
+    --     if self.marker_pr_below then
+    --         self.marker_pr_below:Show(false)
+    --     end
+    
+    --     if self.marker_secondary then
+    --         self.marker_secondary:Show(false)
+    --     end
+
+    --     if self.marker_sec_above then
+    --         self.marker_sec_above:Show(false)
+    --     end
+
+    --     if self.marker_sec_below then
+    --         self.marker_sec_below:Show(false)
+    --     end
+    -- else
+    --     target_world_pos.y = actor_pos.y
+
+    --     if is_storyline == "true" then
+    --         if self.marker_secondary then
+    --             self.marker_secondary:Show(false)
+    --         end
+
+    --         if self.marker_sec_above then
+    --             self.marker_sec_above:Show(false)
+    --         end
+    
+    --         if self.marker_sec_below then
+    --             self.marker_sec_below:Show(false)
+    --         end
+    --     else
+    --         if self.marker_primary then
+    --             self.marker_primary:Show(false)
+    --         end
+
+    --         if self.marker_pr_above then
+    --             self.marker_pr_above:Show(false)
+    --         end
+    
+    --         if self.marker_pr_below then
+    --             self.marker_pr_below:Show(false)
+    --         end
+    --     end
+    -- end
+
     if not distance_to_target or not target_screen_pos then
-        if self.marker_primary then
-            self.marker_primary:Show(false)
-        end
-    
-        if self.marker_secondary then
-            self.marker_secondary:Show(false)
-        end
+        -- Отключаем все маркеры
+        if self.marker_primary then self.marker_primary:Show(false) end
+        if self.marker_pr_above then self.marker_pr_above:Show(false) end
+        if self.marker_pr_below then self.marker_pr_below:Show(false) end
+        if self.marker_secondary then self.marker_secondary:Show(false) end
+        if self.marker_sec_above then self.marker_sec_above:Show(false) end
+        if self.marker_sec_below then self.marker_sec_below:Show(false) end
     else
         target_world_pos.y = actor_pos.y
     
+        -- Отключаем маркеры в зависимости от is_storyline
         if is_storyline == "true" then
-            if self.marker_secondary then
-                self.marker_secondary:Show(false)
-            end
+            if self.marker_secondary then self.marker_secondary:Show(false) end
+            if self.marker_sec_above then self.marker_sec_above:Show(false) end
+            if self.marker_sec_below then self.marker_sec_below:Show(false) end
         else
-            if self.marker_primary then
-                self.marker_primary:Show(false)
-            end
+            if self.marker_primary then self.marker_primary:Show(false) end
+            if self.marker_pr_above then self.marker_pr_above:Show(false) end
+            if self.marker_pr_below then self.marker_pr_below:Show(false) end
         end
     end
 
-    local marker = (is_storyline == "true") and self.marker_primary or self.marker_secondary
-    local marker_text = (is_storyline == "true") and self.marker_text_pr or self.marker_text_sec
+    -- local marker = (is_storyline == "true") and self.marker_primary or self.marker_secondary
+    -- local marker_text = (is_storyline == "true") and self.marker_text_pr or self.marker_text_sec
+
+    local marker, marker_text
+
+    if height_diff > 1.8 then
+        marker = (is_storyline == "true") and self.marker_pr_above or self.marker_sec_above
+        marker_text = (is_storyline == "true") and self.marker_text_pr_above or self.marker_text_sec_above
+        
+        -- Скрываем другие маркеры
+        if self.marker_primary then self.marker_primary:Show(false) end
+        if self.marker_pr_below then self.marker_pr_below:Show(false) end
+        if self.marker_sec_below then self.marker_sec_below:Show(false) end
+        if self.marker_secondary then self.marker_secondary:Show(false) end
+    
+    elseif height_diff < -1.8 then
+        marker = (is_storyline == "true") and self.marker_pr_below or self.marker_sec_below
+        marker_text = (is_storyline == "true") and self.marker_text_pr_below or self.marker_text_sec_below
+        
+        -- Скрываем другие маркеры
+        if self.marker_primary then self.marker_primary:Show(false) end
+        if self.marker_pr_above then self.marker_pr_above:Show(false) end
+        if self.marker_sec_above then self.marker_sec_above:Show(false) end
+        if self.marker_secondary then self.marker_secondary:Show(false) end
+    
+    else
+        marker = (is_storyline == "true") and self.marker_primary or self.marker_secondary
+        marker_text = (is_storyline == "true") and self.marker_text_pr or self.marker_text_sec
+        
+        -- Скрываем другие маркеры
+        if self.marker_pr_above then self.marker_pr_above:Show(false) end
+        if self.marker_pr_below then self.marker_pr_below:Show(false) end
+        if self.marker_sec_above then self.marker_sec_above:Show(false) end
+        if self.marker_sec_below then self.marker_sec_below:Show(false) end
+    end
 
     local marker_x = target_world_pos and self:CalculatePosition(target_world_pos, actor_pos, actor_dir, MAX_DISTANCE_TO_QUEST, self.prev_marker_x)
     local marker_y = (compass_pos_state == 1) and 701 or 21
@@ -300,7 +402,6 @@ function UICompassMarker:RefreshMarkers()
                     if self.prev_markers[id] ~= marker_type then
                         if self.etc_markers[id] then
                             self.etc_markers[id]:Show(false)
-                            self.etc_markers[id] = nil
                         end
                         
                         self.etc_markers[id] = self.xml:InitStatic("markers:marker_" .. marker_type, self.markers_list)
@@ -327,19 +428,16 @@ function UICompassMarker:RefreshMarkers()
                 else                    
                     if self.etc_markers[id] then
                         self.etc_markers[id]:Show(false)
-                        self.etc_markers[id] = nil
                     end
                 end
             else
                 if self.etc_markers[id] then
                     self.etc_markers[id]:Show(false)
-                    self.etc_markers[id] = nil
                 end
             end        
         else
             if self.etc_markers[id] then
                 self.etc_markers[id]:Show(false)
-                self.etc_markers[id] = nil
             end   
         end
     end
@@ -475,7 +573,7 @@ function UICompassMarker:CalculateDistanceToTarget(target_world_pos, actor_pos)
 end
 
 function UICompassMarker:CalculateAlpha(distance_to_npc, min_distance, max_distance)
-    return 1 - clamp((distance_to_npc - min_distance) / (max_distance - min_distance) * 255, 0, 255) 
+    return 1 - clamp((distance_to_npc + min_distance) / (max_distance - min_distance) * 255, 0, 255) 
 end
 
 function UICompassMarker:Update()

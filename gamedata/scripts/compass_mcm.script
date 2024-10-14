@@ -2,7 +2,7 @@
 -- Author: explorerbee --
 -- Date: 06.10.2024 --
 
-local KEY = DIK_keys.DIK_M
+local KEY = DIK_keys.DIK_SLASH
 
 local mode = 0
 local modifier = 0

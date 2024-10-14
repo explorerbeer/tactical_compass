@@ -1,7 +1,6 @@
 <w>
 	<markers x="0" y="0" width="0" height="0" stretch="1">
 		<!-- Quests -->
-		
 		<marker_primary width="15" height="15" stretch="1" heading="1" alignment="c">
 			<text_item_m_pr x="0" y="-13" width="15" height="15">
 				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
@@ -9,7 +8,24 @@
 			
 			<texture>ui_inGame2_PDA_icon_Primary_mission</texture>
 		</marker_primary>
-	
+
+
+		<marker_primary_above width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_pr_above x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_pr_above>
+
+			<texture>storyline_task_spot_above</texture>
+		</marker_primary_above>
+
+		<marker_primary_below width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_pr_below x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_pr_below>
+
+			<texture>storyline_task_spot_below</texture>
+		</marker_primary_below>
+
 		<marker_secondary width="15" height="15" stretch="1" heading="1" alignment="c">
 			<text_item_m_sec x="0" y="-13" width="15" height="15">
 				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
@@ -17,6 +33,22 @@
 			
 			<texture>ui_inGame2_PDA_icon_Secondary_mission</texture>
 		</marker_secondary>
+
+		<marker_secondary_above width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_sec_above x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_sec_above>
+
+			<texture>secondary_task_spot_above</texture>
+		</marker_secondary_above>
+
+		<marker_secondary_below width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_sec_below x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_sec_below>
+
+			<texture>secondary_task_spot_below</texture>
+		</marker_secondary_below>
 	
 		<!-- Stashes -->
 	
