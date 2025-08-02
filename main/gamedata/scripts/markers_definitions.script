@@ -74,6 +74,7 @@ blacklisted_categories = {
     warfare_mutant_spot = true,
     anom_zone = true,
     artefact = true,
+    deadbody_location = true, -- to add corpses mark without BodyDots mod
 }
 
 marker_configs = {
