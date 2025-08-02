@@ -25,7 +25,7 @@ Optional addons:
 
 1. Download and install the requirements.
 2. Download my addon.
-3. Use the keyboard shortcut Ctrl + M **(MO2 required)** to select the archive with my addon.
+3. Use the keyboard shortcut Ctrl + M **(MO2 required)** to select the archive with addon and follow the instructions in the installation window.
 4. If you want to see campfires, water pumps and corpses on the mini-map - additionally install the addons listed above.
 
 ---
