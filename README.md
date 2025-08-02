@@ -44,5 +44,6 @@ Special thanks to:
 - VodoXleb - scripts;
 - xcvb (bvcx) - scripts;
 - RavenAScendant - scripts;
-- morrazzzz - found actor_map_location_added callback, thanks to which the compass was optimized.
-- EZ4E99 - permission to use his compass textures.
+- morrazzzz - found actor_map_location_added callback, thanks to which the compass was optimized;
+- EZ4E99 - permission to use his compass textures;
+- Rier (RierSenpai, rier_senpai) - custom icons ([DeviantArt](https://www.deviantart.com/riersenpai)).
