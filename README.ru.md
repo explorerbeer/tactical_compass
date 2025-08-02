@@ -4,7 +4,8 @@
 
 ## ABOUT
 
-Данный аддон добавляет компас в стиле игр Skyrim, PUDB, Squad и т.д. Маркер отображает выбранный квест на той локации, где этот квест и находится.
+Аддон добавляет компас в стиле игр Skyrim, PUDB, Squad и т.д. Маркер отображает выбранный квест на той локации, где этот квест и находится.
+Система маркеров отображает все возможные точки, которые есть в КПК игрока.
 
 ---
 
@@ -14,9 +15,9 @@
 1. [Mod Configuration Menu (RavenAscendant)](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu)
 
 Опциональные аддоны:
-1. [Display Campfires on Map (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/displaycampfiresonmap)
-2. [Fillable Canteens 2.0 (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/fillable-canteens-20)
-3. [Body Dots on Map (RavenAscendant)]((https://www.moddb.com/mods/stalker-anomaly/addons/bodydotsminimap-white-dots-but-blue))
+1. [Display Campfires on Map (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/displaycampfiresonmap) - отображение костров.
+2. [Fillable Canteens 2.0 (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/fillable-canteens-20) - отображение водоразборных колонок.
+3. [S.T.A.L.K.E.R. 2 Style HUD/UI v2.4](https://www.moddb.com/mods/stalker-anomaly/addons/stalker-2-style-ui) - STALKER 2 UI.
 
 ---
 
@@ -24,7 +25,7 @@
 
 1. Скачать и установить необходимые для работы моды.
 2. Скачать аддон.
-3. Используя сочетание клавиш CTRL + M **(необходим МО2)** выберите архив с нашим аддоном.
+3. Используя сочетание клавиш CTRL + M **(необходим МО2)** выберите архив с аддоном.
 4. Если вы хотите видеть костры, водоразборные колонки и трупы на мини-карте - дополнительно установите аддоны, указанные выше.
 
 ---
@@ -40,17 +41,11 @@
 ## БЛАГОДАРНОСТИ
 
 Реализация поведения компаса была взята из модпака [A.N.T.H.O.L.O.L.O.G.Y.](https://ap-pro.ru/forums/topic/4266-anomaly-anthology-12/).
-Код для получения координат цели был адаптирован и взят из мода [Ubisoft Friendly HUD](https://www.moddb.com/mods/stalker-anomaly/addons/hud-ubisoft-friendly).
-Со своей стороны я реализовал расчет положения маркера относительно цели, провёл рефакторинг кода, а также добавил МСМ-опцию для отключения компаса.
-Вся дополнительная информация находится в скриптах мода.
+Код для получения мировых координат цели был адаптирован и взят из мода [Ubisoft Friendly HUD](https://www.moddb.com/mods/stalker-anomaly/addons/hud-ubisoft-friendly).
 
-Отдельное спасибо VodoXleb, xcvb (bcvx), RavenAscendant за помощь.
-
-**ОГРОМНЕЙШЕЕ СПАСИБО HypeR и Melinite за реализацию компаса, а также HypeR и команде A.N.T.H.O.L.O.G.Y. за разрешение на использование их наработок постфактум.** 
-_(P.S. Искренне прошу прощения, что изначально не спросил разрешения на использование компаса)._
-
----
-
-## ДОРОЖНАЯ КАРТА
-
-[Проект](https://github.com/users/explorerbeer/projects/1/views/1)
+Отдельное спасибо:
+- VodoXleb - скрипты;
+- xcvb (bvcx) - скрипты;
+- RavenAScendant - скрипты;
+- morrazzzz - колбэк actor_map_location_added, благодаря которому удалось существенно оптимизировать компас;
+- EZ4E99 - разрешение на использование текстур компаса.

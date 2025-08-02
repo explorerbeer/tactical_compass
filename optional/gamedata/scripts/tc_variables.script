@@ -1,0 +1,24 @@
+TC_SCREEN_CENTER = 512
+
+-- Legacy
+TC_COMPASS_WIDTH = 600
+
+TC_MARKERS_UP = 696
+TC_MARKERS_DOWN = 36
+TC_DEADBODY_UP = 696
+TC_DEADBODY_DOWN = 36
+
+TC_COMPASS_UP = 671
+TC_COMPASS_DOWN = 11
+
+TC_FADE_DISTANCE = 10
+
+MAX_DISTANCE_TO_QUEST = compass_mcm.get_config("tc_markers/show_quest_dist")
+MAX_DISTANCE_TO_NPC = compass_mcm.get_config("tc_markers/show_unique_dist")
+MAX_DISTANCE_TO_SLEEP = compass_mcm.get_config("tc_markers/show_sleep_dist")
+MAX_DISTANCE_TO_STASH = compass_mcm.get_config("tc_markers/show_stashes_dist")
+MAX_DISTANCE_TO_TRANSITION = compass_mcm.get_config("tc_markers/show_transitions_dist")
+MAX_DISTANCE_TO_SQUADS = compass_mcm.get_config("tc_markers/show_squads_dist")
+MAX_DISTANCE_TO_DEAD = compass_mcm.get_config("tc_markers/show_corpses_dist")
+MAX_DISTANCE_TO_CAMPFIRES = compass_mcm.get_config("tc_markers/show_campf_dist")
+MAX_DISTANCE_TO_PUMP = compass_mcm.get_config("tc_markers/show_pump_dist")

@@ -60,6 +60,7 @@ function UIFlatCompass:InitControls()
     self.xml = CScriptXmlInit()
     self.xml:ParseFile("tactic_compass.xml")
 
+    self.bg = self.xml:InitStatic("bg", self)
     self.compass_dialog = self.xml:InitStatic("frame", self)
     self.line_compass_dialog = self.xml:InitStatic("line_compass", self.compass_dialog)
 
@@ -98,8 +99,10 @@ function UIFlatCompass:Refresh()
     
     if compass_pos_state == 1 then
         self.compass_dialog:SetWndPos(vector2():set(512 - compass_w / 2, 712))
+        self.bg:SetWndPos(vector2():set(512 - compass_w / 2, 682))
     else
         self.compass_dialog:SetWndPos(vector2():set(512 - compass_w / 2, 31))
+        self.bg:SetWndPos(vector2():set(512 - compass_w / 2, 1))
     end
     
     self.line_compass_dialog:InitTexture(compass_f)
