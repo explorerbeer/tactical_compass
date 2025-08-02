@@ -48,5 +48,5 @@
 - xcvb (bvcx) - скрипты;
 - RavenAScendant - скрипты;
 - morrazzzz - колбэк actor_map_location_added, благодаря которому удалось существенно оптимизировать компас;
-- EZ4E99 - разрешение на использование текстур компаса.
+- EZ4E99 - разрешение на использование текстур компаса;
 - Rier (RierSenpai, rier_senpai) - кастомные иконки для компаса ([DeviantArt](https://www.deviantart.com/riersenpai)).
