@@ -17,7 +17,9 @@ Mandatory addons required for the mod to work:
 Optional addons:
 1. [Display Campfires on Map (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/displaycampfiresonmap) - campfires display.
 2. [Fillable Canteens 2.0 (HarukaSai)](https://www.moddb.com/mods/stalker-anomaly/addons/fillable-canteens-20) - water pumps display.
-3. [S.T.A.L.K.E.R. 2 Style HUD/UI v2.4](https://www.moddb.com/mods/stalker-anomaly/addons/stalker-2-style-ui) - STALKER 2 UI.
+3. [Body Dots on Minimap (RavenAscendant)](https://www.moddb.com/mods/stalker-anomaly/addons/bodydotsminimap-white-dots-but-blue) - corpses display.
+4. [Milspec PDA (Catspaw)](https://www.moddb.com/mods/stalker-anomaly/addons/milspec-pda-for-anomaly-151-152-and-gamma) - corpses display.
+5. [S.T.A.L.K.E.R. 2 Style HUD/UI v2.4](https://www.moddb.com/mods/stalker-anomaly/addons/stalker-2-style-ui) - STALKER 2 UI.
 
 ---
 
