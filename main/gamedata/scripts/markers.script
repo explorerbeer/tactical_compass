@@ -1,7 +1,9 @@
 -- Author: explorerbee --
--- Date: 21.09.2024 --
+-- Date: 09.08.2025 --
 
 HUD = nil
+
+local max_possible_distance = tc_variables.TC_MAX_POSSIBLE_DISTANCE
 
 local init_markers = {}
 local markers_list = {}
@@ -15,10 +17,11 @@ local calc_position = markers_utils.calc_position
 local set_distance_text = markers_utils.set_distance_text
 local get_config = compass_mcm.get_config
 local calc_alpha = markers_utils.calc_alpha
+local draw_arrow = markers_utils.draw_arrow
 
 local blacklisted_categories = markers_definitions.blacklisted_categories
-local transition_types = markers_definitions.transition_types
 local marker_categories = markers_definitions.marker_categories
+local transition_types = markers_definitions.transition_types
 
 local is_show_markers = true
 
@@ -34,6 +37,8 @@ end
 function HUDMarker:InitControls()
     self:SetAutoDelete(true)
 
+    self.tmr = 0
+
     self.xml = CScriptXmlInit()
     local xml = self.xml
 
@@ -46,50 +51,62 @@ function HUDMarker:Update()
     CUIScriptWnd.Update(self)
     self:RefreshMarkers()
 
+    local tg = time_global()
+	if self.tmr > tg then return end
+	self.tmr = tg + 250
+
     self.markers:Show(is_show_markers and main_hud_shown())
 end
 
 function HUDMarker:CreateMarker(id, marker_type)
-    if not markers_list[id] then
+    if not markers_list[id] and marker_type then
         markers_list[id] = self.xml:InitStatic("markers:marker_" .. marker_type, self.markers)
+        if marker_type ~= "deadbody" then
+            markers_list[id].arrow = self.xml:InitStatic("markers:marker_" .. marker_type .. ":arrow", markers_list[id])
+        end
     end
 
     return markers_list[id]
 end
 
-function HUDMarker:UpdateSingleMarker(id, spot_data, actor_pos, actor_dir)
+function HUDMarker:UpdateSingleMarker(id, spot_type, spot_data, actor_pos, actor_dir)
     local compass_pos_state = get_config("tc_main/compass_sc_pos")
 
     local marker_type = spot_data.category
+
+    if not marker_type then return end
+
     local marker_world_pos = id and get_world_coords(id)
 
-    if not marker_world_pos then
-        if markers_list[id] then
-            markers_list[id]:Show(false)
-        end
+    local marker_key = id .. "_" .. spot_type
 
+    if not marker_world_pos then
+        if markers_list[marker_key] then
+            markers_list[marker_key]:Show(false)
+        end
         return
     end
 
-    local marker = self:CreateMarker(id, marker_type)
+    local marker = self:CreateMarker(marker_key, marker_type)
     local distance_to_target = calc_distance(marker_world_pos, actor_pos)
 
     local mcm_marker_config  = define_distance(marker_type)
-    local distance_threshold = mcm_marker_config.distance
     local is_enabled = mcm_marker_config.is_enabled
     local is_distance = mcm_marker_config.is_distance
     local is_always_visible = mcm_marker_config.is_always_visible
+    local distance_threshold = is_always_visible and max_possible_distance or mcm_marker_config.distance
 
     if not is_enabled or not distance_to_target then
         marker:Show(false)
-
         return
     end
 
-    local marker_x = calc_position(marker_world_pos, actor_pos, actor_dir, prev_obj_positions and prev_obj_positions[id])
-    local marker_y = define_marker_y(compass_pos_state, marker_type)
 
+    local marker_x = calc_position(marker_world_pos, actor_pos, actor_dir, prev_obj_positions and prev_obj_positions[marker_key])
+    local marker_y = define_marker_y(compass_pos_state, marker_type)
     local marker_alpha = calc_alpha(is_always_visible, distance_to_target, distance_threshold)
+
+    draw_arrow(actor_pos, marker_world_pos, marker, marker_alpha, marker_type)
 
     local screen_width = 1024
     local compass_width = self.markers:GetWidth() * 0.75
@@ -97,7 +114,10 @@ function HUDMarker:UpdateSingleMarker(id, spot_data, actor_pos, actor_dir)
 
     local margin = (screen_width - compass_width) / 2
 
-    if marker_x and marker_x > margin + marker_half_width and marker_x < margin + compass_width - marker_half_width then
+    local pos_left = margin + compass_width - marker_half_width
+    local pos_right = margin + marker_half_width
+
+    if marker_x and marker_x < pos_left and marker_x > pos_right then
         marker:Show(true)
         marker:SetWndPos(vector2():set(marker_x, marker_y))
         marker:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
@@ -107,8 +127,7 @@ function HUDMarker:UpdateSingleMarker(id, spot_data, actor_pos, actor_dir)
         marker:Show(false)
     end
 
-    prev_obj_positions = prev_obj_positions or {}
-    prev_obj_positions[id] = marker_x
+    prev_obj_positions[marker_key] = marker_x
 end
 
 function HUDMarker:RefreshMarkers()
@@ -117,8 +136,10 @@ function HUDMarker:RefreshMarkers()
     local actor_pos = device_obj.cam_pos
     local actor_dir = vector():set(dir.x, 0, dir.z):normalize()
 
-    for id, spot_data in pairs(init_markers) do
-        self:UpdateSingleMarker(id, spot_data, actor_pos, actor_dir)
+    for id, spot_types in pairs(init_markers) do
+        for spot_type, spot_data in pairs(spot_types) do
+            self:UpdateSingleMarker(id, spot_type, spot_data, actor_pos, actor_dir)
+        end
     end
 end
 
@@ -140,83 +161,72 @@ end
 function HUDMarker:__finalize()
 end
 
-function collect_transitions()
+function collect_markers()
     for i = 1, 65534 do
         local se_obj = alife_object(i)
 
         for spot, category in pairs(transition_types) do
-            if se_obj then
-                if level.map_has_object_spot(i, spot) ~= 0 then
-                    init_markers[i] = { type = spot, category = category }
-                end
+            if se_obj and level.map_has_object_spot(i, spot) ~= 0 then
+                init_markers[i] = init_markers[i] or {}
+                init_markers[i][spot] = { category = category }
             end
         end
     end
 end
 
 function map_location_added(binder, spot_type, id)
-    if not blacklisted_categories[spot_type] then
-        if not init_markers[id] then
-            init_markers[id] = { type = spot_type, category = marker_categories[spot_type] }
-        elseif init_markers[id].type ~= spot_type then
-            remove_old_marker(id)
+    if blacklisted_categories[spot_type] then return end
 
-            init_markers[id] = { type = spot_type, category = marker_categories[spot_type] }
-        end
+    if not init_markers[id] then
+        init_markers[id] = {}
+    end
+
+    if not init_markers[id][spot_type] then
+        init_markers[id][spot_type] = {
+            category = marker_categories[spot_type]
+        }
     end
 end
 
 function on_check_spot_existing()
-    for id, spot_data in pairs(init_markers) do
-        local spot_type = spot_data.type
-        local category = spot_data.category
-
-        if category ~= transition_types[category] and category ~= "deadbody" and level.map_has_object_spot(id, spot_type) == 0 then
-            clear_marker(id)
+    for id, spot_types in pairs(init_markers) do
+        for spot_type, _ in pairs(spot_types) do
+            if --[[ spot_type ~= "deadbody_location" and ]] level.map_has_object_spot(id, spot_type) == 0 then
+                remove_old_marker(id, spot_type)
+            end
         end
     end
 end
 
-function add_corpse_marker(npc)
-    local npc_id = npc:id()
-
-    local marker_type = "deadbody_location"
-
-    remove_old_marker(npc_id)
-
-    init_markers[npc_id] = {
-        type = marker_type,
-        category = markers_definitions.marker_categories[marker_type]
-    }
-end
-
-function remove_corpse_marker(npc, who)
-    local npc_id = npc:id()
-
-    _ = not npc:alive() and clear_marker(npc_id)
-end
-
-function remove_old_marker(id)
-    if markers_list[id] then
-        markers_list[id]:Show(false)
-
-        markers_list[id] = nil
-    end
-
-    if prev_obj_positions and prev_obj_positions[id] then
-        prev_obj_positions[id] = nil
-    end
-end
-
 function clear_marker(id)
-    if markers_list[id] then
-        markers_list[id]:Show(false)
-        markers_list[id] = nil
+    if init_markers[id] then
+        for spot_type, _ in pairs(init_markers[id]) do
+            remove_old_marker(id, spot_type)
+        end
     end
-
-    prev_obj_positions[id] = nil
 
     init_markers[id] = nil
+end
+
+function remove_old_marker(id, spot_type)
+    local marker_key = id .. "_" .. spot_type
+
+    if markers_list[marker_key] then
+        markers_list[marker_key]:Show(false)
+        markers_list[marker_key] = nil
+    end
+
+    if prev_obj_positions and prev_obj_positions[marker_key] then
+        prev_obj_positions[marker_key] = nil
+    end
+
+    if init_markers[id] then
+        init_markers[id][spot_type] = nil
+
+        if next(init_markers[id]) == nil then
+            init_markers[id] = nil
+        end
+    end
 end
 
 function markers_toggle(key)
@@ -225,8 +235,27 @@ function markers_toggle(key)
     is_show_markers = not is_show_markers
 end
 
+function load_state(m_data)
+    init_markers = {}
+
+    for id, spots in pairs(m_data.init_markers or {}) do
+        for spot_type, data in pairs(spots) do
+            local category = data.category or marker_categories[spot_type]
+
+            if category then
+                init_markers[id] = init_markers[id] or {}
+                init_markers[id][spot_type] = { category = category }
+            end
+        end
+    end
+end
+
+function save_state(m_data)
+    m_data.init_markers = init_markers
+end
+
 function on_game_start()
-    RegisterScriptCallback("actor_on_first_update", collect_transitions)
+    RegisterScriptCallback("actor_on_first_update", collect_markers)
     RegisterScriptCallback("actor_on_update", on_check_spot_existing)
     RegisterScriptCallback("actor_map_location_added", map_location_added)
 
@@ -234,10 +263,8 @@ function on_game_start()
     RegisterScriptCallback("actor_on_net_destroy", deactivate_markers)
 	RegisterScriptCallback("actor_on_before_death", deactivate_markers)
 
-    RegisterScriptCallback("npc_on_death_callback", add_corpse_marker)
-    RegisterScriptCallback("npc_on_use", remove_corpse_marker)
-    RegisterScriptCallback("monster_on_death_callback",add_corpse_marker)
-    RegisterScriptCallback("monster_on_actor_use_callback",remove_corpse_marker)
-
     RegisterScriptCallback("on_key_press", markers_toggle)
+
+    RegisterScriptCallback("load_state", load_state)
+    RegisterScriptCallback("save_state", save_state)
 end

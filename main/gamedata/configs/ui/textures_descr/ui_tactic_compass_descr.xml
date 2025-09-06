@@ -1,6 +1,6 @@
 <w>
     <!-- Static frame -->
-    <!-- S2 EZ4E99 -->
+    <!-- S2 (EZ4E99) -->
     <file name="ui\tactic_compass\static_frame">
         <texture id="compass_static_frame" x="0" y="0" width="400" height="30" />
     </file>

@@ -57,7 +57,9 @@
 
     <string id="ui_mcm_tc_markers_marker_m_desc">
         <text>Customize the display of markers. You can enable/disable the display of a certain
-            category of markers, as well as change the distance of their display.</text>
+            category of markers, enable/disable the display of a distance to target and change the
+            distance of display. "Always display" parameter will always display markers on a max
+            possible distance. "Distance to target" parameter is ignored in this case.</text>
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_show_quest">
@@ -132,6 +134,10 @@
         <text> Squad markers: display distance</text>
     </string>
 
+    <string id="ui_mcm_tc_markers_marker_m_corpses_desc">
+        <text>Requires addon Body Dots on Minimap or Milspec PDA</text>
+    </string>
+
     <string id="ui_mcm_tactic_compass_tc_markers_show_corpses">
         <text>Corpse marker: display</text>
     </string>
@@ -148,6 +154,10 @@
         <text>Campfire marker: display</text>
     </string>
 
+    <string id="ui_mcm_tc_markers_marker_m_campf_desc">
+        <text>Requires addon Display Campfires On Map.</text>
+    </string>
+
     <string id="ui_mcm_tactic_compass_tc_markers_is_campf_dist">
         <text>Campfire marker: display distance to target</text>
     </string>
@@ -158,6 +168,10 @@
 
     <string id="ui_mcm_tactic_compass_tc_markers_show_pump">
         <text>Water pump marker: display</text>
+    </string>
+
+    <string id="ui_mcm_tc_markers_marker_m_pump_desc">
+        <text>Requires addon Fillable Canteens with Water Pumps patch.</text>
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_is_pump_dist">

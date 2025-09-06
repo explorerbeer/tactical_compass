@@ -1,6 +1,6 @@
 marker_categories = {
     -- Quests
-    primary_task_location = "primary",
+    storyline_task_location = "primary",
     secondary_task_location = "secondary",
 
     -- Unique NPCs
@@ -16,14 +16,11 @@ marker_categories = {
     -- Sleep zones
     ui_pda2_actor_sleep_location = "sleep",
 
-    -- Corpses
-    deadbody_location = "deadbody",
-
     -- Stashes
-    treasure_all = "stashes",
-    treasure_unique = "stashes",
-    treasure_searched = "stashes",
-    treasure_player = "stashes",
+    treasure_all = "stashes_all",
+    treasure_unique = "stashes_unique",
+    treasure_searched = "stashes_searched",
+    treasure_player = "stashes_player",
     treasure = "stashes",
 
     -- Squads
@@ -49,6 +46,14 @@ marker_categories = {
     -- Campfires
     campfire_lit = "campfire_lit",
     campfire_unlit = "campfire_unlit",
+
+    -- Corpses
+    deadbody_location = "deadbody",
+    deadbody_location_sdot = "deadbody",
+    deadbody_location_mdot = "deadbody",
+    deadbody_location_ldot = "deadbody",
+    deadbody_location_skul = "deadbody",
+    deadbody_location_whtx = "deadbody"
 }
 
 transition_types = {
@@ -74,55 +79,54 @@ blacklisted_categories = {
     warfare_mutant_spot = true,
     anom_zone = true,
     artefact = true,
-    deadbody_location = true, -- to add corpses mark without BodyDots mod
 }
 
 marker_configs = {
     -- NPCs
     special = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     trader = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     mechanic = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     scout = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     barman = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     quest_npc = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     medic = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
     },
     companion = {
-        distance = tc_variables.MAX_DISTANCE_TO_NPC,
+        distance = "show_unique_dist",
         is_enabled = "show_unique",
         is_distance = "is_unique_dist",
         is_always_visible = "is_unique_av"
@@ -130,45 +134,71 @@ marker_configs = {
 
     -- Static
     sleep = {
-        distance = tc_variables.MAX_DISTANCE_TO_SLEEP,
+        distance = "show_sleep_dist",
         is_enabled = "show_sleep",
         is_distance = "is_sleep_dist",
         is_always_visible = "is_sleep_av"
     },
-    stashes = {
-        distance = tc_variables.MAX_DISTANCE_TO_STASH,
-        is_enabled = "show_stashes",
-        is_distance = "is_stashes_dist",
-        is_always_visible = "is_stashes_av"
-    },
     transition = {
-        distance = tc_variables.MAX_DISTANCE_TO_TRANSITION,
+        distance = "show_transitions_dist",
         is_enabled = "show_transitions",
         is_distance = "is_transitions_dist",
         is_always_visible = "is_transitions_av"
     },
     deadbody = {
-        distance = tc_variables.MAX_DISTANCE_TO_DEAD,
+        distance = "show_corpses_dist",
         is_enabled = "show_corpses",
         is_distance = "is_corpses_dist",
         is_always_visible = "is_corpses_av"
     },
     water = {
-        distance = tc_variables.MAX_DISTANCE_TO_PUMP,
+        distance = "show_pump_dist",
         is_enabled = "show_pump",
         is_distance = "is_pump_dist",
         is_always_visible = "is_pump_av"
     },
 
+    -- stashes
+    stashes = {
+        distance = "show_stashes_dist",
+        is_enabled = "show_stashes",
+        is_distance = "is_stashes_dist",
+        is_always_visible = "is_stashes_av"
+    },
+    stashes_all = {
+        distance = "show_stashes_dist",
+        is_enabled = "show_stashes",
+        is_distance = "is_stashes_dist",
+        is_always_visible = "is_stashes_av"
+    },
+    stashes_unique = {
+        distance = "show_stashes_dist",
+        is_enabled = "show_stashes",
+        is_distance = "is_stashes_dist",
+        is_always_visible = "is_stashes_av"
+    },
+    stashes_searched = {
+        distance = "show_stashes_dist",
+        is_enabled = "show_stashes",
+        is_distance = "is_stashes_dist",
+        is_always_visible = "is_stashes_av"
+    },
+    stashes_player = {
+        distance = "show_stashes_dist",
+        is_enabled = "show_stashes",
+        is_distance = "is_stashes_dist",
+        is_always_visible = "is_stashes_av"
+    },
+
     -- Quest
     primary = {
-        distance = tc_variables.MAX_DISTANCE_TO_QUEST,
+        distance = "show_quest_dist",
         is_enabled = "show_quest",
         is_distance = "is_quest_dist",
         is_always_visible = "is_quest_av"
     },
     secondary = {
-        distance = tc_variables.MAX_DISTANCE_TO_QUEST,
+        distance = "show_quest_dist",
         is_enabled = "show_quest",
         is_distance = "is_quest_dist",
         is_always_visible = "is_quest_av"
@@ -176,79 +206,79 @@ marker_configs = {
 
     -- Squads
     stalker = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     bandit = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     csky = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     army = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     freedom = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     dolg = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     killer = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     ecolog = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     monolith = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     renegade = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     greh = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     isg = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
     },
     unknown = {
-        distance = tc_variables.MAX_DISTANCE_TO_SQUADS,
+        distance = "show_squads_dist",
         is_enabled = "show_squads",
         is_distance = "is_squads_dist",
         is_always_visible = "is_squads_av"
@@ -256,13 +286,13 @@ marker_configs = {
 
     -- Campfires
     campfire_lit = {
-        distance = tc_variables.MAX_DISTANCE_TO_CAMPFIRES,
+        distance = "show_campf_dist",
         is_enabled = "show_campf",
         is_distance = "is_campf_dist",
         is_always_visible = "is_campf_av"
     },
     campfire_unlit = {
-        distance = tc_variables.MAX_DISTANCE_TO_CAMPFIRES,
+        distance = "show_campf_dist",
         is_enabled = "show_campf",
         is_distance = "is_campf_dist",
         is_always_visible = "is_campf_av"

@@ -12,7 +12,7 @@ function define_distance_to_marker(marker_type)
     local config = markers_definitions.marker_configs[marker_type]
 
     return {
-        distance = config.distance,
+        distance = get_config("tc_markers/" .. config.distance),
         is_enabled = get_config("tc_markers/" .. config.is_enabled),
         is_distance = get_config("tc_markers/" .. config.is_distance),
         is_always_visible = get_config("tc_markers/" .. config.is_always_visible)
@@ -82,11 +82,13 @@ end
 function calc_position(world_pos, actor_pos, actor_dir, prev_marker_x)
 	local marker_pos = screen_center
 
+    local flat_pos
+
     if world_pos then
-        world_pos.y = actor_pos.y
+        flat_pos = vector():set(world_pos.x, actor_pos.y, world_pos.z)
     end
 
-    local target_dir = world_pos:sub(actor_pos):normalize()
+    local target_dir = flat_pos:sub(actor_pos):normalize()
     local dot_product = target_dir:dotproduct(actor_dir)
 
     if dot_product < -0.99 then
@@ -158,6 +160,32 @@ function calc_alpha(is_always_visible, distance_to_npc, max_distance)
 
         return 255 - (progress * 255)
     end
+end
+
+function draw_arrow(actor_pos, marker_world_pos, marker, marker_alpha, marker_type)
+    local actor_pos_y = math.floor(actor_pos and actor_pos.y or 0)
+    local marker_pos_y = math.floor(marker_world_pos and marker_world_pos.y or 0)
+
+    local y_diff = actor_pos_y - marker_pos_y
+
+    if marker_type ~= "deadbody" then
+       if y_diff < -2 then
+            marker.arrow:Show(true)
+            init_arrow_texture(marker, "tc_arrow_up")
+            marker.arrow:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+        elseif y_diff > 2 then
+            marker.arrow:Show(true)
+            init_arrow_texture(marker, "tc_arrow_down")
+            marker.arrow:SetTextureColor(GetARGB(marker_alpha, 255, 255, 255))
+        else
+            marker.arrow:Show(false)
+        end
+    end
+end
+
+function init_arrow_texture(marker, texture)
+    marker.arrow:InitTexture(texture)
+    marker.arrow:SetWndPos(vector2():set(marker:GetWidth() / 2, -2))
 end
 
 -- Callback registration

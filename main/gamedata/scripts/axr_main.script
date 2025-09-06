@@ -1,150 +1,52 @@
-local base_net_destroy = bind_stalker.actor_binder.net_destroy
-local base_reinit = bind_stalker.actor_binder.reinit
+--[[
 
-function bind_stalker.actor_binder:net_destroy()
-    --utils_data.debug_write("actor net destroy start")
+	Copyright (C) 2012-2015 Alundaio
+	This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+	
+	Callback and module manager for easy plug-in based script management
+	by Alundaio
+	
+	1/31/2016
+	axr_main now auto-executes any script that has on_game_load method. To create a new module, simply add a on_game_start function
+	
+--]]
 
-	local sm = surge_manager.get_surge_manager()
-	if (sm) then sm:finalize() end
-	sm = psi_storm_manager.get_psi_storm_manager()
-	if (sm) then sm:finalize() end
-	sm = level_weathers.get_weather_manager()
-	if (sm) then sm:finalize() end
+-- axr_options.ini
+config = ini_file_ex("axr_options.ltx",true)
 
-	xr_sound.stop_sounds_by_id(self.object:id())
-
-	if (USE_MARSHAL) then
-		UnregisterScriptCallback("save_state",self)
-	end
-
-	bind_stalker_ext.actor_on_net_destroy(self)
-
-	level.show_weapon(true)
-	db.del_actor(self.object)
-	db.delete_enemy(self.object)
-
-	-- remove callbacks
-	local t = {
-				-- vanilla
-				callback.inventory_info,
-				callback.on_item_take,
-				callback.on_item_drop,
-				callback.task_state,
-				callback.trade_sell_buy_item,
-				callback.take_item_from_box,
-				callback.use_object,
-
-				callback.actor_map_location_added,
-
-				-- coc
-				callback.hud_animation_end,
-				callback.hit,
-				callback.key_press,
-				callback.key_release,
-				callback.key_hold,
-				callback.actor_before_death,
-				callback.on_attach_vehicle,
-				callback.on_detach_vehicle,
-				callback.on_use_vehicle,
-				callback.weapon_fired,
-				callback.weapon_jammed,
-				callback.weapon_zoom_in,
-				callback.weapon_zoom_out,
-				callback.weapon_magazine_empty,
-				callback.weapon_lowered,
-				callback.weapon_raised,
-				callback.weapon_no_ammo,
-				callback.item_to_slot,
-				callback.item_to_belt,
-				callback.item_to_ruck,
-				callback.on_foot_step
-	}
-	for i=1,#t do
-		if (t[i]) then
-			self.object:set_callback(t[i])
-		end
-	end
-
-	if(_G.amb_vol~=0) then
-		exec_console_cmd("snd_volume_eff "..tostring(_G.amb_vol))
-		_G.amb_vol = 0
-	end
-	if(_G.mus_vol~=0) then
-	    exec_console_cmd("snd_volume_music "..tostring(_G.mus_vol))
-		_G.mus_vol = 0
-	end
-	if sr_psy_antenna.psy_antenna then
-		sr_psy_antenna.psy_antenna:destroy()
-		sr_psy_antenna.psy_antenna = false
-	end
-
-	object_binder.net_destroy(self)
-	--utils_data.debug_write("actor net destroy end")
+-- load default rspec when axr_options created first time
+if not (config:section_exist("temp")) then
+	get_console():execute("cfg_load " .. getFS():update_path('$game_config$', '').."rspec_default.ltx")
+	config:w_value("temp","rspec_default",true)
+	config:save()
 end
+-------------------------------------------------------------------------------------------------
 
-function bind_stalker.actor_binder:reinit()
-    object_binder.reinit(self)
+-- debug scan/simulation
+function check_on_launch()
+	--get_console():execute("clear_log")
 
-	--utils_data.debug_write("actor reinit start")
+-- Simulation
+	--treasure_manager.simulate_stash_creation(700)
+	--death_manager.simulate_death_drops(10)
+	--xrs_rnd_npc_loadout.simulate_npc_loadouts(20,nil,nil,{"primary","secondary"})
 
-	local npc_id = self.object:id()
-	db.storage[npc_id] = empty_table(db.storage[npc_id])
-	self.st = db.storage[npc_id]
+-- Generating
+	--itms_manager.generate_boosters_list()
 
-	local t = {
-				-- vanilla
-				["inventory_info"] 			= bind_stalker_ext.actor_on_info_callback,
-				["on_item_take"] 			= bind_stalker_ext.actor_on_item_take,
-				["on_item_drop"] 			= bind_stalker_ext.actor_on_item_drop,
-				["task_state"] 				= bind_stalker_ext.actor_on_task_callback,
-				["trade_sell_buy_item"]		= bind_stalker_ext.actor_on_trade,
-				["take_item_from_box"]		= bind_stalker_ext.actor_on_item_take_from_box,
-				["use_object"]				= bind_stalker_ext.actor_on_item_use,
-
-				["map_location_added"]		= markers_utils.actor_map_location_added,
-
-				-- coc
-				["hud_animation_end"]		= bind_stalker_ext.actor_on_hud_animation_end,
-				["hit"]						= bind_stalker_ext.actor_on_hit_callback,
-				["key_press"]				= bind_stalker_ext.on_key_press,
-				["key_release"]				= bind_stalker_ext.on_key_release,
-				["key_hold"]				= bind_stalker_ext.on_key_hold,
-				["actor_before_death"]		= bind_stalker_ext.actor_on_before_death,
-				["on_attach_vehicle"]		= bind_stalker_ext.actor_on_attach_vehicle,
-				["on_detach_vehicle"]		= bind_stalker_ext.actor_on_detach_vehicle,
-				["on_use_vehicle"]			= bind_stalker_ext.actor_on_use_vehicle,
-				["weapon_fired"]			= bind_stalker_ext.actor_on_weapon_fired,
-				["weapon_jammed"]			= bind_stalker_ext.actor_on_weapon_jammed,
-				["weapon_zoom_in"]			= bind_stalker_ext.actor_on_weapon_zoom_in,
-				["weapon_zoom_out"]			= bind_stalker_ext.actor_on_weapon_zoom_out,
-				["weapon_magazine_empty"]	= bind_stalker_ext.actor_on_weapon_magazine_empty,
-				["weapon_lowered"]			= bind_stalker_ext.actor_on_weapon_lowered,
-				["weapon_raised"]			= bind_stalker_ext.actor_on_weapon_raised,
-				["weapon_no_ammo"]			= bind_stalker_ext.actor_on_weapon_reload, -- note: in engine this actually called on try_reload.
-
-				["item_to_belt"]			= bind_stalker_ext.actor_item_to_belt,
-				["item_to_slot"]			= bind_stalker_ext.actor_item_to_slot,
-				["item_to_ruck"]			= bind_stalker_ext.actor_item_to_ruck,
-				["on_foot_step"]			= bind_stalker_ext.actor_on_foot_step
-	}
-	for cb,func in pairs(t) do
-		if (callback[cb] and func) then
-			self.object:set_callback(callback[cb],func,self)
-		end
-	end
-
-	if (USE_MARSHAL) then
-		RegisterScriptCallback("save_state",self)
-	end
-
-	bind_stalker_ext.actor_on_reinit(self)
-
-	alife():set_objects_per_update(65534) -- To force all of alife to spawn and update at least once
-
-	--utils_data.debug_write("actor reinit end")
+-- Others
+	--z_xml_calculator.start()
+	--z_generate_prefetch.start()
 end
+check_on_launch()
+--
 
-axr_main.intercepts = {
+-------------------------------------------------------------------------------------------------
+
+-- Valid Callbacks (named intercepts to avoid namespace conflicts)
+-- You must register a callback before or during on_game_load (ie. bind_actor net_spawn)
+-- All unused callbacks will have their table deleted from intercepts (see on_game_load for implementation)
+local intercepts = {
 
 	--// Player
 	on_before_level_changing	            = {}, -- Params: ()
@@ -328,7 +230,162 @@ axr_main.intercepts = {
 	on_get_item_cost						= {}, -- look at bottom of utils_item.script for detailed explanation
 	bullet_on_hit							= {}, -- Params: (<string>,<game_object>,<vector>,<vector>,<string>,<number>,<number>)
 
-	--// Custom
-	actor_map_location_added				= {} -- Params: (<binder>,<>string><number>)
+	actor_map_location_added				= {}, -- Params: (<binder>,<string>,<string>)	
 }
 
+-----------------------------------------------------------
+-- Global Callback Register
+-- param 1 - name as type<string> (ie. intercepts[name])
+-- param 2 - function to execute as type<function> or userdata with name as function
+-----------------------------------------------------------
+function callback_add(name)
+	if (not intercepts[name]) then
+		intercepts[name] = {}
+	else
+		printf("![axr_main callback_add] callback %s already exists!",name)
+		callstack()
+	end
+end
+
+function callback_set(name,func_or_userdata)
+	if (func_or_userdata == nil) then
+		printf("![axr_main callback_set] trying to set callback %s to nil function!",name)
+		callstack()
+		return
+	end
+	if (intercepts[name]) then
+		intercepts[name][func_or_userdata] = true
+	else
+		printf("![axr_main callback_set] callback %s doesn't exist!",name)
+		callstack()
+	end
+end
+
+function callback_unset(name,func_or_userdata)
+	if (intercepts[name]) then
+		intercepts[name][func_or_userdata] = nil
+	else
+		printf("![axr_main callback_unset] callback %s doesn't exist!",name)
+		callstack()
+	end
+end
+
+function make_callback(name,...)
+	if (intercepts[name]) then
+		for func_or_userdata,v in pairs(intercepts[name]) do
+			if (type(func_or_userdata) == "function") then
+				func_or_userdata(...)
+			elseif (func_or_userdata[name]) then
+				func_or_userdata[name](func_or_userdata,...)
+			end
+		end
+	else
+		printf("![axr_main make_callback] can't make callback to non existing intercept %s!",name)
+		callstack()
+	end
+end
+
+--------------------------------------------------------------------------------------------------------------------
+-- ON GAME START
+--------------------------------------------------------------------------------------------------------------------
+function on_game_start()
+	local ignore = {
+		["_G.script"] = true,
+		["class_registrator.script"] = true,
+		["game_registrator.script"] = true,
+		["ui_registrator.script"] = true,
+		["ce_new_attachable_item.script"] = true,
+		["ce_new_game_dm.script"] = true,
+		["sim_faction_brain_human.script"] = true,
+		["sim_faction_brain_mutant.script"] = true,
+		["ce_switcher.script"] = true,
+		["axr_main.script"] = true,
+		["lua_help.script"] = true,
+		["rx_gl.script"] = true
+	}
+
+	local t = {}
+	local size_t = 0
+	local f	= getFS()
+	local flist = f:file_list_open_ex("$game_scripts$",bit_or(FS.FS_ListFiles,FS.FS_RootOnly),"*.script")
+	local f_cnt = flist:Size()
+	for	it=0, f_cnt-1 do
+		local file = flist:GetAt(it)
+		local file_name = file:NameShort()
+		--printf("%s size=%s",file_name,file:Size())
+		if (file:Size() > 0 and ignore[file_name] ~= true) then
+			file_name = file_name:sub(0,file_name:len()-7)
+			if (_G[file_name] and _G[file_name].on_game_start) then
+				size_t = size_t + 1
+				t[size_t] = file_name -- load all scripts first
+			end
+		end
+	end
+	for i=1,#t do
+		--printf("%s.on_game_start()",t[i])
+		_G[ t[i] ].on_game_start()
+	end
+end
+
+------------------
+-- main_menu_on_init()
+------------------
+function main_menu_on_init(menu)
+	xrs_dyn_music.main_menu_on(menu)
+end
+
+------------------
+-- main_menu_on_quit()
+------------------
+function main_menu_on_quit(menu)
+	xrs_dyn_music.main_menu_off(menu)
+end
+
+function actor_on_weapon_zoom_in()
+	local wpn = db.actor:active_item()
+
+	scoped_weapon_is_zoomed = wpn and IsWeapon(wpn) and wpn:weapon_is_scope()
+	binoc_is_zoomed = wpn and (wpn:section() == "wpn_binoc_inv")
+	weapon_is_zoomed = true
+
+	SendScriptCallback("GUI_on_show", "UIZoom") -- to force hiding HUD UIs on Zooming
+end
+
+function actor_on_weapon_zoom_out()
+	scoped_weapon_is_zoomed = false
+	binoc_is_zoomed = false
+	weapon_is_zoomed = false
+	SendScriptCallback("GUI_on_hide", "UIZoom") -- to force hiding HUD UIs on Zooming
+end
+
+------------------
+-- server_entity_on_register
+------------------
+function server_entity_on_register(se_obj,type_name)
+	local id = se_obj.id
+	if (id == AC_ID) then
+		story_objects.register(id,"actor")
+	else
+		story_objects.check_spawn_ini_for_story_id(se_obj)
+	end
+end
+
+------------------
+-- server_entity_on_unregister
+------------------
+-- good place to remove ids from persistent tables
+function server_entity_on_unregister(se_obj,type_name)
+	local id = se_obj.id
+	local m_data = alife_storage_manager.get_state()
+	if (m_data) then
+		if (m_data.se_object) then
+			m_data.se_object[id] = nil
+			--printf("$ alife_storage | cleaning server object [%s](%s) mdata", se_obj:name(), id)
+		end
+		if (m_data.game_object) then
+			m_data.game_object[id] = nil
+			--printf("$ alife_storage | cleaning game object [%s](%s) mdata", se_obj:name(), id)
+		end
+	end
+	story_objects.unregister(id)
+end

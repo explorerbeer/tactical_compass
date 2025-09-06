@@ -54,7 +54,8 @@
     <string id="ui_mcm_tc_markers_marker_m_desc">
         <text>Настройка отображения маркеров. Вы можете включить/выключить отображение определённой
             категории маркеров, включить/выключить отображение расстояния до цели, а также изменить
-            дистанцию их отображения.</text>
+            дистанцию их отображения. Параметр "отображать всегда" будет отображать метки на
+            максимально возможной дистанции. Параметр "дистанция отображения" при этом игнорируется.</text>
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_show_quest">
@@ -129,6 +130,10 @@
         <text>Маркеры отрядов: дистанция отображения</text>
     </string>
 
+    <string id="ui_mcm_tc_markers_marker_m_corpses_desc">
+        <text>Требуется мод Body Dots on Minimap или Milspec PDA</text>
+    </string>
+
     <string id="ui_mcm_tactic_compass_tc_markers_show_corpses">
         <text>Маркер трупов: отображение</text>
     </string>
@@ -145,6 +150,10 @@
         <text>Маркер костров: отображение</text>
     </string>
 
+    <string id="ui_mcm_tc_markers_marker_m_campf_desc">
+        <text>Требуется мод Display Campfires On Map.</text>
+    </string>
+
     <string id="ui_mcm_tactic_compass_tc_markers_is_campf_dist">
         <text>Маркер костров: отображение дистанции до цели</text>
     </string>
@@ -154,7 +163,11 @@
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_show_pump">
-        <text>Маркер вод. колонок:отображение</text>
+        <text>Маркер вод. колонок: отображение</text>
+    </string>
+
+    <string id="ui_mcm_tc_markers_marker_m_pump_desc">
+        <text>Требуется мод Fillable Canteens с патчем Water Pumps.</text>
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_is_pump_dist">
@@ -162,7 +175,7 @@
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_show_pump_dist">
-        <text>Маркер вод. колонок:дистанция отображения</text>
+        <text>Маркер вод. колонок: дистанция отображения</text>
     </string>
 
     <string id="ui_mcm_tactic_compass_tc_markers_is_quest_av">
