@@ -16,6 +16,7 @@
         <texture id="tc_transition_white" x="330" y="0" width="30" height="30" />
         <texture id="tc_sleep" x="360" y="0" width="30" height="30" />
         <texture id="tc_water" x="390" y="0" width="30" height="30" />
+        <texture id="tc_stash_blue" x="420" y="0" width="30" height="30" />
 
         <!-- Unique NPCs -->
         <texture id="tc_special" x="0" y="30" width="30" height="30" />
