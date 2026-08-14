@@ -1,6 +1,6 @@
 # Tactical Compass
 
-A compass strip for S.T.A.L.K.E.R. Anomaly in the spirit of S.T.A.L.K.E.R. 2, PUBG and
+A compass for S.T.A.L.K.E.R. Anomaly in the spirit of S.T.A.L.K.E.R. 2, PUBG and
 Squad, with a marker system that puts your PDA map spots right on it. Fully configurable
 through MCM.
 
