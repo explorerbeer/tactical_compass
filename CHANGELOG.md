@@ -3,8 +3,8 @@
 ## 1.0 Release
 
 ### Added
-- Compass style (S.T.A.L.K.E.R. 2 / classic) is switchable in MCM — no separate install option.
-- Marker icons (custom / vanilla) are switchable in MCM — no separate install option.
+- Compass style (S.T.A.L.K.E.R. 2 / classic) is switchable in MCM â€” no separate install option.
+- Marker icons (custom / vanilla) are switchable in MCM â€” no separate install option.
 - Compass scale slider, with ultrawide monitor support.
 - Drop shadows on the compass and markers. The marker shadow can be turned off in MCM.
 - Full compatibility with DX8 / DX9 renderers.
@@ -62,5 +62,5 @@ Later fixes in this line: `v0.31-pre` quest markers, `v0.32-pre` disable-HUD cra
 `v0.33-pre` `distance_threshold` crash.
 
 ## Earlier beta versions
-`v0.12` – `v0.16`: initial marker position maths, interpolation, English MCM translation
+`v0.12` â€“ `v0.16`: initial marker position maths, interpolation, English MCM translation
 (thanks guns_bel), task-type marker icons, Dynahud support, MCM compass position option.

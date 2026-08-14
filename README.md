@@ -4,22 +4,22 @@ A compass for S.T.A.L.K.E.R. Anomaly in the spirit of S.T.A.L.K.E.R. 2, PUBG and
 Squad, with a marker system that puts your PDA map spots right on it. Fully configurable
 through MCM.
 
-[ModDB page](https://www.moddb.com/members/explorerbee) ∑
-[Demonstration video](https://www.youtube.com/watch?v=boGvng0kotI) ∑
-[–ÛÒÒÍ‡ˇ ‚ÂÒËˇ](README.ru.md) ∑
+[ModDB page](https://www.moddb.com/members/explorerbee) ¬∑
+[Demonstration video](https://www.youtube.com/watch?v=boGvng0kotI) ¬∑
+[–†—É—Å—Å–∫–∞—è –≤–µ—Ä—Å–∏—è](README.ru.md) ¬∑
 [Changelog](CHANGELOG.md)
 
 ## Features
 
-- **Two compass styles** ó S.T.A.L.K.E.R. 2 and the classic one, switchable in MCM at any time.
-- **Two marker icon sets** ó custom icons by Rier, or vanilla PDA icons that follow your own icon addons.
+- **Two compass styles** ‚Äî S.T.A.L.K.E.R. 2 and the classic one, switchable in MCM at any time.
+- **Two marker icon sets** ‚Äî custom icons by Rier, or vanilla PDA icons that follow your own icon addons.
 - **Nine marker categories**: quest targets, unique NPCs, sleeping spots, stashes, level
   transitions, NPC squads, corpses, campfires and water pumps.
-- **Per-category settings** ó enable or disable each type, set its display range, or make it
+- **Per-category settings** ‚Äî enable or disable each type, set its display range, or make it
   always visible regardless of distance.
 - **Distance to target**, shown when you look straight at a marker.
-- **Elevation arrows** ó a marker tells you whether the target is above or below you.
-- **Distance fade** ó markers fade out smoothly instead of popping in and out.
+- **Elevation arrows** ‚Äî a marker tells you whether the target is above or below you.
+- **Distance fade** ‚Äî markers fade out smoothly instead of popping in and out.
 - **Drop shadows** so the compass and markers stay readable against a bright sky.
 - **Scale slider**, including support for ultrawide monitors.
 
@@ -29,7 +29,7 @@ Mandatory:
 
 - [Mod Configuration Menu](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu)
 
-Optional ó each one unlocks the corresponding marker type:
+Optional ‚Äî each one unlocks the corresponding marker type:
 
 | Addon | Adds |
 | --- | --- |
@@ -48,7 +48,7 @@ Optional ó each one unlocks the corresponding marker type:
 ## Updating from an older version
 
 **Delete the previous version completely before installing this one.** The script files were
-renamed in v5, and leftovers from the old version will keep running alongside the new ones ó
+renamed in v5, and leftovers from the old version will keep running alongside the new ones ‚Äî
 you will end up with two compasses on screen at once. In MO2 that means removing the old mod
 entry, not just overwriting it.
 
@@ -56,10 +56,10 @@ entry, not just overwriting it.
 
 Everything lives in MCM under *Tactical Compass*:
 
-- **Main settings** ó compass style, position on screen (top or bottom), scale.
-- **Markers** ó icon set, drop shadow, and four options for each of the nine categories:
+- **Main settings** ‚Äî compass style, position on screen (top or bottom), scale.
+- **Markers** ‚Äî icon set, drop shadow, and four options for each of the nine categories:
   display, display distance to target, always display, and display range.
-- **Key binding** ó the toggle key.
+- **Key binding** ‚Äî the toggle key.
 
 ## Ultrawide monitors
 
@@ -69,7 +69,7 @@ regular monitors the slider simply resizes the compass.
 
 ## Known issues
 
-- The minimap reappears after changing screen resolution. This is an engine bug ó it
+- The minimap reappears after changing screen resolution. This is an engine bug ‚Äî it
   reproduces with the addon disabled.
 
 ## Project layout
@@ -109,7 +109,7 @@ A huge thank you to **HypeR** and **Melinite** for the original compass, and to 
 A.N.T.H.O.L.O.G.Y. team for letting me use their design and HypeR's painted compass after the
 fact.
 
-- **VodoXleb**, **xcvb (bvcx)**, **RavenAscendant** ó scripting help
-- **morrazzzz** ó found the `actor_map_location_added` callback the marker system is built on
-- **EZ4E99** ó compass texture
-- **Rier** (RierSenpai) ó custom marker icons ([DeviantArt](https://www.deviantart.com/riersenpai))
+- **VodoXleb**, **xcvb (bvcx)**, **RavenAscendant** ‚Äî scripting help
+- **morrazzzz** ‚Äî found the `actor_map_location_added` callback the marker system is built on
+- **EZ4E99** ‚Äî compass texture
+- **Rier** (RierSenpai) ‚Äî custom marker icons ([DeviantArt](https://www.deviantart.com/riersenpai))
