@@ -1,0 +1,549 @@
+-- Tactical Compass -- HUD window: compass strip and PDA spot markers.
+-- Adapted from A.N.T.H.O.L.O.G.Y. (original author(?): Zateynik Melinite)
+-- Credits: Strogglet15, Tronex, RavenAscendant
+-- Compass reworked by: explorerbee, markers implementation: explorerbee
+
+local V = tc_variables
+local cfg = tc_mcm
+local defs = tc_defs
+local utils = tc_utils
+
+local abs, atan2, floor = math.abs, math.atan2, math.floor
+local time_global, device = time_global, device
+
+local CARDINAL_W = V.TC_CARDINAL_WIDTH
+local CARDINAL_H = V.TC_CARDINAL_HEIGHT
+local PX_PER_DEG = V.TC_PX_PER_DEGREE
+
+local RAD_TO_PX = (180 / math.pi) * PX_PER_DEG
+local FULL_TURN = 360 * PX_PER_DEG
+
+local COMPASS_SHADOW_ALPHA = V.TC_COMPASS_SHADOW_ALPHA
+local COMPASS_SHADOW_OFF = V.TC_COMPASS_SHADOW_OFFSET
+
+local MARKER_SHADOW_ALPHA = V.TC_MARKER_SHADOW_ALPHA
+local MARKER_SHADOW_OFF = V.TC_MARKER_SHADOW_OFFSET
+
+HUD = nil
+enabled = true
+
+local function scale_width(widget, k)
+	if not widget then return end
+
+	local pos = widget:GetWndPos()
+
+	widget:SetWndSize(vector2():set(widget:GetWidth() * k, widget:GetHeight()))
+	widget:SetWndPos(vector2():set(pos.x * k, pos.y))
+end
+
+class "TCHud" (CUIScriptWnd)
+
+function TCHud:__init()
+	super()
+
+	self:InitControls()
+end
+
+function TCHud:InitControls()
+	self:SetAutoDelete(true)
+
+	local size_k = cfg.scale or 1
+	if abs(size_k - 1) < 0.001 then size_k = 1 end
+
+	self.size_k = size_k
+
+	-- Fixed for this window's lifetime: a style change rebuilds the whole HUD
+	local style = cfg.style
+
+	self.style = style
+	self.compass_width = style.compass_width * size_k
+	self.compass_x = V.TC_SCREEN_CENTER - (style.compass_inset + style.compass_width / 2) * size_k
+
+	utils.set_scale(self.compass_width / V.TC_COMPASS_BASE_WIDTH)
+
+	self.tmr_visibility = 0
+	self.tmr_markers = 0
+	self.tmr_cleanup = 0
+
+	self.visible = nil
+	self.last_px = nil
+	self.last_degrees = nil
+
+	-- Reused every frame instead of allocating a vector2/Frect per call
+	self.pos = vector2()
+	self.rect = Frect()
+	self.dir = vector()
+
+	self.active = {}
+	self.active_count = 0
+	self.active_max = 0
+
+	self.xml_compass = CScriptXmlInit()
+	self.xml_compass:ParseFile("ui_compass.xml")
+
+	local node = style.node
+
+	self.compass = self.xml_compass:InitStatic(node, self)
+
+	if style.has_degrees then
+		self.degrees_shadow = self:InitShadowText(node .. ":line_compass_radian")
+		self.degrees = self.xml_compass:InitTextWnd(node .. ":line_compass_radian", self.compass)
+	end
+
+	self.cardinal_shadow = self:InitShadow(node .. ":cardinal_dir")
+	self.cardinal_dir = self.xml_compass:InitStatic(node .. ":cardinal_dir", self.compass)
+
+	self.frame_shadow = self:InitShadow(node .. ":static_frame")
+	self.static_frame = self.xml_compass:InitStatic(node .. ":static_frame", self.compass)
+
+	if size_k ~= 1 then
+		scale_width(self.compass, size_k)
+		scale_width(self.degrees_shadow, size_k)
+		scale_width(self.degrees, size_k)
+		scale_width(self.cardinal_shadow, size_k)
+		scale_width(self.cardinal_dir, size_k)
+		scale_width(self.frame_shadow, size_k)
+		scale_width(self.static_frame, size_k)
+	end
+
+	self.xml_markers = CScriptXmlInit()
+	self.xml_markers:ParseFile("ui_markers.xml")
+
+	self.marker_node = cfg.marker_set
+	self.marker_shadow = cfg.marker_shadow
+
+	self.markers = self.xml_markers:InitStatic(self.marker_node, self)
+
+	-- Constant, so it is measured once
+	local band = self.compass_width * 0.75
+	local margin = (V.TC_SCREEN_WIDTH - band) / 2
+
+	self.band_left = margin + band
+	self.band_right = margin
+
+	self:UpdateLayout()
+end
+
+-- Dark copy of a widget, one step below it in draw order.
+-- Must be called before the widget itself is initialised.
+function TCHud:InitShadow(path)
+	local shadow = self.xml_compass:InitStatic(path, self.compass)
+	if not shadow then return nil end
+
+	local pos = shadow:GetWndPos()
+
+	shadow:SetWndPos(vector2():set(pos.x + COMPASS_SHADOW_OFF, pos.y + COMPASS_SHADOW_OFF))
+	shadow:SetTextureColor(GetARGB(COMPASS_SHADOW_ALPHA, 0, 0, 0))
+
+	return shadow
+end
+
+function TCHud:InitShadowText(path)
+	local shadow = self.xml_compass:InitTextWnd(path, self.compass)
+	if not shadow then return nil end
+
+	-- Without a colour setter the copy would render white and read as smearing,
+	-- so drop it rather than leave a ghost behind the real text.
+	if not shadow.SetTextColor then
+		shadow:SetText("")
+		return nil
+	end
+
+	local pos = shadow:GetWndPos()
+
+	shadow:SetWndPos(vector2():set(pos.x + COMPASS_SHADOW_OFF, pos.y + COMPASS_SHADOW_OFF))
+	shadow:SetTextColor(GetARGB(COMPASS_SHADOW_ALPHA, 0, 0, 0))
+
+	return shadow
+end
+
+-- Position depends only on the MCM row setting and the resolution
+function TCHud:UpdateLayout()
+	local style = self.style
+	local y = (cfg.pos_state == 1) and style.compass_up or style.compass_down
+
+	self.compass:SetWndPos(self.pos:set(self.compass_x, y))
+
+	self.tmr_markers = 0 -- marker rows move with the strip
+end
+
+function TCHud:Update()
+	CUIScriptWnd.Update(self)
+
+	local tg = time_global()
+
+	if tg >= self.tmr_visibility then
+		self.tmr_visibility = tg + V.TC_TICK_VISIBILITY
+
+		local visible = enabled and main_hud_shown()
+
+		if visible ~= self.visible then
+			self.visible = visible
+			self.compass:Show(visible)
+			self.markers:Show(visible)
+		end
+	end
+
+	-- Nothing below is worth computing while the HUD is hidden
+	if not self.visible then return end
+
+	local dev = device()
+
+	self:UpdateCompass(dev.cam_dir)
+
+	if tg >= self.tmr_cleanup then
+		self.tmr_cleanup = tg + V.TC_TICK_CLEANUP
+		tc_markers.drop_stale_spots()
+	end
+
+	if tg >= self.tmr_markers then
+		self.tmr_markers = tg + V.TC_TICK_MARKERS
+		self:RefreshMarkerState(dev.cam_pos)
+	end
+
+	self:RefreshMarkerPositions(dev.cam_pos, dev.cam_dir)
+end
+
+function TCHud:UpdateCompass(cam_dir)
+	local px = atan2(cam_dir.x, cam_dir.z) * RAD_TO_PX
+	if px < 0 then px = px + FULL_TURN end
+
+	-- Below half a pixel the shift is invisible; skip the engine call
+	if self.last_px and abs(px - self.last_px) < 0.5 then return end
+	self.last_px = px
+
+	self.rect:set(px, 0, px + CARDINAL_W, CARDINAL_H)
+
+	self.cardinal_shadow:SetTextureRect(self.rect)
+	self.cardinal_dir:SetTextureRect(self.rect)
+
+	if self.degrees then
+		local degrees = floor(px / PX_PER_DEG + 0.5)
+
+		if degrees ~= self.last_degrees then
+			self.last_degrees = degrees
+
+			local text = tostring(degrees)
+
+			self.degrees:SetText(text)
+			if self.degrees_shadow then self.degrees_shadow:SetText(text) end
+		end
+	end
+end
+
+function TCHud:CreateMarker(entry)
+	local path = self.marker_node .. ":marker_" .. entry.category
+
+	-- Attached before the icon: order of attachment is draw order
+	if self.marker_shadow then
+		local shadow = self.xml_markers:InitStatic(path, self.markers)
+
+		if shadow then
+			if self.size_k ~= 1 then
+				shadow:SetWndSize(vector2():set(shadow:GetWidth() * self.size_k, shadow:GetHeight()))
+			end
+
+			shadow:Show(false)
+
+			-- The distance readout is white too, so it needs the same treatment.
+			-- Guarded: not every build exposes SetTextColor on the text control.
+			local text = shadow:TextControl()
+			if text and text.SetTextColor then
+				text:SetTextColor(GetARGB(MARKER_SHADOW_ALPHA, 0, 0, 0))
+			end
+
+			entry.shadow = shadow
+		end
+	end
+
+	local ui = self.xml_markers:InitStatic(path, self.markers)
+	if not ui then return nil end
+
+	if self.size_k ~= 1 then
+		ui:SetWndSize(vector2():set(ui:GetWidth() * self.size_k, ui:GetHeight()))
+	end
+
+	ui:Show(false)
+
+	entry.ui = ui
+	entry.half_width = ui:GetWidth() / 2
+	entry.edge = ui:GetWidth() * 0.75 / 2
+	entry.shown = false
+	entry.applied_alpha = -1
+	entry.applied_arrow = 0
+	entry.applied_text = ""
+
+	if not defs.no_arrow[entry.category] then
+		local arrow = self.xml_markers:InitStatic(path .. ":arrow", ui)
+
+		arrow:Show(false)
+
+		entry.arrow = arrow
+    entry.arrow_x = ui:GetWidth() / 2
+	end
+
+	return ui
+end
+
+function TCHud:ReleaseMarker(entry)
+	local ui = entry.ui
+	if not ui then return end
+
+	ui:Show(false)
+	if entry.shadow then entry.shadow:Show(false) end
+
+	-- Dropping the lua reference alone leaves the static attached to the window
+	-- forever and the engine keeps updating it -- corpse markers pile up fast.
+	if self.markers.DetachChild then
+		self.markers:DetachChild(ui)
+
+		if entry.shadow then self.markers:DetachChild(entry.shadow) end
+	end
+
+	entry.ui = nil
+	entry.arrow = nil
+	entry.shadow = nil
+	entry.shown = false
+	entry.x = nil
+end
+
+-- Slow pass: everything that depends on the world rather than the camera angle
+function TCHud:RefreshMarkerState(cam_pos)
+	local style = self.style
+	local groups = cfg.groups
+	local top = cfg.pos_state == 1
+
+	local y_marker = top and style.markers_up or style.markers_down
+	local y_body = top and style.deadbody_up or style.deadbody_down
+
+	local active = self.active
+	local count = 0
+
+	for _, spots in pairs(tc_markers.list) do
+		for _, entry in pairs(spots) do
+			if self:RefreshMarker(entry, cam_pos, groups, y_marker, y_body) then
+				count = count + 1
+				active[count] = entry
+			end
+		end
+	end
+
+	for i = count + 1, self.active_max do
+		active[i] = nil
+	end
+
+	self.active_count = count
+	self.active_max = count
+end
+
+function TCHud:RefreshMarker(entry, cam_pos, groups, y_marker, y_body)
+	local group = groups[entry.group]
+
+	if not (group and group.enabled) then
+		return self:HideMarker(entry)
+	end
+
+	local wpos = utils.get_world_coordinates(entry.id)
+	if not wpos then
+		return self:HideMarker(entry)
+	end
+
+	local distance = floor(wpos:distance_to(cam_pos))
+	local alpha = utils.calc_alpha(group.always_visible, distance, group.distance)
+
+	if alpha <= 0 then
+		return self:HideMarker(entry)
+	end
+
+	-- Created lazily: a disabled category never allocates a static
+	local ui = entry.ui or self:CreateMarker(entry)
+	if not ui then return false end
+
+	entry.wpos:set(wpos.x, wpos.y, wpos.z)
+	entry.alpha = alpha
+	entry.show_distance = group.show_distance
+	entry.y = (entry.category == "deadbody") and y_body or y_marker
+
+	if distance ~= entry.distance then
+		entry.distance = distance
+		entry.distance_str = tostring(distance)
+	end
+
+	if alpha ~= entry.applied_alpha then
+		entry.applied_alpha = alpha
+
+		local color = GetARGB(alpha, 255, 255, 255)
+		ui:SetTextureColor(color)
+
+		if entry.arrow then entry.arrow:SetTextureColor(color) end
+
+		if entry.shadow then
+			entry.shadow:SetTextureColor(GetARGB(floor(alpha * MARKER_SHADOW_ALPHA / 255), 0, 0, 0))
+		end
+	end
+
+	self:RefreshArrow(entry, cam_pos)
+
+	return true
+end
+
+function TCHud:HideMarker(entry)
+	if entry.shown then
+		entry.shown = false
+
+		if entry.ui then entry.ui:Show(false) end
+		if entry.shadow then entry.shadow:Show(false) end
+	end
+
+	return false
+end
+
+function TCHud:RefreshArrow(entry, cam_pos)
+	local arrow = entry.arrow
+	if not arrow then return end
+
+	local diff = floor(cam_pos.y) - floor(entry.wpos.y)
+	local state = (diff < -2) and 1 or (diff > 2) and -1 or 0
+
+	-- InitTexture is expensive; only touch it when the direction actually flips
+	if state == entry.applied_arrow then return end
+	entry.applied_arrow = state
+
+	if state == 0 then
+		arrow:Show(false)
+		return
+	end
+
+	arrow:InitTexture(state == 1 and "tc_arrow_up" or "tc_arrow_down")
+	arrow:SetWndPos(self.pos:set(entry.arrow_x, -2))
+	arrow:SetTextureColor(GetARGB(entry.alpha, 255, 255, 255)) -- InitTexture resets it
+	arrow:Show(true)
+end
+
+-- Fast pass: only the horizontal position, and only for markers in range
+function TCHud:RefreshMarkerPositions(cam_pos, cam_dir)
+	local count = self.active_count
+	if count == 0 then return end
+
+	local dir = self.dir:set(cam_dir.x, 0, cam_dir.z)
+	if dir:magnitude() < 0.001 then return end -- looking straight up or down
+
+	dir:normalize()
+
+	local active = self.active
+	local band_left, band_right = self.band_left, self.band_right
+	local pos = self.pos
+
+	for i = 1, count do
+		local entry = active[i]
+
+		if entry.ui then
+			local x = utils.calc_position(entry.wpos, cam_pos, dir, entry.x)
+
+			entry.x = x
+
+			if x < band_left - entry.edge and x > band_right + entry.edge then
+				if not entry.shown then
+					entry.shown = true
+
+					entry.ui:Show(true)
+					if entry.shadow then entry.shadow:Show(true) end
+				end
+
+				entry.ui:SetWndPos(pos:set(x, entry.y))
+
+				if entry.shadow then
+					entry.shadow:SetWndPos(pos:set(x + MARKER_SHADOW_OFF, entry.y + MARKER_SHADOW_OFF))
+				end
+
+				local text = (entry.show_distance and utils.is_looking_at(x)) and entry.distance_str or ""
+
+				if text ~= entry.applied_text then
+					entry.applied_text = text
+
+					entry.ui:TextControl():SetText(text)
+					if entry.shadow then entry.shadow:TextControl():SetText(text) end
+				end
+			elseif entry.shown then
+				entry.shown = false
+
+				entry.ui:Show(false)
+				if entry.shadow then entry.shadow:Show(false) end
+			end
+		end
+	end
+end
+
+function TCHud:__finalize()
+end
+
+function activate()
+	if HUD then return end
+
+	cfg.reload()
+
+	HUD = TCHud()
+	get_hud():AddDialogToRender(HUD)
+end
+
+function deactivate()
+	if not HUD then return end
+
+	get_hud():RemoveDialogToRender(HUD)
+	HUD = nil
+
+	-- The window and every child static are gone now. Entries outlive it, so
+	-- their handles must be dropped or the next activation would draw into
+	-- freed memory.
+	for _, spots in pairs(tc_markers.list) do
+		for _, entry in pairs(spots) do
+			entry.ui = nil
+			entry.arrow = nil
+			entry.shadow = nil
+			entry.shown = false
+			entry.x = nil
+			entry.applied_alpha = -1
+			entry.applied_arrow = 0
+			entry.applied_text = ""
+		end
+	end
+end
+
+function toggle(key)
+	if key ~= cfg.keybind then return end
+
+	enabled = not enabled
+end
+
+function on_option_change()
+	local prev_style = cfg.style
+	local prev_markers = cfg.marker_set
+	local prev_shadow = cfg.marker_shadow
+	local prev_scale = cfg.scale
+
+	cfg.reload()
+
+	if cfg.style ~= prev_style or cfg.marker_set ~= prev_markers
+		or cfg.marker_shadow ~= prev_shadow or cfg.scale ~= prev_scale then
+		deactivate()
+		activate()
+		return
+	end
+
+	if HUD then HUD:UpdateLayout() end
+end
+
+function on_screen_resolution_changed()
+	if HUD then HUD:UpdateLayout() end
+end
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_first_update", activate)
+	RegisterScriptCallback("actor_on_net_destroy", deactivate)
+	RegisterScriptCallback("actor_on_before_death", deactivate)
+
+	RegisterScriptCallback("on_key_press", toggle)
+
+	RegisterScriptCallback("on_option_change", on_option_change)
+	RegisterScriptCallback("on_screen_resolution_changed", on_screen_resolution_changed)
+end

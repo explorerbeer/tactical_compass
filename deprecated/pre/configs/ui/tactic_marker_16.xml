@@ -1,0 +1,146 @@
+<w>
+	<markers x="0" y="0" width="0" height="0" stretch="1">
+		<!-- Quests -->
+		<marker_primary width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_pr x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_pr>
+			
+			<texture>ui_inGame2_PDA_icon_Primary_mission</texture>
+		</marker_primary>
+	
+		<marker_secondary width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text_item_m_sec x="0" y="-13" width="15" height="15">
+				<text font="arial_14" align="c" vert_align="c" complex_mode="1" />
+			</text_item_m_sec>
+			
+			<texture>ui_inGame2_PDA_icon_Secondary_mission</texture>
+		</marker_secondary>
+	
+		<!-- Stashes -->
+	
+		<marker_stashes width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_secret</texture>
+		</marker_stashes>
+
+		<!-- Sleep Zones -->
+	
+		<marker_sleep width="12" height="12" heading="1" stretch="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Place_to_rest</texture>
+		</marker_sleep>
+	
+		<!-- Transition point -->
+		
+		<marker_transition width="13" height="15" stretch="1" heading="1" alignment="c">
+			<texture>ui_pda2_exit_point</texture>
+		</marker_transition>
+
+		<!-- Campfires -->
+
+		<marker_campfire_lit width="24" height="24" stretch="1" heading="1" alignment="c">
+			<texture>ui_campfire_icon_lit</texture>
+		</marker_campfire_lit>
+
+		<marker_campfire_unlit width="24" height="24" stretch="1" heading="1" alignment="c">
+			<texture>ui_campfire_icon_unlit</texture>
+		</marker_campfire_unlit>
+
+		<!-- Water pump -->
+		 
+		<marker_water width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_maid_water_spot</texture>
+		</marker_water>
+
+		<!-- Unique NPCs -->
+
+		<marker_special width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Special</texture>
+		</marker_special>
+	
+		<marker_trader width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Trader</texture>
+		</marker_trader>
+	
+		<marker_mechanic width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_machanik</texture>
+		</marker_mechanic>
+	
+		<marker_scout width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_guide</texture>
+		</marker_scout>
+	
+		<marker_barman width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Barman</texture>
+		</marker_barman>
+	
+		<marker_quest_npc width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_VIP</texture>
+		</marker_quest_npc>
+	
+		<marker_medic width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_Medic</texture>
+		</marker_medic>
+	
+		<marker_companion width="12" height="12" stretch="1" heading="1" alignment="c">
+			<texture>ui_inGame2_PDA_icon_Stalker_companion</texture>
+		</marker_companion>
+
+		<marker_deadbody width="12" height="12" stretch="1" alignment="c" heading="1">
+			<texture>ui_mmap_common_actor</texture>
+		</marker_deadbody>
+
+		<!-- Squads -->
+		
+		<marker_stalker width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_stalker</texture>
+		</marker_stalker>
+
+		<marker_bandit width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_bandit</texture>
+		</marker_bandit>
+
+		<marker_csky width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_csky</texture>
+		</marker_csky>
+
+		<marker_army width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_army</texture>
+		</marker_army>
+
+		<marker_freedom width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_freedom</texture>
+		</marker_freedom>
+
+		<marker_dolg width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_dolg</texture>
+		</marker_dolg>
+
+		<marker_ecolog width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_ecolog</texture>
+		</marker_ecolog>
+
+		<marker_killer width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_killer</texture>
+		</marker_killer>
+
+		<marker_monolith width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_monolith</texture>
+		</marker_monolith>
+
+		<marker_greh width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_greh</texture>
+		</marker_greh>
+
+		<marker_renegade width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_renegade</texture>
+		</marker_renegade>
+
+		<marker_isg width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_mm_faction_isg</texture>
+		</marker_isg>
+
+		<marker_unknown width="8" height="8" stretch="1" alignment="c" heading="1">
+			<texture>ui_icons_mapPDA_mark_t</texture>
+		</marker_unknown>
+	</markers>
+</w>

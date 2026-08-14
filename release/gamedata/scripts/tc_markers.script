@@ -1,0 +1,169 @@
+-- Tactical Compass -- marker registry.
+-- Author: explorerbee
+-- Owns which PDA spots are tracked. tc_hud owns how they are drawn, but the ui
+-- handles live on the entry so the draw path needs one table lookup, not three.
+
+local defs = tc_defs
+
+list = {} -- [object id] = { [spot type] = entry }
+
+local function make_entry(id, spot, category)
+  local group = defs.category_groups[category]
+  if not group then return nil end
+
+  return {
+    id = id,
+    spot = spot,
+    category = category,
+    group = group,
+
+    -- world state, refreshed on the slow tick
+    wpos = vector(),
+    distance = -1,
+    distance_str = "",
+    alpha = 0,
+    show_distance = false,
+    y = 0,
+
+    -- ui handles and last applied state, written only by tc_hud
+    ui = nil,
+    arrow_x = 0,
+    shadow = nil,
+    half_width = 0,
+    edge = 0,
+    x = nil,
+    shown = false,
+    applied_alpha = -1,
+    applied_arrow = 0,
+    applied_text = "",
+  }
+end
+
+function add(id, spot, category)
+  if not (id and spot) then return end
+
+  category = category or defs.spot_categories[spot] or defs.transition_types[spot]
+  if not category then return end
+
+  local spots = list[id]
+  if not spots then
+      spots = {}
+      list[id] = spots
+  end
+
+  if spots[spot] then return end
+
+  local entry = make_entry(id, spot, category)
+  if entry then spots[spot] = entry end
+end
+
+function remove(id, spot)
+  local spots = list[id]
+  if not spots then return end
+
+  local entry = spots[spot]
+  if entry then
+    if tc_hud.HUD then tc_hud.HUD:ReleaseMarker(entry) end
+    spots[spot] = nil
+  end
+
+  if next(spots) == nil then list[id] = nil end
+end
+
+function clear(id)
+  local spots = list[id]
+  if not spots then return end
+
+  if tc_hud.HUD then
+    for _, entry in pairs(spots) do
+      tc_hud.HUD:ReleaseMarker(entry)
+    end
+  end
+
+  list[id] = nil
+end
+
+local function probe_transitions(id)
+  local found = false
+
+  for spot, category in pairs(defs.transition_types) do
+    if level.map_has_object_spot(id, spot) ~= 0 then
+      add(id, spot, category)
+      found = true
+    end
+  end
+
+  return found
+end
+
+local scanned_levels = {}
+
+function collect_transitions()
+  local sim = alife()
+  if not sim then return end
+
+  local lvl = level.name()
+
+  if scanned_levels[lvl] then return end
+  scanned_levels[lvl] = true
+
+  for i = 1, 65534 do
+    if sim:object(i) then probe_transitions(i) end
+  end
+end
+
+function drop_stale_spots()
+  for id, spots in pairs(list) do
+    for spot in pairs(spots) do
+      if level.map_has_object_spot(id, spot) == 0 then
+        remove(id, spot)
+      end
+    end
+  end
+end
+
+function on_map_location_added(binder, spot, id)
+    if defs.blacklisted_spots[spot] then return end
+
+    add(id, spot)
+end
+
+-- Entries hold vectors and ui handles, so only plain data may be written out
+function save_state(m_data)
+  local saved = {}
+
+  for id, spots in pairs(list) do
+    local out
+
+    for spot, entry in pairs(spots) do
+      out = out or {}
+      out[spot] = entry.category
+    end
+
+    if out then saved[id] = out end
+  end
+
+  m_data.tc_markers = saved
+  m_data.init_markers = nil -- pre-refactor key
+end
+
+function load_state(m_data)
+  list = {}
+
+  local saved = m_data.tc_markers or m_data.init_markers
+  if not saved then return end
+
+  for id, spots in pairs(saved) do
+    for spot, data in pairs(spots) do
+      add(id, spot, type(data) == "table" and data.category or data)
+    end
+  end
+end
+
+function on_game_start()
+  RegisterScriptCallback("actor_on_first_update", collect_transitions)
+  RegisterScriptCallback("actor_map_location_added", on_map_location_added)
+
+  RegisterScriptCallback("save_state", save_state)
+  RegisterScriptCallback("load_state", load_state)
+end

@@ -1,0 +1,35 @@
+-- Tactical Compass -- engine callback plumbing.
+-- Author: explorerbee
+
+axr_main.callback_add("actor_map_location_added")
+
+local function on_map_location_added(binder, spot_item, id)
+  SendScriptCallback("actor_map_location_added", binder, spot_item, id)
+end
+
+function on_game_start()
+  local binder = bind_stalker and bind_stalker.actor_binder
+
+  if not (binder and callback and callback.map_location_added) then
+    printf("![tc_binder] cannot hook map_location_added, markers will only "
+      .. "appear after a level load")
+    return
+  end
+
+  local base_reinit = binder.reinit
+
+  function binder:reinit()
+    base_reinit(self)
+
+    self.object:set_callback(callback.map_location_added, on_map_location_added, self)
+  end
+
+  local base_net_destroy = binder.net_destroy
+
+  function binder:net_destroy()
+    self.object:set_callback(callback.map_location_added, nil)
+
+    base_net_destroy(self)
+  end
+end
+

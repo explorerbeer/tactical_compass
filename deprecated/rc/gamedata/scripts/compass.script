@@ -1,0 +1,167 @@
+-- Adapted From: A.N.T.H.O.L.O.G.Y. --
+-- Original author(?): Zateynik Melinite
+-- Credits: Strogglet15, Tronex, RavenAscendant --
+-- Reworked by: explorerbee --
+
+HUD = nil
+
+local screen_center = tc_variables.TC_SCREEN_CENTER
+local compass_width = tc_variables.TC_COMPASS_WIDTH
+
+local compass_up = tc_variables.TC_COMPASS_UP
+local compass_down = tc_variables.TC_COMPASS_DOWN
+
+local cardinal_width  = tc_variables.TC_CARDINAL_WIDTH
+local cardinal_height = tc_variables.TC_CARDINAL_HEIGHT
+
+local RAD_TO_PX = (180 / math.pi) * tc_variables.TC_PX_PER_DEGREE
+local FULL_TURN  = 360 * tc_variables.TC_PX_PER_DEGREE
+local COMPASS_X = screen_center - compass_width / 2
+
+local atan2 = math.atan2
+local abs = math.abs
+
+local time_global = time_global
+local device = device
+
+-- MCM Cache
+local cfg_pos_state = 0
+local cfg_keybind = DIK_keys.DIK_M
+
+local function read_config()
+    cfg_pos_state = compass_mcm.get_config("tc_main/compass_sc_pos")
+    cfg_keybind = compass_mcm.get_config("tc_keybinds/keybind")
+
+    if HUD then HUD:UpdateLayout() end
+end
+
+local is_show_compass = true
+
+class "HUDCompass" (CUIScriptWnd)
+
+function HUDCompass:__init()
+    super()
+
+    self:InitControls()
+end
+
+function HUDCompass:InitControls()
+    self:SetAutoDelete(true)
+
+    self.tmr = 0
+    self.visible = nil
+    self.last_px = nil
+
+    self.pos = vector2()
+    self.rect = Frect()
+
+    self.xml = CScriptXmlInit()
+    local xml = self.xml
+    self.xml:ParseFile("ui_compass.xml")
+
+    self.compass_container = xml:InitStatic("compass_container", self)
+    self.cardinal_dir = xml:InitStatic("compass_container:cardinal_dir", self.compass_container)
+    self.static_compass = xml:InitStatic("compass_container:static_frame", self.compass_container)
+end
+
+function HUDCompass:UpdateLayout()
+    local compass_y = (cfg_pos_state == 1) and compass_up or compass_down
+
+    self.compass_container:SetWndPos(self.pos:set(COMPASS_X, compass_y))
+end
+
+function HUDCompass:Update()
+    CUIScriptWnd.Update(self)
+    self:Refresh()
+
+    local tg = time_global()
+    if self.tmr <= tg then
+        self.tmr = tg + 250
+
+        local visible = is_show_compass and main_hud_shown()
+        
+        if visible ~= self.visible then
+            self.visible = visible
+            self.compass_container:Show(visible)
+        end
+    end
+
+    if not self.visible then return end
+
+    self:Refresh()
+end
+
+function HUDCompass:Refresh()
+    --[[ local compass_pos_state = compass_mcm.get_config("tc_main/compass_sc_pos")
+
+    local angle = compass_utils.calc_angle()
+
+    local frect_x1 = angle * 10
+    local frect_y1 = 0
+
+    local cardinal_dir_init_width = 2400
+    local cardinal_dir_init_height = 100
+
+    local frect_x2 = frect_x1 + cardinal_dir_init_width
+    local frect_y2 = frect_y1 + cardinal_dir_init_height
+
+    local compass_x = screen_center - compass_width / 2
+    local compass_y = (compass_pos_state == 1) and compass_up or compass_down
+
+    self.compass_container:SetWndPos(vector2():set(compass_x, compass_y))
+
+    self.cardinal_dir:SetTextureRect(Frect():set(frect_x1, frect_y1, frect_x2, frect_y2)) ]]
+
+    local dir = device().cam_dir
+
+    local px = atan2(dir.x, dir.z) * RAD_TO_PX
+    if px < 0 then px = px + FULL_TURN end
+
+    if self.last_px and abs(px - self.last_px) < 0.5 then return end
+    self.last_px = px
+
+    self.cardinal_dir:SetTextureRect(self.rect:set(px, 0, px + cardinal_width, cardinal_height))
+end
+
+function HUDCompass:__finalize()
+end
+
+function activate_compass()
+    if HUD == nil then
+        HUD = HUDCompass()
+        get_hud():AddDialogToRender(HUD)
+        HUD:Refresh()
+    end
+end
+
+function deactivate_compass()
+    if HUD ~= nil then
+        get_hud():RemoveDialogToRender(HUD)
+        HUD = nil
+    end
+end
+
+function compass_toggle(key)
+    if key ~= compass_mcm.get_config("tc_keybinds/keybind") then return end
+
+    is_show_compass = not is_show_compass
+end
+
+function on_option_change()
+    read_config()
+end
+
+function on_screen_resolution_changed()
+    if HUD then HUD:UpdateLayout() end
+end
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", activate_compass)
+    RegisterScriptCallback("actor_on_net_destroy", deactivate_compass)
+	RegisterScriptCallback("actor_on_before_death", deactivate_compass)
+
+    RegisterScriptCallback("on_key_press", compass_toggle)
+
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_screen_resolution_changed", on_screen_resolution_changed)
+end

@@ -1,0 +1,150 @@
+-- Tactical Compass -- MCM schema and the cached settings the HUD reads.
+-- Author: explorerbee
+
+local V = tc_variables
+local MAX_DISTANCE = V.TC_MAX_POSSIBLE_DISTANCE
+
+-- The fallback table and reload() all
+-- derive from this. Names must match the groups declared in tc_defs.
+local marker_groups = {
+    { name = "quest",       show = true,  dist = true,  av = true,  range = 400.0 },
+    { name = "unique",      show = true,  dist = false, av = false, range = 60.0 },
+    { name = "sleep",       show = true,  dist = false, av = false, range = 50.0 },
+    { name = "stashes",     show = true,  dist = true,  av = false, range = 100.0 },
+    { name = "transitions", show = true,  dist = true,  av = false, range = 300.0 },
+    { name = "squads",      show = false, dist = false, av = false, range = 50.0 },
+    { name = "corpses",     show = false, dist = false, av = false, range = 35.0, desc = "ui_mcm_tc_markers_marker_m_corpses_desc" },
+    { name = "campf",       show = false, dist = false, av = false, range = 30.0, desc = "ui_mcm_tc_markers_marker_m_campf_desc" },
+    { name = "pump",        show = false, dist = false, av = false, range = 40.0, desc = "ui_mcm_tc_markers_marker_m_pump_desc" },
+}
+
+local defaults = {
+  ["tc_main/compass_sc_pos"] = 0,
+  ["tc_main/compass_style"] = 0,
+  ["tc_main/compass_scale"] = 1.0,
+  ["tc_keybinds/keybind"] = DIK_keys.DIK_M,
+  ["tc_markers/marker_style"] = 0,
+  ["tc_markers/marker_shadow"] = true,
+}
+
+for i = 1, #marker_groups do
+  local g = marker_groups[i]
+
+  defaults["tc_markers/show_" .. g.name] = g.show
+  defaults["tc_markers/is_" .. g.name .. "_dist"] = g.dist
+  defaults["tc_markers/is_" .. g.name .. "_av"] = g.av
+  defaults["tc_markers/show_" .. g.name .. "_dist"] = g.range
+end
+
+local table_compass_sc_pos = {
+  { 0, "ui_mcm_compass_state_up" },
+  { 1, "ui_mcm_compass_state_down" },
+}
+
+local table_compass_style = {
+  { 0, "ui_mcm_compass_style_s2" },
+  { 1, "ui_mcm_compass_style_legacy" },
+}
+
+local table_marker_style = {
+  { 0, "ui_mcm_marker_style_custom" },
+  { 1, "ui_mcm_marker_style_vanilla" },
+}
+
+-- Cached settings
+pos_state = 0
+scale = 1.0
+style = V.TC_STYLES[0]
+marker_set = V.TC_MARKER_SETS[0]
+marker_shadow = true
+keybind = DIK_keys.DIK_M
+groups = {}
+
+function get_config(key)
+  if ui_mcm then return ui_mcm.get("tactic_compass/" .. key) end
+
+  return defaults[key]
+end
+
+-- Called once on the actor's first update and on every on_option_change
+function reload()
+  pos_state = get_config("tc_main/compass_sc_pos")
+  scale = get_config("tc_main/compass_scale")
+  keybind = get_config("tc_keybinds/keybind")
+  style = V.TC_STYLES[get_config("tc_main/compass_style")] or V.TC_STYLES[0]
+  marker_set = V.TC_MARKER_SETS[get_config("tc_markers/marker_style")] or V.TC_MARKER_SETS[0]
+  marker_shadow = get_config("tc_markers/marker_shadow")
+
+  for i = 1, #marker_groups do
+    local name = marker_groups[i].name
+    local group = groups[name]
+
+    if not group then
+      group = {}
+      groups[name] = group
+    end
+
+    group.enabled = get_config("tc_markers/show_" .. name)
+    group.show_distance = get_config("tc_markers/is_" .. name .. "_dist")
+    group.always_visible = get_config("tc_markers/is_" .. name .. "_av")
+    group.distance = group.always_visible and MAX_DISTANCE
+      or get_config("tc_markers/show_" .. name .. "_dist")
+  end
+end
+
+local function marker_options(list, group)
+  if group.desc then
+    list[#list + 1] = { id = "m_" .. group.name .. "_desc", type = "desc", clr = { 255, 255, 255, 0 }, text = group.desc }
+  end
+
+  list[#list + 1] = { id = "show_" .. group.name, type = "check", val = 1, def = group.show }
+  list[#list + 1] = { id = "is_" .. group.name .. "_dist", type = "check", val = 1, def = group.dist }
+  list[#list + 1] = { id = "is_" .. group.name .. "_av", type = "check", val = 1, def = group.av }
+  list[#list + 1] = { id = "show_" .. group.name .. "_dist", type = "track", val = 2, min = 10.0, max = 1000.0, step = 10.0, def = group.range }
+  list[#list + 1] = { id = "divider", type = "line" }
+end
+
+local function markers_section()
+  local list = {
+    { id = "markers_title", type = "slide", text = "ui_mcm_markers_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
+    { id = "marker_style", type = "list", val = 2, def = 0, content = table_marker_style, no_str = true },
+    { id = "marker_shadow", type = "check", val = 1, def = true },
+    { id = "divider", type = "line" },
+    { id = "m_desc", type = "desc", clr = { 255, 255, 255, 0 }, text = "ui_mcm_tc_markers_marker_m_desc" },
+}
+
+  for i = 1, #marker_groups do
+    marker_options(list, marker_groups[i])
+  end
+
+  list[#list] = nil -- trailing divider
+
+  return list
+end
+
+function on_mcm_load()
+  return {
+    id = "tactic_compass",
+    gr = {
+      {
+        id = "tc_main", sh = true, gr = {
+          { id = "title", type = "slide", text = "ui_mcm_compass_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
+          { id = "compass_style", type = "list", val = 2, def = 0, content = table_compass_style, no_str = true },
+          { id = "compass_sc_pos", type = "list", val = 2, def = 0, content = table_compass_sc_pos, no_str = true },
+          { id = "divider", type = "line" },
+          { id = "compass_scale_desc", type = "desc", clr = { 255, 255, 255, 0 }, text = "ui_mcm_tc_main_compass_scale_desc" },
+          { id = "compass_scale", type = "track", val = 2, min = 0.5, max = 1.5, step = 0.05, def = 1.0 },
+        }
+      },
+      {
+        id = "tc_markers", sh = true, gr = markers_section()
+      },
+      {
+        id = "tc_keybinds", sh = true, gr = {
+          { id = "markers_title", type = "slide", text = "ui_mcm_keybinds_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
+          { id = "keybind", type = "key_bind", val = 2, def = DIK_keys.DIK_M, hint = "tactic_compass_tc_keybinds_keybind" },
+        }
+      },
+    }
+  }
+end

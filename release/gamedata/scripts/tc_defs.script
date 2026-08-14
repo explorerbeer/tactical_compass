@@ -1,0 +1,118 @@
+-- Tactical Compass -- static lookup tables.
+-- Author: explorerbee
+
+-- PDA spot type -> marker category.
+-- Every category needs a matching <marker_CATEGORY> node in ui_markers.xml and
+-- an entry in the group table below, otherwise the spot is ignored.
+
+spot_categories = {
+  -- Quests
+  storyline_task_location = "primary",
+  secondary_task_location = "secondary",
+
+  -- Unique NPCs
+  ui_pda2_trader_location = "trader",
+  ui_pda2_special_location = "special",
+  ui_pda2_mechanic_location = "mechanic",
+  ui_pda2_scout_location = "scout",
+  ui_pda2_barman_location = "barman",
+  ui_pda2_quest_npc_location = "quest_npc",
+  ui_pda2_medic_location = "medic",
+  ui_pda2_companion_location = "companion",
+
+  -- Sleep zones
+  ui_pda2_actor_sleep_location = "sleep",
+
+  -- Stashes
+  treasure_all = "stashes_all",
+  treasure_unique = "stashes_unique",
+  treasure_searched = "stashes_searched",
+  treasure_player = "stashes_player",
+  treasure = "stashes",
+
+  -- Squads
+  warfare_stalker_spot = "stalker",
+  warfare_bandit_spot = "bandit",
+  warfare_csky_spot = "csky",
+  warfare_army_spot = "army",
+  warfare_freedom_spot = "freedom",
+  warfare_duty_spot = "dolg",
+  warfare_ecolog_spot = "ecolog",
+  warfare_killer_spot = "killer",
+  warfare_monolith_spot = "monolith",
+  warfare_greh_spot = "greh",
+  warfare_renegade_spot = "renegade",
+  warfare_isg_spot = "isg",
+  red_location = "unknown",
+
+  -- Water pumps (Fillable Canteens compatibility)
+  water_spot = "water",
+
+  -- Campfires (Campfires on Minimap compatibility)
+  campfire_lit = "campfire_lit",
+  campfire_unlit = "campfire_unlit",
+
+  -- Corpses (Milspec PDA compatibility)
+  deadbody_location = "deadbody",
+  deadbody_location_sdot = "deadbody",
+  deadbody_location_mdot = "deadbody",
+  deadbody_location_ldot = "deadbody",
+  deadbody_location_skul = "deadbody",
+  deadbody_location_whtx = "deadbody",
+}
+
+-- Level changer spots, scanned separately -- see tc_markers.collect_transitions
+transition_types = {
+  level_changer_up = "transition",
+  level_changer_up_right = "transition",
+  level_changer_right = "transition",
+  level_changer_right_down = "transition",
+  level_changer_down = "transition",
+  level_changer_down_left = "transition",
+  level_changer_left = "transition",
+  level_changer_left_up = "transition",
+}
+
+-- Spot types we never track
+blacklisted_spots = {
+  fast_travel = true,
+  actor_location = true,
+  actor_location_p = true,
+  primary_object = true,
+  ui_primary_task_blink = true,
+  ui_secondary_task_blink = true,
+  mp_hit_sector_location = true,
+  warfare_zombied_spot = true,
+  warfare_mutant_spot = true,
+  anom_zone = true,
+  artefact = true,
+}
+
+-- Categories drawn without the up/down arrow (no <arrow> node in the xml)
+no_arrow = {
+  deadbody = true,
+}
+
+-- MCM group -> categories sharing its settings. The group name is the suffix of
+-- every MCM key in the group: show_<g>, is_<g>_dist, is_<g>_av, show_<g>_dist.
+-- Group names must match the ones declared in tc_config; a category whose group
+-- has no config is simply never registered.
+local groups = {
+  quest = { "primary", "secondary" },
+  unique = { "special", "trader", "mechanic", "scout", "barman", "quest_npc", "medic", "companion" },
+  sleep = { "sleep" },
+  stashes = { "stashes", "stashes_all", "stashes_unique", "stashes_searched", "stashes_player" },
+  transitions = { "transition" },
+  squads = { "stalker", "bandit", "csky", "army", "freedom", "dolg", "ecolog", "killer", "monolith", "greh", "renegade", "isg", "unknown" },
+  corpses = { "deadbody" },
+  campf = { "campfire_lit", "campfire_unlit" },
+  pump = { "water" },
+}
+
+category_groups = {}
+
+for group, categories in pairs(groups) do
+  for i = 1, #categories do
+    category_groups[categories[i]] = group
+  end
+end

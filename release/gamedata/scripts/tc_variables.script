@@ -1,0 +1,85 @@
+-- Tactical Compass -- layout constants and tuning.
+-- Author: explorerbee
+
+-- The "legacy" optional overrides this whole file, so everything the legacy
+-- style needs to change must live here and nowhere else.
+
+TC_SCREEN_CENTER = 512
+TC_SCREEN_WIDTH = 1024
+
+TC_MAX_POSSIBLE_DISTANCE = 1000
+
+-- Everything that differs between compass looks. Selected in MCM
+-- (tc_main/compass_style), keyed by the value that option stores.
+TC_STYLES = {
+  [0] = {
+    node = "compass_s2",
+    has_background = false,
+    has_degrees = false,
+
+    compass_width = 360,
+    compass_inset = 0,
+    compass_up = 721,
+    compass_down = 19,
+
+    markers_up = 729,
+    markers_down = 27,
+    deadbody_up = 751,
+    deadbody_down = 49,
+  },
+
+  [1] = {
+    node = "compass_legacy",
+    has_background = true,
+    has_degrees = true,
+
+    compass_width = 600,
+    compass_inset = 5, -- <cardinal_dir x="5"> inside a 610-wide container
+    compass_up = 671,
+    compass_down = 11,
+
+    markers_up = 696,
+    markers_down = 36,
+    deadbody_up = 696,
+    deadbody_down = 36,
+  },
+}
+
+-- Marker icon sets, keyed by the value tc_markers/marker_style stores
+TC_MARKER_SETS = {
+    [0] = "markers_custom",
+    [1] = "markers_vanilla",
+}
+
+-- Shared by both styles
+TC_CARDINAL_TEXTURE_WIDTH = 4096
+TC_VISIBLE_DEGREES = 240
+
+TC_PX_PER_DEGREE = TC_CARDINAL_TEXTURE_WIDTH / (360 + TC_VISIBLE_DEGREES)
+TC_CARDINAL_WIDTH = TC_VISIBLE_DEGREES * TC_PX_PER_DEGREE
+TC_CARDINAL_HEIGHT = 100
+
+TC_FADE_DISTANCE = 10
+
+-- Marker movement
+TC_COMPASS_BASE_WIDTH = 360
+
+TC_MARKER_SPREAD = 220      -- px per unit of (1 - dot product)
+TC_MARKER_CLAMP = 300       -- max offset from screen centre
+TC_MARKER_LERP = 0.1        -- smoothing, normal
+TC_MARKER_LERP_FAST = 0.5   -- smoothing, after a large jump
+TC_MARKER_JUMP = 100        -- px, what counts as a large jump
+TC_LOOK_TOLERANCE = 10      -- px, how close to centre counts as "looking at"
+
+-- Update rates, ms
+TC_TICK_VISIBILITY = 250    -- HUD show/hide check
+TC_TICK_MARKERS = 200       -- marker world state (position, distance, alpha)
+TC_TICK_CLEANUP = 2000      -- stale map spot check
+
+-- Dark copy drawn under the compass strip
+TC_COMPASS_SHADOW_ALPHA = 140
+TC_COMPASS_SHADOW_OFFSET = 0.5
+
+-- Dark copy drawn under each marker; toggled by tc_markers/marker_shadow
+TC_MARKER_SHADOW_ALPHA = 140
+TC_MARKER_SHADOW_OFFSET = 0.5

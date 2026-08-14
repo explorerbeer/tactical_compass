@@ -1,0 +1,13 @@
+function lerp(a, b, t)
+    return a + (b - a) * t
+end
+
+function is_warfare_category(category, faction_table)
+    for _, v in ipairs(faction_table) do
+        if v == category then
+            return true
+        end
+    end
+
+    return false
+end

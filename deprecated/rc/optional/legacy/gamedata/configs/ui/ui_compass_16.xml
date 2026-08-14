@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<window>
+    <!-- Legacy style -->
+    <compass_container x="0" y="0" width="610" height="85" stretch="1" heading="1">
+        <bg x="0" y="0" width="610" height="85" stretch="1" heading="1">
+            <texture>compass_bg_legacy</texture>
+        </bg>
+
+        <static_frame x="5" y="55" width="600" height="20" stretch="1" heading="1">
+            <texture>compass_flat</texture>
+        </static_frame>
+
+        <cardinal_dir x="5" y="35" width="600" height="20" stretch="1" heading="1">
+            <texture>compass_hyper_directions</texture>
+        </cardinal_dir>
+
+        <line_compass_radian x="290" y="63" width="30">
+            <text font="medium" align="c" complex_mode="1" />
+        </line_compass_radian>
+    </compass_container>
+</window>
