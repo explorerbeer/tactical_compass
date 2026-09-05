@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1 
+- Compass height is now adjusted in game: a button in MCM opens a small panel over the world, and the compass moves as you drag the slider.
+- The task you track in the PDA is highlighted on the compass.
+- The toggle key can be set to a single press, a double tap or a hold.
+
 ## 1.0 Release
 
 ### Added
