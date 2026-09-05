@@ -2,6 +2,16 @@
 
 <window>
 	<markers_custom x="0" y="0" width="360" height="0" stretch="1">
+		<marker_highlight_primary width="17" height="17" heading="1" stretch="1" alignment="c"
+			light_anim="ui_slow_blinking_alpha" la_cyclic="1" la_texture="0" la_alpha="1">
+			<texture r="255" g="240" b="0">tc_highlight</texture>
+		</marker_highlight_primary>
+
+		<marker_highlight_secondary width="17" height="17" heading="1" stretch="1" alignment="c"
+			light_anim="ui_slow_blinking_alpha" la_cyclic="1" la_texture="0" la_alpha="1">
+			<texture r="255" g="255" b="255">tc_highlight</texture>
+		</marker_highlight_secondary>
+
 		<!-- Quests -->
 		<marker_primary width="15" height="15" stretch="1" heading="1" alignment="c">
 			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
@@ -249,6 +259,16 @@
 	</markers_custom>
 
 	<markers_vanilla x="0" y="0" width="360" height="0" stretch="1">
+		<marker_highlight_primary width="16" height="16" heading="1" stretch="1" alignment="c"
+			light_anim="ui_slow_blinking_alpha" la_cyclic="1" la_texture="0" la_alpha="1">
+			<texture r="255" g="240" b="0">tc_highlight</texture>
+		</marker_highlight_primary>
+
+		<marker_highlight_secondary width="16" height="16" heading="1" stretch="1" alignment="c"
+			light_anim="ui_slow_blinking_alpha" la_cyclic="1" la_texture="0" la_alpha="1">
+			<texture r="255" g="255" b="255">tc_highlight</texture>
+		</marker_highlight_secondary>
+
 		<!-- Quests -->
 		<marker_primary width="12" height="12" stretch="1" heading="1" alignment="c">
 			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"

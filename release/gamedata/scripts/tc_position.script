@@ -1,0 +1,153 @@
+-- Tactical Compass -- in-game position panel.
+-- Implementation was spied in the addon Anomaly Popup Messages by themrdemonized
+
+local V = tc_variables
+local cfg = tc_mcm
+
+local function path()
+  return "tactic_compass/" .. cfg.style.pos_key
+end
+
+local function read()
+  return (ui_mcm and ui_mcm.get(path())) or cfg.style.default_y
+end
+
+local function write(value)
+  if ui_mcm then ui_mcm.set(path(), value) end
+
+  cfg.compass_y = value
+
+  if tc_hud.HUD then tc_hud.HUD:UpdateLayout() end
+end
+
+local commands = {
+  {
+    name = "ui_mcm_tactic_compass_tc_main_compass_y",
+    get = read,
+    set = write,
+    min = V.TC_POS_MIN,
+    max = V.TC_POS_MAX,
+    step = 1,
+  },
+}
+
+GUI = nil
+
+class "TCPositionPanel" (CUIScriptWnd)
+
+function TCPositionPanel:__init() super()
+  self:InitControls()
+
+  RegisterScriptCallback("actor_on_net_destroy", self)
+end
+
+function TCPositionPanel:__finalize()
+end
+
+function TCPositionPanel:actor_on_net_destroy()
+  self:Close()
+end
+
+function TCPositionPanel:InitControls()
+  self:SetWndRect(Frect():set(0, 0, 1024, 768))
+  self:SetAutoDelete(true)
+
+  self.xml = CScriptXmlInit()
+
+  local xml = self.xml
+  xml:ParseFile("ui_options.xml")
+
+  self.dialog = xml:InitStatic("ctrl_lighting", self)
+
+  xml:InitFrame("ctrl_lighting:frame", self.dialog)
+
+  local cap = xml:InitStatic("ctrl_lighting:cap_main", self.dialog)
+  cap:TextControl():SetText(game.translate_string("ui_mcm_tactic_compass_tc_main_position"))
+
+  self.scroll = xml:InitScrollView("ctrl_lighting:scroll", self.dialog)
+  self.scroll:Clear()
+
+  self.track = {}
+  self.value = {}
+  self.num = {}
+
+  for i = 1, #commands do
+    local cmd = commands[i]
+    local val = math.floor((cmd.get() or 0) + 0.5)
+
+    local row = xml:InitStatic("ctrl_lighting:st", nil)
+
+    xml:InitStatic("ctrl_lighting:cap", row):TextControl()
+      :SetText(game.translate_string(cmd.name))
+
+    self.track[i] = xml:InitTrackBar("ctrl_lighting:track", row)
+    self.track[i]:SetStep(cmd.step)
+    self.track[i]:SetOptFBounds(cmd.min, cmd.max)
+    self.track[i]:SetFValue(val)
+
+    self.value[i] = val
+
+    self.num[i] = xml:InitTextWnd("ctrl_lighting:num", row)
+    self.num[i]:SetText(tostring(val))
+
+    self.scroll:AddWindow(row, true)
+    row:SetAutoDelete(true)
+  end
+end
+
+function TCPositionPanel:Update()
+  CUIScriptWnd.Update(self)
+
+  -- CUITrackBar has no change callback, so it is polled while the cursor is on it
+  for i, ctrl in pairs(self.track) do
+    if ctrl:IsCursorOverWindow() then
+      local val = math.floor(ctrl:GetFValue() + 0.5)
+
+      if val ~= self.value[i] then
+        self.value[i] = val
+
+        commands[i].set(val)
+        self.num[i]:SetText(tostring(val))
+
+        return
+      end
+    end
+  end
+end
+
+function TCPositionPanel:OnKeyboard(dik, keyboard_action)
+  local res = CUIScriptWnd.OnKeyboard(self, dik, keyboard_action)
+
+  if res == false and keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+    if dik == DIK_keys.DIK_ESCAPE then self:Close() end
+  end
+
+  return res
+end
+
+function TCPositionPanel:Close()
+  self:HideDialog()
+  self:Show(false)
+
+  Unregister_UI("TCPositionPanel")
+
+  tc_hud.force_visible = false
+  GUI = nil
+end
+
+function start(mcm_dialog)
+  if not ui_mcm then return end
+
+  if mcm_dialog then mcm_dialog:On_Cancel() end
+
+  exec_console_cmd("main_menu off")
+
+  if not GUI then GUI = TCPositionPanel() end
+
+  if GUI and not GUI:IsShown() then
+    tc_hud.force_visible = true
+
+    GUI:ShowDialog(true)
+    Register_UI("TCPositionPanel", "tc_position")
+  end
+end

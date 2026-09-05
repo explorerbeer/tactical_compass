@@ -24,8 +24,11 @@ local COMPASS_SHADOW_OFF = V.TC_COMPASS_SHADOW_OFFSET
 local MARKER_SHADOW_ALPHA = V.TC_MARKER_SHADOW_ALPHA
 local MARKER_SHADOW_OFF = V.TC_MARKER_SHADOW_OFFSET
 
+local CREATE_BUDGET = V.TC_CREATE_BUDGET
+
 HUD = nil
 enabled = true
+force_visible = false
 
 local function scale_width(widget, k)
 	if not widget then return end
@@ -109,12 +112,27 @@ function TCHud:InitControls()
 	self.xml_markers = CScriptXmlInit()
 	self.xml_markers:ParseFile("ui_markers.xml")
 
-	self.marker_node = cfg.marker_set
+	self.marker_node = cfg.marker_set.node
+	self.highlight_pad = cfg.marker_set.highlight_pad
 	self.marker_shadow = cfg.marker_shadow
 
 	self.markers = self.xml_markers:InitStatic(self.marker_node, self)
 
-	-- Constant, so it is measured once
+	self.highlight = {}
+
+	for _, kind in pairs({ "primary", "secondary" }) do
+		local hl = self.xml_markers:InitStatic(self.marker_node .. ":marker_highlight_" .. kind, self.markers)
+
+		if hl then
+			hl:Show(false)
+			self.highlight[kind] = hl
+		end
+	end
+
+	self.highlight_kind = nil
+	self.highlight_entry = nil
+	self.active_target = nil
+
 	local band = self.compass_width * 0.75
 	local margin = (V.TC_SCREEN_WIDTH - band) / 2
 
@@ -142,8 +160,6 @@ function TCHud:InitShadowText(path)
 	local shadow = self.xml_compass:InitTextWnd(path, self.compass)
 	if not shadow then return nil end
 
-	-- Without a colour setter the copy would render white and read as smearing,
-	-- so drop it rather than leave a ghost behind the real text.
 	if not shadow.SetTextColor then
 		shadow:SetText("")
 		return nil
@@ -157,12 +173,10 @@ function TCHud:InitShadowText(path)
 	return shadow
 end
 
--- Position depends only on the MCM row setting and the resolution
 function TCHud:UpdateLayout()
-	local style = self.style
-	local y = (cfg.pos_state == 1) and style.compass_up or style.compass_down
+	self.compass_y = cfg.compass_y
 
-	self.compass:SetWndPos(self.pos:set(self.compass_x, y))
+	self.compass:SetWndPos(self.pos:set(self.compass_x, self.compass_y))
 
 	self.tmr_markers = 0 -- marker rows move with the strip
 end
@@ -175,7 +189,7 @@ function TCHud:Update()
 	if tg >= self.tmr_visibility then
 		self.tmr_visibility = tg + V.TC_TICK_VISIBILITY
 
-		local visible = enabled and main_hud_shown()
+		local visible = enabled and (force_visible or main_hud_shown())
 
 		if visible ~= self.visible then
 			self.visible = visible
@@ -245,8 +259,6 @@ function TCHud:CreateMarker(entry)
 
 			shadow:Show(false)
 
-			-- The distance readout is white too, so it needs the same treatment.
-			-- Guarded: not every build exposes SetTextColor on the text control.
 			local text = shadow:TextControl()
 			if text and text.SetTextColor then
 				text:SetTextColor(GetARGB(MARKER_SHADOW_ALPHA, 0, 0, 0))
@@ -266,8 +278,10 @@ function TCHud:CreateMarker(entry)
 	ui:Show(false)
 
 	entry.ui = ui
-	entry.half_width = ui:GetWidth() / 2
-	entry.edge = ui:GetWidth() * 0.75 / 2
+	entry.w = ui:GetWidth()
+	entry.h = ui:GetHeight()
+	entry.half_width = entry.w / 2
+	entry.edge = entry.w * 0.75 / 2
 	entry.shown = false
 	entry.applied_alpha = -1
 	entry.applied_arrow = 0
@@ -292,8 +306,6 @@ function TCHud:ReleaseMarker(entry)
 	ui:Show(false)
 	if entry.shadow then entry.shadow:Show(false) end
 
-	-- Dropping the lua reference alone leaves the static attached to the window
-	-- forever and the engine keeps updating it -- corpse markers pile up fast.
 	if self.markers.DetachChild then
 		self.markers:DetachChild(ui)
 
@@ -307,14 +319,31 @@ function TCHud:ReleaseMarker(entry)
 	entry.x = nil
 end
 
--- Slow pass: everything that depends on the world rather than the camera angle
+local function active_task_target()
+	local actor = db.actor
+	if not (actor and task_manager) then return nil end
+
+	local tm = task_manager.get_task_manager()
+	if not tm then return nil end
+
+	for _, t in pairs(tm.task_info) do
+		if t.current_target and t.t and actor:is_active_task(t.t) then
+			return t.current_target
+		end
+	end
+
+	return nil
+end
+
 function TCHud:RefreshMarkerState(cam_pos)
 	local style = self.style
 	local groups = cfg.groups
-	local top = cfg.pos_state == 1
 
-	local y_marker = top and style.markers_up or style.markers_down
-	local y_body = top and style.deadbody_up or style.deadbody_down
+	self.active_target = cfg.quest_highlight and active_task_target() or nil
+	self.create_budget = CREATE_BUDGET
+
+	local y_marker = self.compass_y + style.marker_offset
+	local y_body = self.compass_y + style.deadbody_offset
 
 	local active = self.active
 	local count = 0
@@ -355,8 +384,15 @@ function TCHud:RefreshMarker(entry, cam_pos, groups, y_marker, y_body)
 		return self:HideMarker(entry)
 	end
 
-	-- Created lazily: a disabled category never allocates a static
-	local ui = entry.ui or self:CreateMarker(entry)
+	local ui = entry.ui
+
+	if not ui then
+		if self.create_budget <= 0 then return false end
+
+		self.create_budget = self.create_budget - 1
+		ui = self:CreateMarker(entry)
+	end
+
 	if not ui then return false end
 
 	entry.wpos:set(wpos.x, wpos.y, wpos.z)
@@ -423,16 +459,23 @@ end
 -- Fast pass: only the horizontal position, and only for markers in range
 function TCHud:RefreshMarkerPositions(cam_pos, cam_dir)
 	local count = self.active_count
-	if count == 0 then return end
-
 	local dir = self.dir:set(cam_dir.x, 0, cam_dir.z)
-	if dir:magnitude() < 0.001 then return end -- looking straight up or down
+
+	-- second case: looking straight up or down
+	if count == 0 or dir:magnitude() < 0.001 then
+		self:ShowHighlight(nil)
+
+		return
+	end
 
 	dir:normalize()
 
 	local active = self.active
 	local band_left, band_right = self.band_left, self.band_right
 	local pos = self.pos
+
+	local target = self.active_target
+	local highlight = nil
 
 	for i = 1, count do
 		local entry = active[i]
@@ -451,6 +494,22 @@ function TCHud:RefreshMarkerPositions(cam_pos, cam_dir)
 				end
 
 				entry.ui:SetWndPos(pos:set(x, entry.y))
+
+				if entry.id == target then
+					local hl = self.highlight[entry.category]
+
+					if hl then
+						if entry ~= self.highlight_entry then
+							self.highlight_entry = entry
+							local pad = self.highlight_pad
+
+							hl:SetWndSize(vector2():set(entry.w + pad, entry.h + pad))
+						end
+
+						hl:SetWndPos(pos:set(x, entry.y))
+						highlight = entry.category
+					end
+				end
 
 				if entry.shadow then
 					entry.shadow:SetWndPos(pos:set(x + MARKER_SHADOW_OFF, entry.y + MARKER_SHADOW_OFF))
@@ -472,6 +531,21 @@ function TCHud:RefreshMarkerPositions(cam_pos, cam_dir)
 			end
 		end
 	end
+
+	self:ShowHighlight(highlight)
+end
+
+-- Tracked by category name: CUIStatic has no __eq, comparing two of them crashes
+function TCHud:ShowHighlight(kind)
+	if kind == self.highlight_kind then return end
+
+	local prev = self.highlight_kind and self.highlight[self.highlight_kind]
+	if prev then prev:Show(false) end
+
+	local hl = kind and self.highlight[kind]
+	if hl then hl:Show(true) end
+
+	self.highlight_kind = kind
 end
 
 function TCHud:__finalize()
@@ -492,9 +566,6 @@ function deactivate()
 	get_hud():RemoveDialogToRender(HUD)
 	HUD = nil
 
-	-- The window and every child static are gone now. Entries outlive it, so
-	-- their handles must be dropped or the next activation would draw into
-	-- freed memory.
 	for _, spots in pairs(tc_markers.list) do
 		for _, entry in pairs(spots) do
 			entry.ui = nil
@@ -512,7 +583,19 @@ end
 function toggle(key)
 	if key ~= cfg.keybind then return end
 
-	enabled = not enabled
+	local mode = cfg.keybind_mode
+
+	if mode == 1 then
+		if ui_mcm and ui_mcm.double_tap("tc_hud", key) then enabled = not enabled end
+	elseif mode ~= 2 then
+		enabled = not enabled
+	end
+end
+
+function on_key_hold(key)
+	if key ~= cfg.keybind or cfg.keybind_mode ~= 2 then return end
+
+	if ui_mcm and ui_mcm.key_hold("tc_hud", key) then enabled = not enabled end
 end
 
 function on_option_change()
@@ -543,6 +626,7 @@ function on_game_start()
 	RegisterScriptCallback("actor_on_before_death", deactivate)
 
 	RegisterScriptCallback("on_key_press", toggle)
+	RegisterScriptCallback("on_key_hold", on_key_hold)
 
 	RegisterScriptCallback("on_option_change", on_option_change)
 	RegisterScriptCallback("on_screen_resolution_changed", on_screen_resolution_changed)

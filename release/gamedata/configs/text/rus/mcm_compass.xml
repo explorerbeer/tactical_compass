@@ -19,17 +19,13 @@
 		<text>Включить отображение компаса</text>
 	</string>
 
-	<string id="ui_mcm_tactic_compass_tc_main_compass_sc_pos">
-		<text>Положение компаса на экране</text>
-	</string>
+  <string id="ui_mcm_tactic_compass_tc_main_position">
+    <text>Настроить положение в игре</text>
+  </string>
 
-	<string id="ui_mcm_compass_state_up">
-		<text>Сверху</text>
-	</string>
-
-	<string id="ui_mcm_compass_state_down">
-		<text>Снизу</text>
-	</string>
+  <string id="ui_mcm_tactic_compass_tc_main_compass_y">
+    <text>Высота компаса</text>
+  </string>
 
 	<string id="ui_mcm_tactic_compass_tc_main_compass_style">
 		<text>Стиль компаса</text>
@@ -253,4 +249,8 @@
 	<string id="ui_mcm_tactic_compass_tc_markers_is_pump_av">
 		<text>Маркер вод. колонок: отображать всегда</text>
 	</string>
+
+  <string id="ui_mcm_tactic_compass_tc_markers_quest_highlight">
+    <text>Подсвечивать отслеживаемое задание</text>
+  </string>
 </string_table>

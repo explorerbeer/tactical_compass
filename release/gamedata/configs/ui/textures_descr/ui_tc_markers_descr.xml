@@ -46,4 +46,9 @@
         <texture id="tc_arrow_down" x="30" y="90" width="30" height="30" />
         <texture id="tc_corpse" x="60" y="90" width="30" height="30" />
     </file>
+
+    <file name="ui\ui_common">
+      <!-- Quests highlight -->
+      <texture id="tc_highlight" x="781" y="853" width="37" height="37" />
+    </file>
 </w>

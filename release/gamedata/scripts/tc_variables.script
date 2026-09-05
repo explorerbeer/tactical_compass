@@ -19,13 +19,12 @@ TC_STYLES = {
 
     compass_width = 360,
     compass_inset = 0,
-    compass_up = 721,
-    compass_down = 19,
 
-    markers_up = 729,
-    markers_down = 27,
-    deadbody_up = 751,
-    deadbody_down = 49,
+    pos_key = "tc_main/compass_y_s2",
+    default_y = 721,
+
+    marker_offset = 8,
+    deadbody_offset = 30,
   },
 
   [1] = {
@@ -35,20 +34,19 @@ TC_STYLES = {
 
     compass_width = 600,
     compass_inset = 5, -- <cardinal_dir x="5"> inside a 610-wide container
-    compass_up = 671,
-    compass_down = 11,
 
-    markers_up = 696,
-    markers_down = 36,
-    deadbody_up = 696,
-    deadbody_down = 36,
+    pos_key = "tc_main/compass_y_legacy",
+    default_y = 671,
+
+    marker_offset = 25,
+    deadbody_offset = 25,
   },
 }
 
--- Marker icon sets, keyed by the value tc_markers/marker_style stores
+-- Marker icon sets, keyed by the value tc_markers/marker_style stores highlight_pad
 TC_MARKER_SETS = {
-    [0] = "markers_custom",
-    [1] = "markers_vanilla",
+    [0] = { node = "markers_custom",  highlight_pad = 2 },
+    [1] = { node = "markers_vanilla", highlight_pad = 6 },
 }
 
 -- Shared by both styles
@@ -83,3 +81,10 @@ TC_COMPASS_SHADOW_OFFSET = 0.5
 -- Dark copy drawn under each marker; toggled by tc_markers/marker_shadow
 TC_MARKER_SHADOW_ALPHA = 140
 TC_MARKER_SHADOW_OFFSET = 0.5
+
+-- Markers created per slow tick, so a rebuild does not stall a frame
+TC_CREATE_BUDGET = 6
+
+-- Range of the in-game position slider
+TC_POS_MIN = 0
+TC_POS_MAX = 730

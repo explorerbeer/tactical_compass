@@ -19,17 +19,13 @@
 		<text>Turn on the included compass</text>
 	</string>
 
-	<string id="ui_mcm_tactic_compass_tc_main_compass_sc_pos">
-		<text>Compass position on the screen</text>
-	</string>
+  <string id="ui_mcm_tactic_compass_tc_main_position">
+    <text>Adjust position in game</text>
+  </string>
 
-	<string id="ui_mcm_compass_state_up">
-		<text>Top</text>
-	</string>
-
-	<string id="ui_mcm_compass_state_down">
-		<text>Bottom</text>
-	</string>
+  <string id="ui_mcm_tactic_compass_tc_main_compass_y">
+    <text>Compass height</text>
+  </string>
 
 	<string id="ui_mcm_tactic_compass_tc_main_compass_style">
 		<text>Compass style</text>
@@ -255,4 +251,8 @@
 	<string id="ui_mcm_tactic_compass_tc_markers_is_pump_av">
 		<text>Water pump marker: always display</text>
 	</string>
+
+  <string id="ui_mcm_tactic_compass_tc_markers_quest_highlight">
+    <text>Highlight the tracked task</text>
+  </string>
 </string_table>
