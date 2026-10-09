@@ -1,11 +1,10 @@
--- Tactical Compass -- MCM schema and the cached settings the HUD reads.
+-- Tactical Compass - MCM options and cached settings
 -- Author: explorerbee
 
 local V = tc_variables
 local MAX_DISTANCE = V.TC_MAX_POSSIBLE_DISTANCE
 
--- The fallback table and reload() all
--- derive from this. Names must match the groups declared in tc_defs.
+-- Names must match the groups in tc_defs
 local marker_groups = {
     { name = "quest",       show = true,  dist = true,  av = true,  range = 400.0 },
     { name = "unique",      show = true,  dist = false, av = false, range = 60.0 },
@@ -16,18 +15,19 @@ local marker_groups = {
     { name = "corpses",     show = false, dist = false, av = false, range = 35.0, desc = "ui_mcm_tc_markers_marker_m_corpses_desc" },
     { name = "campf",       show = false, dist = false, av = false, range = 30.0, desc = "ui_mcm_tc_markers_marker_m_campf_desc" },
     { name = "pump",        show = false, dist = false, av = false, range = 40.0, desc = "ui_mcm_tc_markers_marker_m_pump_desc" },
+    { name = "paw",         show = true,  dist = true,  av = false, range = 500.0, desc = "ui_mcm_tc_markers_marker_m_paw_desc" },
 }
 
 local defaults = {
   ["tc_main/compass_y_s2"] = V.TC_STYLES[0].default_y,
   ["tc_main/compass_y_legacy"] = V.TC_STYLES[1].default_y,
   ["tc_main/compass_style"] = 0,
-  ["tc_main/compass_scale"] = 1.0,
   ["tc_keybinds/keybind"] = DIK_keys.DIK_M,
   ["tc_keybinds/keybind_mode"] = 0,
   ["tc_markers/marker_style"] = 0,
   ["tc_markers/marker_shadow"] = true,
   ["tc_markers/quest_highlight"] = true,
+  ["tc_markers/gamma_stashes"] = false,
 }
 
 for i = 1, #marker_groups do
@@ -49,20 +49,20 @@ local table_marker_style = {
   { 1, "ui_mcm_marker_style_vanilla" },
 }
 
--- Captions come from MCM itself, no strings of ours needed
+-- Own strings: MCM's end with a period
 local table_keybind_mode = {
-  { 0, "mcm_kb_mode_press" },
-  { 1, "mcm_kb_mode_dtap" },
-  { 2, "mcm_kb_mode_hold" },
+  { 0, "tc_kb_mode_press" },
+  { 1, "tc_kb_mode_dtap" },
+  { 2, "tc_kb_mode_hold" },
 }
 
 -- Cached settings
 compass_y = V.TC_STYLES[0].default_y
-scale = 1.0
 style = V.TC_STYLES[0]
 marker_set = V.TC_MARKER_SETS[0]
 marker_shadow = true
 quest_highlight = true
+gamma_stashes = false
 keybind = DIK_keys.DIK_M
 keybind_mode = 0
 groups = {}
@@ -73,16 +73,16 @@ function get_config(key)
   return defaults[key]
 end
 
--- Called once on the actor's first update and on every on_option_change
 function reload()
-  scale = get_config("tc_main/compass_scale")
   keybind = get_config("tc_keybinds/keybind")
   keybind_mode = get_config("tc_keybinds/keybind_mode")
   style = V.TC_STYLES[get_config("tc_main/compass_style")] or V.TC_STYLES[0]
-  compass_y = get_config(style.pos_key) or style.default_y
+  -- Values saved by older versions can be out of range
+  compass_y = math.min(math.max(get_config(style.pos_key) or style.default_y, style.pos_min), style.pos_max)
   marker_set = V.TC_MARKER_SETS[get_config("tc_markers/marker_style")] or V.TC_MARKER_SETS[0]
   marker_shadow = get_config("tc_markers/marker_shadow")
   quest_highlight = get_config("tc_markers/quest_highlight")
+  gamma_stashes = get_config("tc_markers/gamma_stashes")
 
   for i = 1, #marker_groups do
     local name = marker_groups[i].name
@@ -119,6 +119,7 @@ local function markers_section()
     { id = "marker_style", type = "list", val = 2, def = 0, content = table_marker_style, no_str = true },
     { id = "marker_shadow", type = "check", val = 1, def = true },
     { id = "quest_highlight", type = "check", val = 1, def = true },
+    { id = "gamma_stashes", type = "check", val = 1, def = false },
     { id = "divider", type = "line" },
     { id = "m_desc", type = "desc", clr = { 255, 255, 255, 0 }, text = "ui_mcm_tc_markers_marker_m_desc" },
 }
@@ -127,7 +128,7 @@ local function markers_section()
     marker_options(list, marker_groups[i])
   end
 
-  list[#list] = nil -- trailing divider
+  list[#list] = nil -- drop trailing divider
 
   return list
 end
@@ -138,15 +139,12 @@ function on_mcm_load()
     gr = {
       {
         id = "tc_main", sh = true, gr = {
-          -- Hidden: stored here, edited in game through the position panel
-          { id = "compass_y_s2", type = "track", val = 2, def = V.TC_STYLES[0].default_y, min = V.TC_POS_MIN, max = V.TC_POS_MAX, step = 1, precondition = { function() return false end } },
-          { id = "compass_y_legacy", type = "track", val = 2, def = V.TC_STYLES[1].default_y, min = V.TC_POS_MIN, max = V.TC_POS_MAX, step = 1, precondition = { function() return false end } },
+          -- Hidden, edited in game through the position panel
+          { id = "compass_y_s2", type = "track", val = 2, def = V.TC_STYLES[0].default_y, min = V.TC_STYLES[0].pos_min, max = V.TC_STYLES[0].pos_max, step = 1, precondition = { function() return false end } },
+          { id = "compass_y_legacy", type = "track", val = 2, def = V.TC_STYLES[1].default_y, min = V.TC_STYLES[1].pos_min, max = V.TC_STYLES[1].pos_max, step = 1, precondition = { function() return false end } },
           { id = "title", type = "slide", text = "ui_mcm_compass_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
           { id = "compass_style", type = "list", val = 2, def = 0, content = table_compass_style, no_str = true },
           { id = "position", type = "button", functor_ui = { tc_position.start }, precondition = { function() return level.present() end } },
-          { id = "divider", type = "line" },
-          { id = "compass_scale_desc", type = "desc", clr = { 255, 255, 255, 0 }, text = "ui_mcm_tc_main_compass_scale_desc" },
-          { id = "compass_scale", type = "track", val = 2, min = 0.5, max = 1.5, step = 0.05, def = 1.0 },
         }
       },
       {
@@ -156,7 +154,7 @@ function on_mcm_load()
         id = "tc_keybinds", sh = true, gr = {
           { id = "markers_title", type = "slide", text = "ui_mcm_keybinds_title", link = "ui_options_slider_player", size = { 512, 50 }, spacing = 20 },
           { id = "keybind", type = "key_bind", val = 2, def = DIK_keys.DIK_M, hint = "tactic_compass_tc_keybinds_keybind" },
-          { id = "keybind_mode", type = ui_mcm.kb_mod_list, val = 2, def = 0, hint = "mcm_kb_mode", content = table_keybind_mode },
+          { id = "keybind_mode", type = ui_mcm.kb_mod_list, val = 2, def = 0, hint = "tactic_compass_tc_keybinds_keybind_mode", content = table_keybind_mode },
         }
       },
     }

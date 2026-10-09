@@ -13,15 +13,18 @@ through MCM.
 
 - **Two compass styles** — S.T.A.L.K.E.R. 2 and the classic one, switchable in MCM at any time.
 - **Two marker icon sets** — custom icons by Rier, or vanilla PDA icons that follow your own icon addons.
-- **Nine marker categories**: quest targets, unique NPCs, sleeping spots, stashes, level
-  transitions, NPC squads, corpses, campfires and water pumps.
+- **Ten marker categories**: quest targets, unique NPCs, sleeping spots, stashes, level
+  transitions, NPC squads, corpses, campfires, water pumps and Personal Adjustable Waypoint pins.
 - **Per-category settings** — enable or disable each type, set its display range, or make it
   always visible regardless of distance.
+- **Tracked task highlight** — the task you track in the PDA stands out on the compass.
+- **In-game height adjustment** — move the compass and see the result right away.
+- **Works on an ongoing save** — markers that existed before installation show up too.
+- **G.A.M.M.A. stash colours** as an MCM option.
 - **Distance to target**, shown when you look straight at a marker.
 - **Elevation arrows** — a marker tells you whether the target is above or below you.
 - **Distance fade** — markers fade out smoothly instead of popping in and out.
 - **Drop shadows** so the compass and markers stay readable against a bright sky.
-- **Scale slider**, including support for ultrawide monitors.
 
 ## Requirements
 
@@ -37,7 +40,14 @@ Optional — each one unlocks the corresponding marker type:
 | [Fillable Canteens 2.0](https://www.moddb.com/mods/stalker-anomaly/addons/fillable-canteens-20) by HarukaSai | water pumps |
 | [Body Dots on Minimap](https://www.moddb.com/mods/stalker-anomaly/addons/bodydotsminimap-white-dots-but-blue) by RavenAscendant | corpses |
 | [Milspec PDA](https://www.moddb.com/mods/stalker-anomaly/addons/milspec-pda-for-anomaly-151-152-and-gamma) by Catspaw | corpses |
-| [S.T.A.L.K.E.R. 2 Style HUD/UI](https://www.moddb.com/mods/stalker-anomaly/addons/stalker-2-style-ui) | pairs with the S2 compass style |
+| [Personal Adjustable Waypoint](https://www.moddb.com/mods/stalker-anomaly/addons/personal-adjustable-waypoint-for-anomaly-151-152-and-gamma) by Catspaw | player pins |
+| AlphaLion's Reworked Stash Quest and Map Markers (part of G.A.M.M.A.) | G.A.M.M.A. stash colours on vanilla icons |
+| [S.T.A.L.K.E.R. 2 Style HUD/UI](https://www.moddb.com/mods/stalker-anomaly/addons/stalker-2-style-ui) by EZ4E99 | pairs with the S2 compass style |
+
+Modded exes are recommended: with them the scan for markers placed before installation is
+faster. Without them it still works.
+
+Compatible with Wearable Devices.
 
 ## Installation
 
@@ -48,7 +58,7 @@ Optional — each one unlocks the corresponding marker type:
 ## Updating from an older version
 
 **Delete the previous version completely before installing this one.** The script files were
-renamed in v5, and leftovers from the old version will keep running alongside the new ones —
+renamed in 1.0, and leftovers from the old version will keep running alongside the new ones —
 you will end up with two compasses on screen at once. In MO2 that means removing the old mod
 entry, not just overwriting it.
 
@@ -56,21 +66,11 @@ entry, not just overwriting it.
 
 Everything lives in MCM under *Tactical Compass*:
 
-- **Main settings** — compass style, position on screen (top or bottom), scale.
-- **Markers** — icon set, drop shadow, and four options for each of the nine categories:
-  display, display distance to target, always display, and display range.
-- **Key binding** — the toggle key.
-
-## Ultrawide monitors
-
-The engine stretches the interface horizontally on anything wider than 16:9, which makes the
-compass too wide. Set **Compass scale** to about `0.75` for 21:9 and `0.50` for 32:9. On
-regular monitors the slider simply resizes the compass.
-
-## Known issues
-
-- The minimap reappears after changing screen resolution. This is an engine bug — it
-  reproduces with the addon disabled.
+- **Main settings** — compass style and a button that opens the in-game height adjustment.
+- **Markers** — icon set, drop shadow, tracked task highlight, G.A.M.M.A. stash colours, and
+  four options for each of the ten categories: display, display distance to target, always
+  display, and display range.
+- **Key binding** — the toggle key and its press type (single press, double tap or hold).
 
 ## Project layout
 
@@ -88,12 +88,10 @@ gamedata/
     tc_utils.script                  math and world-position helpers
     tc_markers.script                marker registry
     tc_hud.script                    the HUD window itself
+    tc_position.script               in-game height adjustment panel
     tc_binder.script                 engine callback wiring, applied at runtime
   textures/ui/tactic_compass/
 ```
-
-The addon does not replace any vanilla script. `tc_binder.script` patches the actor binder at
-runtime instead, so it will not conflict with other mods and survives Anomaly updates.
 
 ## Support and suggestions
 

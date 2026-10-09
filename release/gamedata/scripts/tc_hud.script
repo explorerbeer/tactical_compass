@@ -1,4 +1,4 @@
--- Tactical Compass -- HUD window: compass strip and PDA spot markers.
+-- Tactical Compass - HUD: compass strip and markers
 -- Adapted from A.N.T.H.O.L.O.G.Y. (original author(?): Zateynik Melinite)
 -- Credits: Strogglet15, Tronex, RavenAscendant
 -- Compass reworked by: explorerbee, markers implementation: explorerbee
@@ -30,15 +30,6 @@ HUD = nil
 enabled = true
 force_visible = false
 
-local function scale_width(widget, k)
-	if not widget then return end
-
-	local pos = widget:GetWndPos()
-
-	widget:SetWndSize(vector2():set(widget:GetWidth() * k, widget:GetHeight()))
-	widget:SetWndPos(vector2():set(pos.x * k, pos.y))
-end
-
 class "TCHud" (CUIScriptWnd)
 
 function TCHud:__init()
@@ -50,17 +41,11 @@ end
 function TCHud:InitControls()
 	self:SetAutoDelete(true)
 
-	local size_k = cfg.scale or 1
-	if abs(size_k - 1) < 0.001 then size_k = 1 end
-
-	self.size_k = size_k
-
-	-- Fixed for this window's lifetime: a style change rebuilds the whole HUD
 	local style = cfg.style
 
 	self.style = style
-	self.compass_width = style.compass_width * size_k
-	self.compass_x = V.TC_SCREEN_CENTER - (style.compass_inset + style.compass_width / 2) * size_k
+	self.compass_width = style.compass_width
+	self.compass_x = V.TC_SCREEN_CENTER - (style.compass_inset + style.compass_width / 2)
 
 	utils.set_scale(self.compass_width / V.TC_COMPASS_BASE_WIDTH)
 
@@ -72,7 +57,6 @@ function TCHud:InitControls()
 	self.last_px = nil
 	self.last_degrees = nil
 
-	-- Reused every frame instead of allocating a vector2/Frect per call
 	self.pos = vector2()
 	self.rect = Frect()
 	self.dir = vector()
@@ -99,22 +83,13 @@ function TCHud:InitControls()
 	self.frame_shadow = self:InitShadow(node .. ":static_frame")
 	self.static_frame = self.xml_compass:InitStatic(node .. ":static_frame", self.compass)
 
-	if size_k ~= 1 then
-		scale_width(self.compass, size_k)
-		scale_width(self.degrees_shadow, size_k)
-		scale_width(self.degrees, size_k)
-		scale_width(self.cardinal_shadow, size_k)
-		scale_width(self.cardinal_dir, size_k)
-		scale_width(self.frame_shadow, size_k)
-		scale_width(self.static_frame, size_k)
-	end
-
 	self.xml_markers = CScriptXmlInit()
 	self.xml_markers:ParseFile("ui_markers.xml")
 
 	self.marker_node = cfg.marker_set.node
 	self.highlight_pad = cfg.marker_set.highlight_pad
 	self.marker_shadow = cfg.marker_shadow
+	self.texture_override = cfg.gamma_stashes and cfg.marker_set.gamma_stashes or nil
 
 	self.markers = self.xml_markers:InitStatic(self.marker_node, self)
 
@@ -142,8 +117,7 @@ function TCHud:InitControls()
 	self:UpdateLayout()
 end
 
--- Dark copy of a widget, one step below it in draw order.
--- Must be called before the widget itself is initialised.
+-- Dark copy of a widget drawn under it. Call before initialising the widget.
 function TCHud:InitShadow(path)
 	local shadow = self.xml_compass:InitStatic(path, self.compass)
 	if not shadow then return nil end
@@ -178,7 +152,7 @@ function TCHud:UpdateLayout()
 
 	self.compass:SetWndPos(self.pos:set(self.compass_x, self.compass_y))
 
-	self.tmr_markers = 0 -- marker rows move with the strip
+	self.tmr_markers = 0
 end
 
 function TCHud:Update()
@@ -198,7 +172,6 @@ function TCHud:Update()
 		end
 	end
 
-	-- Nothing below is worth computing while the HUD is hidden
 	if not self.visible then return end
 
 	local dev = device()
@@ -222,7 +195,6 @@ function TCHud:UpdateCompass(cam_dir)
 	local px = atan2(cam_dir.x, cam_dir.z) * RAD_TO_PX
 	if px < 0 then px = px + FULL_TURN end
 
-	-- Below half a pixel the shift is invisible; skip the engine call
 	if self.last_px and abs(px - self.last_px) < 0.5 then return end
 	self.last_px = px
 
@@ -247,16 +219,14 @@ end
 
 function TCHud:CreateMarker(entry)
 	local path = self.marker_node .. ":marker_" .. entry.category
+	local texture = self.texture_override and self.texture_override[entry.category]
 
-	-- Attached before the icon: order of attachment is draw order
+	-- Attach order is draw order
 	if self.marker_shadow then
 		local shadow = self.xml_markers:InitStatic(path, self.markers)
 
 		if shadow then
-			if self.size_k ~= 1 then
-				shadow:SetWndSize(vector2():set(shadow:GetWidth() * self.size_k, shadow:GetHeight()))
-			end
-
+			if texture then shadow:InitTexture(texture) end
 			shadow:Show(false)
 
 			local text = shadow:TextControl()
@@ -271,10 +241,7 @@ function TCHud:CreateMarker(entry)
 	local ui = self.xml_markers:InitStatic(path, self.markers)
 	if not ui then return nil end
 
-	if self.size_k ~= 1 then
-		ui:SetWndSize(vector2():set(ui:GetWidth() * self.size_k, ui:GetHeight()))
-	end
-
+	if texture then ui:InitTexture(texture) end
 	ui:Show(false)
 
 	entry.ui = ui
@@ -342,6 +309,9 @@ function TCHud:RefreshMarkerState(cam_pos)
 	self.active_target = cfg.quest_highlight and active_task_target() or nil
 	self.create_budget = CREATE_BUDGET
 
+	local actor = db.actor
+	self.level_id = actor and game_graph():vertex(actor:game_vertex_id()):level_id()
+
 	local y_marker = self.compass_y + style.marker_offset
 	local y_body = self.compass_y + style.deadbody_offset
 
@@ -372,7 +342,7 @@ function TCHud:RefreshMarker(entry, cam_pos, groups, y_marker, y_body)
 		return self:HideMarker(entry)
 	end
 
-	local wpos = utils.get_world_coordinates(entry.id)
+	local wpos = utils.get_world_coordinates(entry.id, self.level_id)
 	if not wpos then
 		return self:HideMarker(entry)
 	end
@@ -441,7 +411,6 @@ function TCHud:RefreshArrow(entry, cam_pos)
 	local diff = floor(cam_pos.y) - floor(entry.wpos.y)
 	local state = (diff < -2) and 1 or (diff > 2) and -1 or 0
 
-	-- InitTexture is expensive; only touch it when the direction actually flips
 	if state == entry.applied_arrow then return end
 	entry.applied_arrow = state
 
@@ -456,12 +425,11 @@ function TCHud:RefreshArrow(entry, cam_pos)
 	arrow:Show(true)
 end
 
--- Fast pass: only the horizontal position, and only for markers in range
 function TCHud:RefreshMarkerPositions(cam_pos, cam_dir)
 	local count = self.active_count
 	local dir = self.dir:set(cam_dir.x, 0, cam_dir.z)
 
-	-- second case: looking straight up or down
+	-- No markers, or looking straight up or down
 	if count == 0 or dir:magnitude() < 0.001 then
 		self:ShowHighlight(nil)
 
@@ -535,7 +503,6 @@ function TCHud:RefreshMarkerPositions(cam_pos, cam_dir)
 	self:ShowHighlight(highlight)
 end
 
--- Tracked by category name: CUIStatic has no __eq, comparing two of them crashes
 function TCHud:ShowHighlight(kind)
 	if kind == self.highlight_kind then return end
 
@@ -602,12 +569,12 @@ function on_option_change()
 	local prev_style = cfg.style
 	local prev_markers = cfg.marker_set
 	local prev_shadow = cfg.marker_shadow
-	local prev_scale = cfg.scale
+	local prev_gamma = cfg.gamma_stashes
 
 	cfg.reload()
 
 	if cfg.style ~= prev_style or cfg.marker_set ~= prev_markers
-		or cfg.marker_shadow ~= prev_shadow or cfg.scale ~= prev_scale then
+		or cfg.marker_shadow ~= prev_shadow or cfg.gamma_stashes ~= prev_gamma then
 		deactivate()
 		activate()
 		return

@@ -1,0 +1,15 @@
+<w>
+
+    <!-- PAW icons recut to centre the drawing -->
+    <file name="ui\paw\ui_icons_paw">
+        <texture id="tc_paw_flag_friendly" x="783" y="99" width="58" height="58" />
+        <texture id="tc_paw_flag_neutral" x="847" y="99" width="58" height="58" />
+        <texture id="tc_paw_flag_enemy" x="911" y="99" width="58" height="58" />
+        <texture id="tc_paw_pin_redpush32" x="106" y="0" width="23" height="23" />
+        <texture id="tc_paw_pin_redmodern32" x="70" y="2" width="19" height="19" />
+        <texture id="tc_paw_pin_redround32" x="42" y="0" width="21" height="21" />
+        <texture id="tc_paw_pin_stalker32" x="11" y="36" width="42" height="42" />
+        <texture id="tc_paw_pin_yelpush32" x="138" y="0" width="23" height="23" />
+        <texture id="tc_paw_pin_whtsimple32" x="166" y="0" width="22" height="22" />
+    </file>
+</w>

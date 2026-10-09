@@ -1,7 +1,5 @@
--- Tactical Compass -- marker registry.
+-- Tactical Compass - marker registry
 -- Author: explorerbee
--- Owns which PDA spots are tracked. tc_hud owns how they are drawn, but the ui
--- handles live on the entry so the draw path needs one table lookup, not three.
 
 local defs = tc_defs
 
@@ -17,7 +15,6 @@ local function make_entry(id, spot, category)
     category = category,
     group = group,
 
-    -- world state, refreshed on the slow tick
     wpos = vector(),
     distance = -1,
     distance_str = "",
@@ -25,7 +22,7 @@ local function make_entry(id, spot, category)
     show_distance = false,
     y = 0,
 
-    -- ui handles and last applied state, written only by tc_hud
+    -- written by tc_hud
     ui = nil,
     arrow_x = 0,
     shadow = nil,
@@ -83,33 +80,75 @@ function clear(id)
   list[id] = nil
 end
 
-local function probe_transitions(id)
-  local found = false
+-- Load-time scan for spots added before install or while another addon
+-- held the callback. SCAN_CHUNK ids per frame.
 
-  for spot, category in pairs(defs.transition_types) do
-    if level.map_has_object_spot(id, spot) ~= 0 then
-      add(id, spot, category)
-      found = true
+local MAX_ID = 65534
+local SCAN_CHUNK = tc_variables.TC_SCAN_CHUNK
+
+local scan_index = nil
+
+-- For exes without map_get_object_spots_by_id
+local known_spots = {}
+for spot in pairs(defs.spot_categories) do known_spots[#known_spots + 1] = spot end
+for spot in pairs(defs.transition_types) do known_spots[#known_spots + 1] = spot end
+
+local function scan_by_id(first, last)
+  local get_spots = level.map_get_object_spots_by_id
+
+  for id = first, last do
+    local spots = get_spots(id)
+
+    if spots then
+      for i = 1, #spots do
+        on_map_location_added(nil, spots[i].spot_type, id)
+      end
     end
   end
-
-  return found
 end
 
-local scanned_levels = {}
-
-function collect_transitions()
+local function scan_by_probe(first, last)
   local sim = alife()
   if not sim then return end
 
-  local lvl = level.name()
+  local has_spot = level.map_has_object_spot
 
-  if scanned_levels[lvl] then return end
-  scanned_levels[lvl] = true
-
-  for i = 1, 65534 do
-    if sim:object(i) then probe_transitions(i) end
+  for id = first, last do
+    if sim:object(id) then
+      for i = 1, #known_spots do
+        local spot = known_spots[i]
+        if has_spot(id, spot) ~= 0 then add(id, spot) end
+      end
+    end
   end
+end
+
+local function scan_step()
+  local first = scan_index
+  local last = math.min(first + SCAN_CHUNK - 1, MAX_ID)
+
+  if level.map_get_object_spots_by_id then
+    scan_by_id(first, last)
+  else
+    scan_by_probe(first, last)
+  end
+
+  if last >= MAX_ID then
+    scan_index = nil
+    UnregisterScriptCallback("actor_on_update", scan_step)
+  else
+    scan_index = last + 1
+  end
+end
+
+function start_scan()
+  if not scan_index then RegisterScriptCallback("actor_on_update", scan_step) end
+  scan_index = 1
+end
+
+function stop_scan()
+  if scan_index then UnregisterScriptCallback("actor_on_update", scan_step) end
+  scan_index = nil
 end
 
 function drop_stale_spots()
@@ -128,7 +167,7 @@ function on_map_location_added(binder, spot, id)
     add(id, spot)
 end
 
--- Entries hold vectors and ui handles, so only plain data may be written out
+-- Only plain data can be saved
 function save_state(m_data)
   local saved = {}
 
@@ -144,7 +183,7 @@ function save_state(m_data)
   end
 
   m_data.tc_markers = saved
-  m_data.init_markers = nil -- pre-refactor key
+  m_data.init_markers = nil -- key of older versions
 end
 
 function load_state(m_data)
@@ -161,7 +200,8 @@ function load_state(m_data)
 end
 
 function on_game_start()
-  RegisterScriptCallback("actor_on_first_update", collect_transitions)
+  RegisterScriptCallback("actor_on_first_update", start_scan)
+  RegisterScriptCallback("actor_on_net_destroy", stop_scan)
   RegisterScriptCallback("actor_map_location_added", on_map_location_added)
 
   RegisterScriptCallback("save_state", save_state)

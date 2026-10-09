@@ -1,7 +1,6 @@
--- Tactical Compass -- in-game position panel.
--- Implementation was spied in the addon Anomaly Popup Messages by themrdemonized
+-- Tactical Compass - in-game position panel
+-- Based on Anomaly Popup Messages by themrdemonized
 
-local V = tc_variables
 local cfg = tc_mcm
 
 local function path()
@@ -9,7 +8,7 @@ local function path()
 end
 
 local function read()
-  return (ui_mcm and ui_mcm.get(path())) or cfg.style.default_y
+  return cfg.compass_y
 end
 
 local function write(value)
@@ -25,8 +24,7 @@ local commands = {
     name = "ui_mcm_tactic_compass_tc_main_compass_y",
     get = read,
     set = write,
-    min = V.TC_POS_MIN,
-    max = V.TC_POS_MAX,
+    bounds = function() return cfg.style.pos_min, cfg.style.pos_max end,
     step = 1,
   },
 }
@@ -82,7 +80,7 @@ function TCPositionPanel:InitControls()
 
     self.track[i] = xml:InitTrackBar("ctrl_lighting:track", row)
     self.track[i]:SetStep(cmd.step)
-    self.track[i]:SetOptFBounds(cmd.min, cmd.max)
+    self.track[i]:SetOptFBounds(cmd.bounds())
     self.track[i]:SetFValue(val)
 
     self.value[i] = val
@@ -98,7 +96,7 @@ end
 function TCPositionPanel:Update()
   CUIScriptWnd.Update(self)
 
-  -- CUITrackBar has no change callback, so it is polled while the cursor is on it
+  -- CUITrackBar has no change callback, so it is polled
   for i, ctrl in pairs(self.track) do
     if ctrl:IsCursorOverWindow() then
       local val = math.floor(ctrl:GetFValue() + 0.5)

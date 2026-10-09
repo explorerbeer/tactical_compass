@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <string_table>
 
-	<!-- Основные -->
+	<!-- Main -->
 
 	<string id="ui_mcm_menu_tactic_compass">
 		<text>Tactical Compass</text>
@@ -39,16 +39,6 @@
 		<text>Классический</text>
 	</string>
 
-	<string id="ui_mcm_tactic_compass_tc_main_compass_scale">
-		<text>Масштаб компаса</text>
-	</string>
-
-	<string id="ui_mcm_tc_main_compass_scale_desc">
-		<text>Ультраширокие мониторы: движок растягивает интерфейс по горизонтали,
-				из-за чего компас выходит слишком широким. Ставьте примерно 0.75 для 21:9
-				и 0.50 для 32:9. На обычных мониторах просто меняет размер компаса.</text>
-	</string>
-
 	<string id="ui_mcm_tactic_compass_tc_markers_marker_style">
 		<text>Иконки маркеров</text>
 	</string>
@@ -65,7 +55,7 @@
 		<text>Иконки маркеров: тень</text>
 	</string>
 
-	<!-- Привязка клавиш -->
+	<!-- Key binding -->
 	<string id="ui_mcm_keybinds_title">
 		<text>Привязка клавиш</text>
 	</string>
@@ -78,7 +68,27 @@
 		<text>Tactical Compass: переключение</text>
 	</string>
 
-	<!-- Маркеры -->
+	<string id="ui_mcm_tactic_compass_tc_keybinds_keybind_mode">
+		<text>Режим нажатия</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_keybinds_keybind_mode_desc">
+		<text>Как нужно нажать клавишу выше, чтобы переключить компас.</text>
+	</string>
+
+	<string id="ui_mcm_lst_tc_kb_mode_press">
+		<text>Одиночное нажатие</text>
+	</string>
+
+	<string id="ui_mcm_lst_tc_kb_mode_dtap">
+		<text>Двойное нажатие</text>
+	</string>
+
+	<string id="ui_mcm_lst_tc_kb_mode_hold">
+		<text>Удержание</text>
+	</string>
+
+	<!-- Markers -->
 	<string id="ui_mcm_markers_title">
 		<text>Маркеры</text>
 	</string>
@@ -250,7 +260,35 @@
 		<text>Маркер вод. колонок: отображать всегда</text>
 	</string>
 
+	<string id="ui_mcm_tactic_compass_tc_markers_show_paw">
+		<text>Пины PAW: отображение</text>
+	</string>
+
+	<string id="ui_mcm_tc_markers_marker_m_paw_desc">
+		<text>Требуется мод Personal Adjustable Waypoint.</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_markers_is_paw_dist">
+		<text>Пины PAW: отображение дистанции до цели</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_markers_show_paw_dist">
+		<text>Пины PAW: дистанция отображения</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_markers_is_paw_av">
+		<text>Пины PAW: отображать всегда</text>
+	</string>
+
   <string id="ui_mcm_tactic_compass_tc_markers_quest_highlight">
     <text>Подсвечивать отслеживаемое задание</text>
+  </string>
+
+  <string id="ui_mcm_tactic_compass_tc_markers_gamma_stashes">
+    <text>Цвета тайников как в G.A.M.M.A.</text>
+  </string>
+
+  <string id="ui_mcm_tactic_compass_tc_markers_gamma_stashes_desc">
+    <text>Цвета тайников как в КПК G.A.M.M.A.: белые, редкие жёлтые, свои синие. Для ванильных иконок нужен AlphaLion's Reworked Stash Quest and Map Markers (входит в G.A.M.M.A.).</text>
   </string>
 </string_table>

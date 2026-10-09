@@ -256,6 +256,602 @@
 			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
 			<texture>tc_stash</texture>
 		</marker_stashes>
+
+		<!-- Personal Adjustable Waypoint -->
+		<marker_paw_pin_magnifier32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_magnifier32</texture>
+		</marker_paw_pin_magnifier32>
+
+		<marker_paw_stash_green width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_green</texture>
+		</marker_paw_stash_green>
+
+		<marker_paw_stash_white width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_white</texture>
+		</marker_paw_stash_white>
+
+		<marker_paw_stash_purple width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_purple</texture>
+		</marker_paw_stash_purple>
+
+		<marker_paw_stash_red width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_red</texture>
+		</marker_paw_stash_red>
+
+		<marker_paw_stash_backpack width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_backpack_stash_icon_green64</texture>
+		</marker_paw_stash_backpack>
+
+		<marker_paw_stash_gold width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_gold</texture>
+		</marker_paw_stash_gold>
+
+		<marker_paw_death_small width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_death64</texture>
+		</marker_paw_death_small>
+
+		<marker_paw_blue_circle width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_blue_circle</texture>
+		</marker_paw_blue_circle>
+
+		<marker_paw_crosshair_white width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_white</texture>
+		</marker_paw_crosshair_white>
+
+		<marker_paw_crosshair_red width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_red</texture>
+		</marker_paw_crosshair_red>
+
+		<marker_paw_crosshair_green width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_green</texture>
+		</marker_paw_crosshair_green>
+
+		<marker_paw_crosshair_gradient width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_gradient</texture>
+		</marker_paw_crosshair_gradient>
+
+		<marker_paw_pin_redskull width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_redskull</texture>
+		</marker_paw_pin_redskull>
+
+		<marker_paw_bwhr_loot width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_loot64</texture>
+		</marker_paw_bwhr_loot>
+
+		<marker_paw_bwhr_warn width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_warn64</texture>
+		</marker_paw_bwhr_warn>
+
+		<marker_paw_bwhr_ak width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_ak64</texture>
+		</marker_paw_bwhr_ak>
+
+		<marker_paw_bwhr_signal width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_signal64</texture>
+		</marker_paw_bwhr_signal>
+
+		<marker_paw_bwhr_death width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_death64</texture>
+		</marker_paw_bwhr_death>
+
+		<marker_paw_bwhr_ammo width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_ammo64</texture>
+		</marker_paw_bwhr_ammo>
+
+		<marker_paw_bwhr_rad width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_rad64</texture>
+		</marker_paw_bwhr_rad>
+
+		<marker_paw_bwhr_info width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_info64</texture>
+		</marker_paw_bwhr_info>
+
+		<marker_paw_bwhr_magn width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_magn64</texture>
+		</marker_paw_bwhr_magn>
+
+		<marker_paw_bwhr_bio width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_bio64</texture>
+		</marker_paw_bwhr_bio>
+
+		<marker_paw_bwhr_tag width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_horizon64</texture>
+		</marker_paw_bwhr_tag>
+
+		<marker_paw_bwhr_stash width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_stash64</texture>
+		</marker_paw_bwhr_stash>
+
+		<marker_paw_diamond_friendly width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_diamond_f</texture>
+		</marker_paw_diamond_friendly>
+
+		<marker_paw_diamond_neutral width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_diamond_n</texture>
+		</marker_paw_diamond_neutral>
+
+		<marker_paw_diamond_enemy width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_diamond_e</texture>
+		</marker_paw_diamond_enemy>
+
+		<marker_paw_chevron_friendly width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_chevron_f</texture>
+		</marker_paw_chevron_friendly>
+
+		<marker_paw_chevron_neutral width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_chevron_n</texture>
+		</marker_paw_chevron_neutral>
+
+		<marker_paw_chevron_enemy width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_chevron_e</texture>
+		</marker_paw_chevron_enemy>
+
+		<marker_paw_flag_friendly width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_flag_friendly</texture>
+		</marker_paw_flag_friendly>
+
+		<marker_paw_flag_neutral width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_flag_neutral</texture>
+		</marker_paw_flag_neutral>
+
+		<marker_paw_flag_enemy width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_flag_enemy</texture>
+		</marker_paw_flag_enemy>
+
+		<marker_paw_npc_mechanic width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_mechanic</texture>
+		</marker_paw_npc_mechanic>
+
+		<marker_paw_npc_trader width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_trade</texture>
+		</marker_paw_npc_trader>
+
+		<marker_paw_npc_guide width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_person</texture>
+		</marker_paw_npc_guide>
+
+		<marker_paw_npc_food_trader width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_food</texture>
+		</marker_paw_npc_food_trader>
+
+		<marker_paw_npc_medic width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_medic</texture>
+		</marker_paw_npc_medic>
+
+		<marker_paw_sleep_zone width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_bed</texture>
+		</marker_paw_sleep_zone>
+
+		<marker_paw_obj_briefcase width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_briefcase</texture>
+		</marker_paw_obj_briefcase>
+
+		<marker_paw_obj_lock width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_obj_lock</texture>
+		</marker_paw_obj_lock>
+
+		<marker_paw_badge_army width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_army</texture>
+		</marker_paw_badge_army>
+
+		<marker_paw_badge_bandit width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_bandit</texture>
+		</marker_paw_badge_bandit>
+
+		<marker_paw_badge_csky width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_csky</texture>
+		</marker_paw_badge_csky>
+
+		<marker_paw_badge_dolg width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_dolg</texture>
+		</marker_paw_badge_dolg>
+
+		<marker_paw_badge_ecolog width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_ecolog</texture>
+		</marker_paw_badge_ecolog>
+
+		<marker_paw_badge_freedom width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_freedom</texture>
+		</marker_paw_badge_freedom>
+
+		<marker_paw_badge_killer width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_killer</texture>
+		</marker_paw_badge_killer>
+
+		<marker_paw_badge_monolith width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_monolith</texture>
+		</marker_paw_badge_monolith>
+
+		<marker_paw_badge_stalker width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_stalker</texture>
+		</marker_paw_badge_stalker>
+
+		<marker_paw_badge_greh width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_greh</texture>
+		</marker_paw_badge_greh>
+
+		<marker_paw_badge_isg width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_isg</texture>
+		</marker_paw_badge_isg>
+
+		<marker_paw_badge_renegade width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_renegade</texture>
+		</marker_paw_badge_renegade>
+
+		<marker_paw_badge_hr_army width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_army</texture>
+		</marker_paw_badge_hr_army>
+
+		<marker_paw_badge_hr_bandit width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_bandit</texture>
+		</marker_paw_badge_hr_bandit>
+
+		<marker_paw_badge_hr_csky width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_csky</texture>
+		</marker_paw_badge_hr_csky>
+
+		<marker_paw_badge_hr_dolg width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_dolg</texture>
+		</marker_paw_badge_hr_dolg>
+
+		<marker_paw_badge_hr_ecolog width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_ecolog</texture>
+		</marker_paw_badge_hr_ecolog>
+
+		<marker_paw_badge_hr_freedom width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_freedom</texture>
+		</marker_paw_badge_hr_freedom>
+
+		<marker_paw_badge_hr_killer width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_killer</texture>
+		</marker_paw_badge_hr_killer>
+
+		<marker_paw_badge_hr_monolith width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_monolith</texture>
+		</marker_paw_badge_hr_monolith>
+
+		<marker_paw_badge_hr_stalker width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_stalker</texture>
+		</marker_paw_badge_hr_stalker>
+
+		<marker_paw_badge_hr_greh width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_greh</texture>
+		</marker_paw_badge_hr_greh>
+
+		<marker_paw_badge_hr_isg width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_isg</texture>
+		</marker_paw_badge_hr_isg>
+
+		<marker_paw_badge_hr_renegade width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_renegade</texture>
+		</marker_paw_badge_hr_renegade>
+
+		<marker_paw_badge_uhr_army width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_army</texture>
+		</marker_paw_badge_uhr_army>
+
+		<marker_paw_badge_uhr_bandit width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_bandit</texture>
+		</marker_paw_badge_uhr_bandit>
+
+		<marker_paw_badge_uhr_csky width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_csky</texture>
+		</marker_paw_badge_uhr_csky>
+
+		<marker_paw_badge_uhr_dolg width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_dolg</texture>
+		</marker_paw_badge_uhr_dolg>
+
+		<marker_paw_badge_uhr_ecolog width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_ecolog</texture>
+		</marker_paw_badge_uhr_ecolog>
+
+		<marker_paw_badge_uhr_freedom width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_freedom</texture>
+		</marker_paw_badge_uhr_freedom>
+
+		<marker_paw_badge_uhr_killer width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_killer</texture>
+		</marker_paw_badge_uhr_killer>
+
+		<marker_paw_badge_uhr_monolith width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_monolith</texture>
+		</marker_paw_badge_uhr_monolith>
+
+		<marker_paw_badge_uhr_stalker width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_stalker</texture>
+		</marker_paw_badge_uhr_stalker>
+
+		<marker_paw_badge_uhr_greh width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_greh</texture>
+		</marker_paw_badge_uhr_greh>
+
+		<marker_paw_badge_uhr_isg width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_isg</texture>
+		</marker_paw_badge_uhr_isg>
+
+		<marker_paw_badge_uhr_renegade width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_renegade</texture>
+		</marker_paw_badge_uhr_renegade>
+
+		<marker_paw_pin_redpush32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_redpush32</texture>
+		</marker_paw_pin_redpush32>
+
+		<marker_paw_pin_redmodern32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_redmodern32</texture>
+		</marker_paw_pin_redmodern32>
+
+		<marker_paw_pin_redround32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_redround32</texture>
+		</marker_paw_pin_redround32>
+
+		<marker_paw_pin_stalker32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_stalker32</texture>
+		</marker_paw_pin_stalker32>
+
+		<marker_paw_pin_yelpush32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_yelpush32</texture>
+		</marker_paw_pin_yelpush32>
+
+		<marker_paw_pin_whtsimple32 width="15" height="15" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_whtsimple32</texture>
+		</marker_paw_pin_whtsimple32>
 	</markers_custom>
 
 	<markers_vanilla x="0" y="0" width="360" height="0" stretch="1">
@@ -513,5 +1109,601 @@
 			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
 			<texture>ui_inGame2_PDA_icon_secret</texture>
 		</marker_stashes>
+
+		<!-- Personal Adjustable Waypoint -->
+		<marker_paw_pin_magnifier32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_magnifier32</texture>
+		</marker_paw_pin_magnifier32>
+
+		<marker_paw_stash_green width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_green</texture>
+		</marker_paw_stash_green>
+
+		<marker_paw_stash_white width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_white</texture>
+		</marker_paw_stash_white>
+
+		<marker_paw_stash_purple width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_purple</texture>
+		</marker_paw_stash_purple>
+
+		<marker_paw_stash_red width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_red</texture>
+		</marker_paw_stash_red>
+
+		<marker_paw_stash_backpack width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_backpack_stash_icon_green64</texture>
+		</marker_paw_stash_backpack>
+
+		<marker_paw_stash_gold width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>paw_vanilla_stash_icon_gold</texture>
+		</marker_paw_stash_gold>
+
+		<marker_paw_death_small width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_death64</texture>
+		</marker_paw_death_small>
+
+		<marker_paw_blue_circle width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_blue_circle</texture>
+		</marker_paw_blue_circle>
+
+		<marker_paw_crosshair_white width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_white</texture>
+		</marker_paw_crosshair_white>
+
+		<marker_paw_crosshair_red width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_red</texture>
+		</marker_paw_crosshair_red>
+
+		<marker_paw_crosshair_green width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_green</texture>
+		</marker_paw_crosshair_green>
+
+		<marker_paw_crosshair_gradient width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_crosshair_gradient</texture>
+		</marker_paw_crosshair_gradient>
+
+		<marker_paw_pin_redskull width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_redskull</texture>
+		</marker_paw_pin_redskull>
+
+		<marker_paw_bwhr_loot width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_loot64</texture>
+		</marker_paw_bwhr_loot>
+
+		<marker_paw_bwhr_warn width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_warn64</texture>
+		</marker_paw_bwhr_warn>
+
+		<marker_paw_bwhr_ak width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_ak64</texture>
+		</marker_paw_bwhr_ak>
+
+		<marker_paw_bwhr_signal width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_signal64</texture>
+		</marker_paw_bwhr_signal>
+
+		<marker_paw_bwhr_death width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_death64</texture>
+		</marker_paw_bwhr_death>
+
+		<marker_paw_bwhr_ammo width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_ammo64</texture>
+		</marker_paw_bwhr_ammo>
+
+		<marker_paw_bwhr_rad width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_rad64</texture>
+		</marker_paw_bwhr_rad>
+
+		<marker_paw_bwhr_info width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_info64</texture>
+		</marker_paw_bwhr_info>
+
+		<marker_paw_bwhr_magn width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_magn64</texture>
+		</marker_paw_bwhr_magn>
+
+		<marker_paw_bwhr_bio width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_bio64</texture>
+		</marker_paw_bwhr_bio>
+
+		<marker_paw_bwhr_tag width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_horizon64</texture>
+		</marker_paw_bwhr_tag>
+
+		<marker_paw_bwhr_stash width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_bwhr_stash64</texture>
+		</marker_paw_bwhr_stash>
+
+		<marker_paw_diamond_friendly width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_diamond_f</texture>
+		</marker_paw_diamond_friendly>
+
+		<marker_paw_diamond_neutral width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_diamond_n</texture>
+		</marker_paw_diamond_neutral>
+
+		<marker_paw_diamond_enemy width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_diamond_e</texture>
+		</marker_paw_diamond_enemy>
+
+		<marker_paw_chevron_friendly width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_chevron_f</texture>
+		</marker_paw_chevron_friendly>
+
+		<marker_paw_chevron_neutral width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_chevron_n</texture>
+		</marker_paw_chevron_neutral>
+
+		<marker_paw_chevron_enemy width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_cursor_chevron_e</texture>
+		</marker_paw_chevron_enemy>
+
+		<marker_paw_flag_friendly width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_flag_friendly</texture>
+		</marker_paw_flag_friendly>
+
+		<marker_paw_flag_neutral width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_flag_neutral</texture>
+		</marker_paw_flag_neutral>
+
+		<marker_paw_flag_enemy width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_flag_enemy</texture>
+		</marker_paw_flag_enemy>
+
+		<marker_paw_npc_mechanic width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_mechanic</texture>
+		</marker_paw_npc_mechanic>
+
+		<marker_paw_npc_trader width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_trade</texture>
+		</marker_paw_npc_trader>
+
+		<marker_paw_npc_guide width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_person</texture>
+		</marker_paw_npc_guide>
+
+		<marker_paw_npc_food_trader width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_food</texture>
+		</marker_paw_npc_food_trader>
+
+		<marker_paw_npc_medic width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_medic</texture>
+		</marker_paw_npc_medic>
+
+		<marker_paw_sleep_zone width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_bed</texture>
+		</marker_paw_sleep_zone>
+
+		<marker_paw_obj_briefcase width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_impobj_briefcase</texture>
+		</marker_paw_obj_briefcase>
+
+		<marker_paw_obj_lock width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_pin_obj_lock</texture>
+		</marker_paw_obj_lock>
+
+		<marker_paw_badge_army width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_army</texture>
+		</marker_paw_badge_army>
+
+		<marker_paw_badge_bandit width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_bandit</texture>
+		</marker_paw_badge_bandit>
+
+		<marker_paw_badge_csky width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_csky</texture>
+		</marker_paw_badge_csky>
+
+		<marker_paw_badge_dolg width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_dolg</texture>
+		</marker_paw_badge_dolg>
+
+		<marker_paw_badge_ecolog width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_ecolog</texture>
+		</marker_paw_badge_ecolog>
+
+		<marker_paw_badge_freedom width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_freedom</texture>
+		</marker_paw_badge_freedom>
+
+		<marker_paw_badge_killer width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_killer</texture>
+		</marker_paw_badge_killer>
+
+		<marker_paw_badge_monolith width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_monolith</texture>
+		</marker_paw_badge_monolith>
+
+		<marker_paw_badge_stalker width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_stalker</texture>
+		</marker_paw_badge_stalker>
+
+		<marker_paw_badge_greh width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_greh</texture>
+		</marker_paw_badge_greh>
+
+		<marker_paw_badge_isg width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_isg</texture>
+		</marker_paw_badge_isg>
+
+		<marker_paw_badge_renegade width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_renegade</texture>
+		</marker_paw_badge_renegade>
+
+		<marker_paw_badge_hr_army width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_army</texture>
+		</marker_paw_badge_hr_army>
+
+		<marker_paw_badge_hr_bandit width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_bandit</texture>
+		</marker_paw_badge_hr_bandit>
+
+		<marker_paw_badge_hr_csky width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_csky</texture>
+		</marker_paw_badge_hr_csky>
+
+		<marker_paw_badge_hr_dolg width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_dolg</texture>
+		</marker_paw_badge_hr_dolg>
+
+		<marker_paw_badge_hr_ecolog width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_ecolog</texture>
+		</marker_paw_badge_hr_ecolog>
+
+		<marker_paw_badge_hr_freedom width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_freedom</texture>
+		</marker_paw_badge_hr_freedom>
+
+		<marker_paw_badge_hr_killer width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_killer</texture>
+		</marker_paw_badge_hr_killer>
+
+		<marker_paw_badge_hr_monolith width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_monolith</texture>
+		</marker_paw_badge_hr_monolith>
+
+		<marker_paw_badge_hr_stalker width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_stalker</texture>
+		</marker_paw_badge_hr_stalker>
+
+		<marker_paw_badge_hr_greh width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_greh</texture>
+		</marker_paw_badge_hr_greh>
+
+		<marker_paw_badge_hr_isg width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_isg</texture>
+		</marker_paw_badge_hr_isg>
+
+		<marker_paw_badge_hr_renegade width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_hr_renegade</texture>
+		</marker_paw_badge_hr_renegade>
+
+		<marker_paw_badge_uhr_army width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_army</texture>
+		</marker_paw_badge_uhr_army>
+
+		<marker_paw_badge_uhr_bandit width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_bandit</texture>
+		</marker_paw_badge_uhr_bandit>
+
+		<marker_paw_badge_uhr_csky width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_csky</texture>
+		</marker_paw_badge_uhr_csky>
+
+		<marker_paw_badge_uhr_dolg width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_dolg</texture>
+		</marker_paw_badge_uhr_dolg>
+
+		<marker_paw_badge_uhr_ecolog width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_ecolog</texture>
+		</marker_paw_badge_uhr_ecolog>
+
+		<marker_paw_badge_uhr_freedom width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_freedom</texture>
+		</marker_paw_badge_uhr_freedom>
+
+		<marker_paw_badge_uhr_killer width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_killer</texture>
+		</marker_paw_badge_uhr_killer>
+
+		<marker_paw_badge_uhr_monolith width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_monolith</texture>
+		</marker_paw_badge_uhr_monolith>
+
+		<marker_paw_badge_uhr_stalker width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_stalker</texture>
+		</marker_paw_badge_uhr_stalker>
+
+		<marker_paw_badge_uhr_greh width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_greh</texture>
+		</marker_paw_badge_uhr_greh>
+
+		<marker_paw_badge_uhr_isg width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_isg</texture>
+		</marker_paw_badge_uhr_isg>
+
+		<marker_paw_badge_uhr_renegade width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>ui_icons_paw_badge_uhr_renegade</texture>
+		</marker_paw_badge_uhr_renegade>
+
+		<marker_paw_pin_redpush32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_redpush32</texture>
+		</marker_paw_pin_redpush32>
+
+		<marker_paw_pin_redmodern32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_redmodern32</texture>
+		</marker_paw_pin_redmodern32>
+
+		<marker_paw_pin_redround32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_redround32</texture>
+		</marker_paw_pin_redround32>
+
+		<marker_paw_pin_stalker32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_stalker32</texture>
+		</marker_paw_pin_stalker32>
+
+		<marker_paw_pin_yelpush32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_yelpush32</texture>
+		</marker_paw_pin_yelpush32>
+
+		<marker_paw_pin_whtsimple32 width="12" height="12" stretch="1" heading="1" alignment="c">
+			<text complex_mode="0" y="-11" r="255" g="255" b="255" vert_align="t" align="c"
+				font="arial_14" />
+			<arrow width="5" height="5" stretch="1" heading="1" alignment="c" />
+			<texture>tc_paw_pin_whtsimple32</texture>
+		</marker_paw_pin_whtsimple32>
 	</markers_vanilla>
 </window>

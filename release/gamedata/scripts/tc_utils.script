@@ -1,4 +1,4 @@
--- Tactical Compass -- stateless helpers.
+-- Tactical Compass - helpers
 -- Author: explorerbee
 
 local V = tc_variables
@@ -9,14 +9,13 @@ local LERP_FAST = V.TC_MARKER_LERP_FAST
 local JUMP = V.TC_MARKER_JUMP
 local FADE = V.TC_FADE_DISTANCE
 
--- Scaled to the active compass style by set_scale; see TC_COMPASS_BASE_WIDTH
+-- Scaled per style by set_scale
 local spread = V.TC_MARKER_SPREAD
 local clamp_px = V.TC_MARKER_CLAMP
 local look = V.TC_LOOK_TOLERANCE
 
 local abs, floor = math.abs, math.floor
 
--- Scratch vectors, reused so calc_position allocates nothing per marker.
 local scratch_dir = vector()
 local scratch_cross = vector()
 
@@ -24,8 +23,7 @@ function lerp(a, b, t)
   return a + (b - a) * t
 end
 
--- Called by tc_hud when the window is built: markers must spread across the
--- whole strip, and the legacy strip is wider than the one the constants assume.
+-- The legacy strip is wider than the base the constants assume
 function set_scale(k)
   spread = V.TC_MARKER_SPREAD * k
   clamp_px = V.TC_MARKER_CLAMP * k
@@ -41,7 +39,8 @@ function calc_angle()
   return angle
 end
 
-function get_world_coordinates(id)
+-- Offline objects use their server position, only on the current level
+function get_world_coordinates(id, level_id)
   local obj = db.storage[id] and db.storage[id].object or level.object_by_id(id)
 
   if obj then
@@ -57,24 +56,21 @@ function get_world_coordinates(id)
   end
 
   local se = alife_object(id)
-  if not (se and se.online) then return nil end
+  if not se then return nil end
 
-  local cls = se:clsid()
-
-  if cls == clsid.smart_terrain then
-    local pos = se.position
-
-    return pos and vector():set(pos.x, pos.y + 1, pos.z)
-  end
-
-  if cls == clsid.online_offline_group_s then
+  if se:clsid() == clsid.online_offline_group_s then
     local leader = se:commander_id()
     local npc = leader and (db.storage[leader] and db.storage[leader].object or level.object_by_id(leader))
 
-    return npc and utils_obj.safe_bone_pos(npc, "bip01_head")
+    if npc then return utils_obj.safe_bone_pos(npc, "bip01_head") end
   end
 
-  return nil
+  local pos = se.position
+  if not (pos and level_id) then return nil end
+
+  if game_graph():vertex(se.m_game_vertex_id):level_id() ~= level_id then return nil end
+
+  return vector():set(pos.x, pos.y + 1, pos.z)
 end
 
 function calc_distance_to_target(world_pos, actor_pos)
@@ -92,8 +88,7 @@ function calc_alpha(always_visible, distance, threshold)
   return floor(255 - ((distance - threshold) / FADE) * 255)
 end
 
--- Horizontal screen position of a world point on the compass strip.
--- actor_dir must already be flattened and normalised.
+-- actor_dir must be flattened and normalised
 function calc_position(world_pos, actor_pos, actor_dir, prev_x)
   scratch_dir:set(world_pos.x, actor_pos.y, world_pos.z)
   scratch_dir:sub(actor_pos)
@@ -117,7 +112,6 @@ function calc_position(world_pos, actor_pos, actor_dir, prev_x)
 
   x = lerp(prev_x or CENTER, x, factor)
 
-  -- A target directly behind gives dot = -1, so the offset lands on 2 * SPREAD
   if x < CENTER - clamp_px then return CENTER - clamp_px end
   if x > CENTER + clamp_px then return CENTER + clamp_px end
 

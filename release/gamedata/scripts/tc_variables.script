@@ -1,16 +1,14 @@
--- Tactical Compass -- layout constants and tuning.
+-- Tactical Compass - layout constants and tuning
 -- Author: explorerbee
 
--- The "legacy" optional overrides this whole file, so everything the legacy
--- style needs to change must live here and nowhere else.
 
 TC_SCREEN_CENTER = 512
 TC_SCREEN_WIDTH = 1024
+TC_SCREEN_HEIGHT = 768
 
 TC_MAX_POSSIBLE_DISTANCE = 1000
 
--- Everything that differs between compass looks. Selected in MCM
--- (tc_main/compass_style), keyed by the value that option stores.
+-- Compass styles, keyed by tc_main/compass_style
 TC_STYLES = {
   [0] = {
     node = "compass_s2",
@@ -22,6 +20,8 @@ TC_STYLES = {
 
     pos_key = "tc_main/compass_y_s2",
     default_y = 721,
+    pos_min = 11,                     -- distance text above the markers
+    pos_max = TC_SCREEN_HEIGHT - 37,  -- bottom of the frame
 
     marker_offset = 8,
     deadbody_offset = 30,
@@ -33,20 +33,37 @@ TC_STYLES = {
     has_degrees = true,
 
     compass_width = 600,
-    compass_inset = 5, -- <cardinal_dir x="5"> inside a 610-wide container
+    compass_inset = 5, -- cardinal_dir x in the container
 
     pos_key = "tc_main/compass_y_legacy",
     default_y = 671,
+    pos_min = 0,                      -- markers sit inside the background
+    pos_max = TC_SCREEN_HEIGHT - 85,  -- bottom of the background
 
     marker_offset = 25,
     deadbody_offset = 25,
   },
 }
 
--- Marker icon sets, keyed by the value tc_markers/marker_style stores highlight_pad
+-- Marker icon sets, keyed by tc_markers/marker_style
 TC_MARKER_SETS = {
-    [0] = { node = "markers_custom",  highlight_pad = 2 },
-    [1] = { node = "markers_vanilla", highlight_pad = 6 },
+    -- gamma_stashes: G.A.M.M.A. PDA stash colours (tc_markers/gamma_stashes)
+    [0] = { node = "markers_custom",  highlight_pad = 2,
+            gamma_stashes = {
+                stashes = "tc_stash_white",
+                stashes_all = "tc_stash_white",
+                stashes_searched = "tc_stash_player",
+                stashes_player = "tc_stash_blue",
+            } },
+    -- Textures from AlphaLion's Reworked Stash Quest and Map Markers
+    [1] = { node = "markers_vanilla", highlight_pad = 6,
+            gamma_stashes = {
+                stashes = "ui_AlphaLion_Stash-regular",
+                stashes_all = "ui_AlphaLion_Stash-regular",
+                stashes_searched = "ui_AlphaLion_Stash-valuable",
+                stashes_player = "ui_AlphaLion_Stash-self",
+                stashes_unique = "ui_AlphaLion_Stash-UNISG",
+            } },
 }
 
 -- Shared by both styles
@@ -74,17 +91,16 @@ TC_TICK_VISIBILITY = 250    -- HUD show/hide check
 TC_TICK_MARKERS = 200       -- marker world state (position, distance, alpha)
 TC_TICK_CLEANUP = 2000      -- stale map spot check
 
--- Dark copy drawn under the compass strip
+-- Shadow under the compass strip
 TC_COMPASS_SHADOW_ALPHA = 140
 TC_COMPASS_SHADOW_OFFSET = 0.5
 
--- Dark copy drawn under each marker; toggled by tc_markers/marker_shadow
+-- Shadow under markers, toggled by tc_markers/marker_shadow
 TC_MARKER_SHADOW_ALPHA = 140
 TC_MARKER_SHADOW_OFFSET = 0.5
 
--- Markers created per slow tick, so a rebuild does not stall a frame
+-- Markers created per slow tick
 TC_CREATE_BUDGET = 6
 
--- Range of the in-game position slider
-TC_POS_MIN = 0
-TC_POS_MAX = 730
+-- Object ids per frame for the load-time spot scan
+TC_SCAN_CHUNK = 8000

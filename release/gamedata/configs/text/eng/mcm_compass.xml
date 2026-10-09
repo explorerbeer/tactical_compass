@@ -39,16 +39,6 @@
 		<text>Legacy</text>
 	</string>
 
-	<string id="ui_mcm_tactic_compass_tc_main_compass_scale">
-		<text>Compass scale</text>
-  </string>
-
-	<string id="ui_mcm_tc_main_compass_scale_desc">
-		<text>Ultrawide monitors: the engine stretches the interface horizontally,
-				so the compass ends up too wide. Set about 0.75 for 21:9 and 0.50 for 32:9.
-				On regular monitors this simply resizes the compass.</text>
-</string>
-
 	<string id="ui_mcm_tactic_compass_tc_markers_marker_style">
 		<text>Marker icons</text>
 	</string>
@@ -77,6 +67,26 @@
 
 	<string id="ui_mcm_tactic_compass_tc_keybinds_keybind">
 		<text>Tactical Compass: toggle</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_keybinds_keybind_mode">
+		<text>Press type</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_keybinds_keybind_mode_desc">
+		<text>How the key above has to be pressed to toggle the compass.</text>
+	</string>
+
+	<string id="ui_mcm_lst_tc_kb_mode_press">
+		<text>Single press</text>
+	</string>
+
+	<string id="ui_mcm_lst_tc_kb_mode_dtap">
+		<text>Double tap</text>
+	</string>
+
+	<string id="ui_mcm_lst_tc_kb_mode_hold">
+		<text>Long press</text>
 	</string>
 
 	<!-- Markers -->
@@ -252,7 +262,35 @@
 		<text>Water pump marker: always display</text>
 	</string>
 
+	<string id="ui_mcm_tactic_compass_tc_markers_show_paw">
+		<text>PAW pins: display</text>
+	</string>
+
+	<string id="ui_mcm_tc_markers_marker_m_paw_desc">
+		<text>Requires addon Personal Adjustable Waypoint.</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_markers_is_paw_dist">
+		<text>PAW pins: display distance to target</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_markers_show_paw_dist">
+		<text>PAW pins: display distance</text>
+	</string>
+
+	<string id="ui_mcm_tactic_compass_tc_markers_is_paw_av">
+		<text>PAW pins: always display</text>
+	</string>
+
   <string id="ui_mcm_tactic_compass_tc_markers_quest_highlight">
     <text>Highlight the tracked task</text>
+  </string>
+
+  <string id="ui_mcm_tactic_compass_tc_markers_gamma_stashes">
+    <text>Stash colours as in G.A.M.M.A.</text>
+  </string>
+
+  <string id="ui_mcm_tactic_compass_tc_markers_gamma_stashes_desc">
+    <text>Stash markers coloured as in the G.A.M.M.A. PDA: white, yellow for rare, blue for your own. Vanilla icons need AlphaLion's Reworked Stash Quest and Map Markers (part of G.A.M.M.A.).</text>
   </string>
 </string_table>

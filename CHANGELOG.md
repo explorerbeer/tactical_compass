@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.2
+
+### Added
+- Support for [Personal Adjustable Waypoint](https://www.moddb.com/mods/stalker-anomaly/addons/personal-adjustable-waypoint-for-anomaly-151-152-and-gamma):
+  pins show on the compass with the same icon as on the map. Pings are not shown, and the
+  waypoint appears as a regular task marker.
+- MCM option to colour stashes as in the G.A.M.M.A. PDA: white, yellow for rare, blue for your
+  own. Works with both icon sets.
+- Markers that already existed when the addon was installed now appear on the compass, so it
+  can be added to an ongoing save.
+
+### Fixed
+- Markers stopped showing beyond 300-400 m, depending on the level, whatever range was set in
+  MCM. They now respect the configured range.
+- No new markers appeared with Wearable Devices installed.
+- The compass could be moved off screen. Each style now has its own height limits.
+- Stray periods at the end of the press type options.
+
+### Removed
+- Compass scale slider: ultrawide monitors turned out not to need it.
+
+### Performance
+- The level load scan is spread over several frames instead of running in one.
+
 ## 1.1 
 - Compass height is now adjusted in game: a button in MCM opens a small panel over the world, and the compass moves as you drag the slider.
 - The task you track in the PDA is highlighted on the compass.
