@@ -39,13 +39,24 @@ function calc_angle()
   return angle
 end
 
+-- Some monsters (chimera) have no head bone, and asking for it spams the log
+local function head_pos(obj)
+  if obj:get_bone_id("bip01_head") ~= 65535 then
+    return obj:bone_position("bip01_head")
+  end
+
+  local pos = obj:position()
+
+  return vector():set(pos.x, pos.y + 1, pos.z)
+end
+
 -- Offline objects use their server position, only on the current level
 function get_world_coordinates(id, level_id)
   local obj = db.storage[id] and db.storage[id].object or level.object_by_id(id)
 
   if obj then
     if IsStalker(obj) or IsMonster(obj) then
-      return utils_obj.safe_bone_pos(obj, "bip01_head")
+      return head_pos(obj)
     end
 
     if type(obj.position) == "function" then
@@ -62,7 +73,7 @@ function get_world_coordinates(id, level_id)
     local leader = se:commander_id()
     local npc = leader and (db.storage[leader] and db.storage[leader].object or level.object_by_id(leader))
 
-    if npc then return utils_obj.safe_bone_pos(npc, "bip01_head") end
+    if npc then return head_pos(npc) end
   end
 
   local pos = se.position

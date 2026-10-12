@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+### Fixed
+- The log filled up with "Incorrect bone_id" warnings when a marker was on a monster without a
+  head bone, such as a chimera.
+
 ## 1.2
 
 ### Added
